@@ -1,0 +1,23 @@
+{
+  "name": "nord-enterprises-node",
+  "version": "0.0.1",
+  "description": "Conversion of php4 application to node",
+  "main": "index.js",
+  "scripts": {
+    "dev": "lite-server",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Joseph Driscoll",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.16.0",
+    "compression": "^1.6.2",
+    "express": "^4.14.1",
+    "helmet": "^3.4.0",
+    "moment": "^2.17.1",
+    "mysql": "^2.13.0"
+  },
+  "devDependencies": {
+    "lite-server": "^2.2.2"
+  }
+}
