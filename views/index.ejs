@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta content="text/html" charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Testing...">
+    <meta name="author" content="Nord Enterprises">
+
+    <!--update this with values from db-->
+    <meta name="DESCRIPTION" content="home-owners-assoc.com provides the fastest, easiest, and least expensive method for Homeowner Associations to build their own web sites for communicating with homeowners and managing the association.">
+    <meta name="KEYWORDS" content="home-owners-assoc, hoa, hoa website, hoa web site, homeowner association, homeowner association website, homeowner, homeowners association, homeowners association website, homeowners, home owner, home owner association, home owner association website, property management, condo association, covenants, subdivision, community, community website, community web site, condos, property manager, property manager website, property manager applications, coop association, co-op, co-op association, townhome, townhomes, townhome association, townhomes association, cai, community association institute, association, neighborhood, neighborhood association,">
+
+    <title><%= short_name %></title>
+
+    <!--Conditional stylesheets-->
+    <!--Stylesheet for user profiles
+        need ejs for if user is logged in and user profiles is active
+        "SELECT * FROM hoa_user_profiles WHERE hoa_id = ${hoa_main['hoa_id']}"
+        then get the user's info:
+        if($profile_status['profiles_enabled'] == 'y') {
+            //get this user's info
+            $username = $_SESSION["us_valid_user"];
+            $query_profile_user = "SELECT * FROM hoa_user
+                        WHERE hoa_id = ${hoa_main["hoa_id"]}
+                        AND username = '${username}'";
+    -->
+    <link rel="stylesheet" type="text/css" href="static/css/user-profile-slider.css" />
+    <link rel="stylesheet" type="text/css" href="static/css/jquery.tooltip.css" />
+
+    <!--Global Stylesheets-->
+    <link rel="stylesheet" type="text/css" href="static/css/bootstrap.minNord.css" />
+
+    <!--[if lt IE 9]>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+
+<body>
+    <div id="overDiv" style="position:absolute; visibility:hidden; z-index:1000;"></div>
+    <div class="content-outer">
+        <div class="content-inner">
+            <div class="header-wrapper">Header here</div>
+            <div class="content-inner">
+                The sitename is <%= full_name %>
+            </div>
+            <div class="footer-wrapper">Footer...
+                <div class="toTopRd" title="Back To Top">&#9650;</div>
+                <div class="notices">Include footer notices here</div>
+            </div>
+        </div>
+        <div class="left-menu"></div>
+    </div>
+</body>
+
+
+<!--
+    GLOBAL JS FILES
+-->
+<script src="static/js/jquery-1.11.2.min.js"></script>
+<script src="static/js/jquery-migrate-1.2.1.min.js"></script>
+<!--Bootstrap js-->
+<script src="static/js/bootstrap.min.js"></script>
+<!--This file is necessary for graphic menu items to work!-->
+<script src="static/js/overlib_mini.js"></script>
+<!--Not sure on this one <script src="scripts/<?php print $pageutils ?>"></script>-->
+<script src="static/js/jquery.bgiframe.js"></script>
+<script src="static/js/jquery.dimensions.js"></script>
+<script src="static/js/jquery.tooltip.js"></script>
+
+<!--
+    CONDITIONAL JS FILES
+-->
+<!--Js for user profiles
+<script src="static/js/user-profile.js"></script>
+-->
+
+<script>
+$(document).ready(function() {
+	//
+	//smooth scroll to top button
+	//
+	$(window).scroll(function() {
+		if($(this).scrollTop() > 200) {
+			$('.toTopRd').fadeIn(500);
+		} else {
+			$('.toTopRd').hide();
+		}
+	});
+
+	$('.toTopRd').click(function() {
+		$('html, body').animate({scrollTop: 0}, 400);
+		return false;
+	});
+});
+</script>
+</html>

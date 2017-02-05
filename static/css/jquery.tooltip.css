@@ -1,0 +1,13 @@
+<?php header("Content-Type: text/css"); ?>
+#tooltip {
+	position: absolute;
+	z-index: 3000;
+	border: 1px solid #339;
+	background-color: #FFF8DC;
+	padding: 2px;
+	opacity: 1;
+    width:194px;
+    font-family:verdana;
+    font-size:10px;
+}
+#tooltip h3, #tooltip div {margin:0;font-weight:normal;font-size:10px;}

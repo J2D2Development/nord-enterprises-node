@@ -10,12 +10,24 @@ OPTIONS
 
 1) Node/Express as backend (node-mysql to connect to db).  Then Jade or http://handlebarsjs.com/ as templating engine?  Would need mailgun as email provider (possibly around $200-300/month). Security?  Does node handle cookies?  I think so, but if not, would need to go jwt
     -Next steps for this version (nord-enterprises-node)
-        a) github repo
-        b) basic express routing
-            -be sure to test multiple sites: not sure where to make connection and end connection- currently just opening connection on server start and leaving open, but might need to refine that.
-            -get url, if home-owners-assoc, next item is sitename- if not, first item is sitename.  Set up basic root route and see if you can get the proper info.
-            -set up basic page return with info from db (homepage for zaplake- use templating engine?)
-            -get page edit functionality (new admin panel)- will need login/auth!
+        a) basic page structure
+            -get hoa_main- save proper vars in session (get from old codebase)
+            -get hoa_lookfeel- apply
+            -set up html structure using ejs templates and includes
+        b) login with sessions
+        c) css templating: how?
+            -if not possible, set up ejs file with just style type=text/css tags, then use ejs vars within that?  Include that in the 'head'?
+        d) minify and concatenate all css/js files?  set up webpack maybe or just use gulp?
+
+    -NOTES FOR THIS PROJECT
+        https://github.com/mde/ejs
+        https://codeforgeek.com/2014/09/manage-session-using-node-js-express-4/
+        https://coligo.io/templating-node-and-express-apps-with-ejs/
+
+        Use for sessions:
+            https://github.com/expressjs/session
+            for production stores: https://www.npmjs.com/package/express-mysql-session
+
 
 
 
