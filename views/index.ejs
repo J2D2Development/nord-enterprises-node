@@ -11,7 +11,7 @@
     <meta name="DESCRIPTION" content="home-owners-assoc.com provides the fastest, easiest, and least expensive method for Homeowner Associations to build their own web sites for communicating with homeowners and managing the association.">
     <meta name="KEYWORDS" content="home-owners-assoc, hoa, hoa website, hoa web site, homeowner association, homeowner association website, homeowner, homeowners association, homeowners association website, homeowners, home owner, home owner association, home owner association website, property management, condo association, covenants, subdivision, community, community website, community web site, condos, property manager, property manager website, property manager applications, coop association, co-op, co-op association, townhome, townhomes, townhome association, townhomes association, cai, community association institute, association, neighborhood, neighborhood association,">
 
-    <title><%= short_name %></title>
+    <title><%= title %></title>
 
     <!--Conditional stylesheets-->
     <!--Stylesheet for user profiles
@@ -25,11 +25,13 @@
                         WHERE hoa_id = ${hoa_main["hoa_id"]}
                         AND username = '${username}'";
     -->
-    <link rel="stylesheet" type="text/css" href="static/css/user-profile-slider.css" />
-    <link rel="stylesheet" type="text/css" href="static/css/jquery.tooltip.css" />
+    <link rel="stylesheet" type="text/css" href="../static/css/user-profile-slider.css" />
+    <link rel="stylesheet" type="text/css" href="../static/css/jquery.tooltip.css" />
 
     <!--Global Stylesheets-->
-    <link rel="stylesheet" type="text/css" href="static/css/bootstrap.minNord.css" />
+    <link rel="stylesheet" type="text/css" href="../static/css/bootstrap.minNord.css" />
+
+    <% include ./styles/style-main %>
 
     <!--[if lt IE 9]>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.js"></script>
@@ -43,7 +45,8 @@
         <div class="content-inner">
             <div class="header-wrapper">Header here</div>
             <div class="content-inner">
-                The sitename is <%= full_name %>
+                <div><%= title %></div>
+                <h1>The sitename is <%= full_name %></h1>
             </div>
             <div class="footer-wrapper">Footer...
                 <div class="toTopRd" title="Back To Top">&#9650;</div>
@@ -58,16 +61,16 @@
 <!--
     GLOBAL JS FILES
 -->
-<script src="static/js/jquery-1.11.2.min.js"></script>
-<script src="static/js/jquery-migrate-1.2.1.min.js"></script>
+<script src="../static/js/jquery-1.11.2.min.js"></script>
+<script src="../static/js/jquery-migrate-1.2.1.min.js"></script>
 <!--Bootstrap js-->
-<script src="static/js/bootstrap.min.js"></script>
+<script src="../static/js/bootstrap.min.js"></script>
 <!--This file is necessary for graphic menu items to work!-->
-<script src="static/js/overlib_mini.js"></script>
+<script src="../static/js/overlib_mini.js"></script>
 <!--Not sure on this one <script src="scripts/<?php print $pageutils ?>"></script>-->
-<script src="static/js/jquery.bgiframe.js"></script>
-<script src="static/js/jquery.dimensions.js"></script>
-<script src="static/js/jquery.tooltip.js"></script>
+<script src="../static/js/jquery.bgiframe.js"></script>
+<script src="../static/js/jquery.dimensions.js"></script>
+<script src="../static/js/jquery.tooltip.js"></script>
 
 <!--
     CONDITIONAL JS FILES

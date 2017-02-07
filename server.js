@@ -29,51 +29,103 @@ app.use(session({
 app.disable('x-powered-by');
 
 app.use((req, res, next) => {
-    //custom middleware- how?
-    console.log('It is:', Date.now());
-    next();
+    let sitename = '';
+
+    if(req.originalUrl === '/') {
+        if(req.headers.host === 'localhost') {
+            sitename = 'info';
+        } else {
+            sitename = req.headers.host;
+        }
+        get_hoa_main();
+    } else if(req.originalUrl.split('/').length > 1 && req.originalUrl.split('/')[1] !== 'favicon.ico') {
+        const urlArray = req.originalUrl.split('/');
+        sitename = urlArray[1];
+        get_hoa_main();
+    }
+
+    function get_hoa_main() {
+        connection.query(`select * from hoa_main where hoa_id_name = '${sitename}'`, (error, results) => {
+            if(error || results.length !== 1) {
+                req.session.sitename = 'unavailable';
+                req.session['short_name'] = 'Not Found';
+                next();
+            } else {
+                req.session.sitename = results[0]['hoa_id_name'];
+                req.session['hoa_main'] = results[0];
+                get_hoa_lookfeel(results[0]['hoa_id']);
+            }
+        });
+    }
+
+    function get_hoa_lookfeel(hoa_id) {
+        connection.query(`SELECT * FROM hoa_pub_lookfeel WHERE hoa_id = ${hoa_id}`, (error, results) => {
+            if(error || results.length !== 1) {
+                throw error;
+            } else {
+                req.session['hoa_lookfeel'] = results[0];
+                next();
+            }
+        });
+    }
 });
 
 app.get('/', (req, res, next) => {
-    console.log('root route:', req.route.path);
-    console.log('host/domain:', req.headers.host);
-    console.log('origin?', req.headers.origin);
-    console.log('session in request?', req.session);
-
-    if(!req.session.sitename) {
-        req.session.sitename = req.headers.host === 'localhost' ? 'info' : req.headers.host;
-    }
-    console.log('sitename:', req.session.sitename);
-    connection.query(`select * from hoa_main where hoa_id_name = '${req.session.sitename}'`, (error, results) => {
-        if(error) return next('Query error:', error);
-        if(results.length !== 1) {
-            res.redirect('db-down.ejs');
-        }
-        console.log('results len:', results.length);
-
-        res.render('index.ejs', {
-            short_name: results[0].short_name, 
-            full_name: results[0].full_name
-        });
-    }); 
+    console.log('homepage redirect');
+    res.redirect(`${req.session['sitename']}/page`);
 });
 
 app.get('/logout', (req, res, next) => {
-    console.log('on logout path');
     req.session.destroy(err => {
         if(err) console.log('session destroy error:', err);
         res.redirect('/');
     });
-})
+});
+
+app.get('/unavailable', (req, res, next) => {
+    req.session.destroy(err => {
+        if(err) console.log('session destroy error:', err);
+        res.render('db-down.ejs');
+    });
+});
 
 app.get('/:sitename', (req, res, next) => {
-    //for demo sites and sites without domain names and info site- need to check to be sure host is 'home-owners-assoc' - then grab the path and get the sitename we're dealing with.  when going live, switch 'localhost' with 'home-owners-assoc.com'
-    if(!req.session.sitename) {
-        req.session.sitename = req.headers.host === 'localhost' ? req.params.sitename : req.headers.host;
-        console.log('was no sitename, now it is:', req.session.sitename);
+    console.log('/sitename redirect');
+    res.redirect(`${req.session['sitename']}/page`);
+});
+
+app.get('/:sitename/page', (req, res, next) => {
+    const hoa_main = req.session['hoa_main'];
+    const hoa_lookfeel = req.session['hoa_lookfeel'];
+    get_page_info(1);
+
+    function get_page_info(pageid) {
+        //set up query to get page info (id = 1 in this case, homepage)- then move this to be shared and include in route below?
+        connection.query(`SELECT * FROM hoa_pub_page WHERE hoa_id = ${hoa_main['hoa_id']} AND page_id = ${pageid}`, (error, results) => {
+            if(error) {
+                throw error;
+            } else {
+                const pageTitle = results[0]['title'];
+                res.render('index.ejs', {
+                    short_name: hoa_main['short_name'], 
+                    full_name: hoa_main['short_name'],
+                    hoa_lookfeel: hoa_lookfeel,
+                    title: pageTitle
+                });
+            }
+        })
     }
-    console.log('sitename already set:', req.session.sitename);
-    res.send(req.session.sitename);
+});
+
+app.get('/:sitename/page/:pageid', (req, res, next) => {
+    const hoa_main = req.session['hoa_main'];
+    const hoa_lookfeel = req.session['hoa_lookfeel'];
+
+    res.render('index.ejs', {
+        short_name: hoa_main['short_name'], 
+        full_name: hoa_main['short_name'],
+        hoa_lookfeel: hoa_lookfeel
+    });
 });
 
 
