@@ -1,4 +1,4 @@
-'use strict'
+'use strict';
 
 const path = require('path');
 const express = require('express');
@@ -100,17 +100,22 @@ app.get('/:sitename/page', (req, res, next) => {
     get_page_info(1);
 
     function get_page_info(pageid) {
-        //set up query to get page info (id = 1 in this case, homepage)- then move this to be shared and include in route below?
-        connection.query(`SELECT * FROM hoa_pub_page WHERE hoa_id = ${hoa_main['hoa_id']} AND page_id = ${pageid}`, (error, results) => {
+        //using multiple statements in one query- need to be sure to sanitize/escape all input data- also explore 'q' library for switchng to promises:
+            //escape data: https://github.com/mysqljs/mysql#escaping-query-values
+                //-use connection.escape(var) ?
+            //http://stackoverflow.com/questions/6622746/approach-to-multiple-mysql-queries-with-node-js
+        connection.query(`SELECT * FROM hoa_pub_page WHERE hoa_id = ${hoa_main['hoa_id']} AND page_id = ${pageid};SELECT * FROM hoa_pub_page_area WHERE hoa_id = ${hoa_main['hoa_id']} AND page_id = ${pageid}`, (error, results) => {
             if(error) {
                 throw error;
             } else {
+                console.log(results);
                 const pageTitle = results[0]['title'];
                 res.render('index.ejs', {
                     short_name: hoa_main['short_name'], 
                     full_name: hoa_main['short_name'],
                     hoa_lookfeel: hoa_lookfeel,
-                    title: pageTitle
+                    title: pageTitle,
+                    pageAreas: results[1]
                 });
             }
         })

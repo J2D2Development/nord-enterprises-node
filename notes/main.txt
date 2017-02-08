@@ -14,7 +14,9 @@ OPTIONS
             -get hoa_main- save proper vars in session (get from old codebase)
             -get hoa_lookfeel- apply
             -set up html structure using ejs templates and includes
-            -CURRENTLY: get page title- if homepage, use hoa_main['short_name'] as head 'title' and hoa_pub_page[title] as page title - if not homepage use hoa_pub_page[title] as title for head and page title, unless no hoa_pub_page[title] then use hoa_main[short_name] as head 'title' and no page title
+            -CURRENTLY: 
+                -get page title- if homepage, use hoa_main['short_name'] as head 'title' and hoa_pub_page[title] as page title - if not homepage use hoa_pub_page[title] as title for head and page title, unless no hoa_pub_page[title] then use hoa_main[short_name] as head 'title' and no page title
+                -use multiple queries (currently working) or promises (import q lib?)
         b) login with sessions
         c) css templating: how?
             -if not possible, set up ejs file with just style type=text/css tags, then use ejs vars within that?  Include that in the 'head'? THIS WORKS

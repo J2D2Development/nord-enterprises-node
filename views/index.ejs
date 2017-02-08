@@ -45,8 +45,14 @@
         <div class="content-inner">
             <div class="header-wrapper">Header here</div>
             <div class="content-inner">
-                <div><%= title %></div>
-                <h1>The sitename is <%= full_name %></h1>
+                <div class="content">
+                    <% for(var i = 0; i < pageAreas.length; i += 1) { %>
+                        <% if(pageAreas[i].title && pageAreas[i].title !== '&nbsp;') { %>
+                            <h3><%= pageAreas[i].title %></h3>
+                        <% } %>
+                        <div><%- pageAreas[i].area_text %></div>
+                    <% } %>
+                </div>
             </div>
             <div class="footer-wrapper">Footer...
                 <div class="toTopRd" title="Back To Top">&#9650;</div>
