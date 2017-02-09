@@ -97,43 +97,32 @@ app.get('/:sitename', (req, res, next) => {
 app.get('/:sitename/page', (req, res, next) => {
     const hoa_main = req.session['hoa_main'];
     const hoa_lookfeel = req.session['hoa_lookfeel'];
-    get_page_info(1);
+    const page_id = +req.query['page_id'] || 1;
+    get_page_info(page_id);
 
     function get_page_info(pageid) {
         //using multiple statements in one query- need to be sure to sanitize/escape all input data- also explore 'q' library for switchng to promises:
             //escape data: https://github.com/mysqljs/mysql#escaping-query-values
                 //-use connection.escape(var) ?
             //http://stackoverflow.com/questions/6622746/approach-to-multiple-mysql-queries-with-node-js
+            //http://www.thegeekstuff.com/2014/01/mysql-nodejs-intro/?utm_source=tuicool
         connection.query(`SELECT * FROM hoa_pub_page WHERE hoa_id = ${hoa_main['hoa_id']} AND page_id = ${pageid};SELECT * FROM hoa_pub_page_area WHERE hoa_id = ${hoa_main['hoa_id']} AND page_id = ${pageid}`, (error, results) => {
             if(error) {
                 throw error;
             } else {
-                console.log(results);
-                const pageTitle = results[0]['title'];
+                console.log('first:', typeof results[0], results[0][0]['title']);
+                const pageInfo = results[0][0];
                 res.render('index.ejs', {
                     short_name: hoa_main['short_name'], 
                     full_name: hoa_main['short_name'],
                     hoa_lookfeel: hoa_lookfeel,
-                    title: pageTitle,
+                    title: `${pageInfo['title']}`,
                     pageAreas: results[1]
                 });
             }
         })
     }
 });
-
-app.get('/:sitename/page/:pageid', (req, res, next) => {
-    const hoa_main = req.session['hoa_main'];
-    const hoa_lookfeel = req.session['hoa_lookfeel'];
-
-    res.render('index.ejs', {
-        short_name: hoa_main['short_name'], 
-        full_name: hoa_main['short_name'],
-        hoa_lookfeel: hoa_lookfeel
-    });
-});
-
-
 
 
 const server = app.listen(80, '127.0.0.1', function() {
