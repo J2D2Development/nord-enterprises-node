@@ -43,7 +43,9 @@
     <div id="overDiv" style="position:absolute; visibility:hidden; z-index:1000;"></div>
     <div class="content-outer">
         <div class="content-inner">
-            <div class="header-wrapper">Header here</div>
+            <div class="header-wrapper">
+                <% include ./header %>
+            </div>
             <div class="page-title"><%= title %></div>
             <div class="content-inner">
                 <div class="content">
@@ -85,12 +87,12 @@
 <!--Js for user profiles
 <script src="static/js/user-profile.js"></script>
 -->
+<script src="../static/js/searchFunctions.js"></script>
 
 <script>
 $(document).ready(function() {
-	//
+    
 	//smooth scroll to top button
-	//
 	$(window).scroll(function() {
 		if($(this).scrollTop() > 200) {
 			$('.toTopRd').fadeIn(500);
@@ -103,6 +105,19 @@ $(document).ready(function() {
 		$('html, body').animate({scrollTop: 0}, 400);
 		return false;
 	});
+
+    //if tooltips enabled (update this)
+    $(function(){
+        if($('.header_tooltip')) {
+            $('.header_tooltip').tooltip({
+                showURL: false,
+                track: true,
+                delay: 0,
+                top: 10,
+                left: 10
+            });
+        }
+    });
 });
 </script>
 </html>

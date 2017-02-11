@@ -15,6 +15,9 @@ OPTIONS
             -get hoa_lookfeel- apply
             -set up html structure using ejs templates and includes
             -CURRENTLY: 
+                -store all of hoa_main and hoa_lookfeel in session?  probably need to.
+                -style header and all permutations
+                -move style_main.inc to style-main.ejs and switch out php
                 -get page title- if homepage, use hoa_main['short_name'] as head 'title' and hoa_pub_page[title] as page title - if not homepage use hoa_pub_page[title] as title for head and page title, unless no hoa_pub_page[title] then use hoa_main[short_name] as head 'title' and no page title
                 -use multiple queries (currently working) or promises (import q lib?)
         b) login with sessions

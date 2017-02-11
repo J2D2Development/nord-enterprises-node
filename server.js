@@ -110,11 +110,12 @@ app.get('/:sitename/page', (req, res, next) => {
             if(error) {
                 throw error;
             } else {
-                console.log('first:', typeof results[0], results[0][0]['title']);
+                //console.log('first:', typeof results[0], results[0][0]['title']);
                 const pageInfo = results[0][0];
                 res.render('index.ejs', {
                     short_name: hoa_main['short_name'], 
                     full_name: hoa_main['short_name'],
+                    hoa_main: hoa_main,
                     hoa_lookfeel: hoa_lookfeel,
                     title: `${pageInfo['title']}`,
                     pageAreas: results[1]
