@@ -15,14 +15,15 @@ OPTIONS
             -get hoa_lookfeel- apply
             -set up html structure using ejs templates and includes
             -CURRENTLY: 
-                -store all of hoa_main and hoa_lookfeel in session?  probably need to.
                 -style header and all permutations
                 -move style_main.inc to style-main.ejs and switch out php
-                -get page title- if homepage, use hoa_main['short_name'] as head 'title' and hoa_pub_page[title] as page title - if not homepage use hoa_pub_page[title] as title for head and page title, unless no hoa_pub_page[title] then use hoa_main[short_name] as head 'title' and no page title
                 -use multiple queries (currently working) or promises (import q lib?)
+                -sanitize html for output?
+                    -https://github.com/google/caja/blob/master/src/com/google/caja/plugin/html-sanitizer.js
+                    http://stackoverflow.com/questions/295566/sanitize-rewrite-html-on-the-client-side/430240#430240
         b) login with sessions
-        c) css templating: how?
-            -if not possible, set up ejs file with just style type=text/css tags, then use ejs vars within that?  Include that in the 'head'? THIS WORKS
+            -working for admin, but routing needs work.  currently, if go straight to login form, sitename not saved in session.
+            -
         d) minify and concatenate all css/js files?  set up webpack maybe or just use gulp?
 
     -NOTES FOR THIS PROJECT

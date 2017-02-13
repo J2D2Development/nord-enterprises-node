@@ -1,9 +1,124 @@
-<style type="text/css">
+<% //some vars need to be set after getting db info
+
+    //get contact form color
+    if(hoa_lookfeel['title_bg_color'] === hoa_lookfeel['content_bg_color']) {
+        var contact_bg_color = '#a9a9a9';
+    } else {
+        var contact_bg_color = hoa_lookfeel['title_bg_color'];
+    }
+
+    //Some areas use the page title/font as border/bgcolor.  This will default those to gray/black if the page title bg and page title font colors are the same
+    if(hoa_lookfeel['title_bg_color'] == hoa_lookfeel['content_bg_color'])
+    {
+        var default_main_color = '#000000';
+        var default_border_bg_color = '#a9a9a9';
+    }
+    else
+    {
+        var default_border_bg_color = hoa_lookfeel['title_bg_color'];
+        var default_main_color = hoa_lookfeel["title_font_color"];
+    }
+%>
+
+<style type='text/css'>
+* {
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+}
 body {
-    background-color: <%=hoa_lookfeel['page_bg_color']%>;
+	margin: <%= hoa_lookfeel['page_margin_top'] %>px <%= hoa_lookfeel['page_margin_right'] %>px <%= hoa_lookfeel['page_margin_bottom'] %>px <%= hoa_lookfeel['page_margin_left'] %>px;
+	background: <%= hoa_lookfeel['page_bg_color'] %>;
 }
 .content {
-    background-color: <%=hoa_lookfeel['content_bg_color']%>;
-    color: <%=hoa_lookfeel['content_font_color']%>;
+    background-color: <%= hoa_lookfeel['content_bg_color'] %>;
+    color: <%= hoa_lookfeel['content_font_color'] %>;
+    font-family: '<%= hoa_lookfeel["content_font"] %>', Arial, sans-serif;
+	font-size: <%= hoa_lookfeel['content_font_size'] %>pt;
+	width: 100%;
 }
+.content-main-flex {
+    display: flex;
+}
+.content-main {
+    flex: 1;
+}
+.container {
+	display: inline-block;
+}
+.dir-label {
+	display: inline-block;
+	margin-left: 6px;
+}
+
+/*LOGO AND HEADER COMBO*/
+.header-wrapper {
+    display: flex;
+    width: 100%;
+}
+.logo {
+	padding: 0;
+	margin: 0;
+    width: 150px;
+    height: 150px;
+	background: <%= hoa_lookfeel['logo_bg_color'] %>;
+}
+.header {
+	background: <%= hoa_lookfeel['header_bg_color'] %>;
+    color: <%= hoa_lookfeel['header_font_color'] %>;
+    font-family: '<%= hoa_lookfeel["header_font"] %>', Arial, sans-serif;
+    font-size: <%= hoa_lookfeel['header_font_size'] %>pt;
+    flex: 1;
+}
+
+/*PAGE TITLE*/
+.page-title {
+	background: <%= hoa_lookfeel['title_bg_color'] %>;
+    color: <%= hoa_lookfeel['title_font_color'] %>;
+    font-family: '<%= hoa_lookfeel["title_font"] %>', Arial, sans-serif;
+    font-size: <%= hoa_lookfeel['title_font_size'] %>pt;
+    padding: 6px;
+}
+
+/*VERTICAL MENU*/
+.vertical-menu-wrapper {
+    background: <%= hoa_lookfeel['menu_bg_color'] %>;
+    color: <%= hoa_lookfeel['menu_font_color'] %>;
+    font-family: '<%= hoa_lookfeel["menu_font"] %>', Arial, sans-serif;
+    font-size: <%= hoa_lookfeel['menu_font_size'] %>pt;
+}
+.menuitem-vertical-img {
+    display: block;
+    text-decoration: none;
+    color: <%= hoa_lookfeel['menu_font_color'] %>;
+}
+
+/*Back to top button*/
+.toTopRd {
+	display: none;
+	position: fixed;
+	bottom: 20px;
+	right: 10px;
+	border-radius: 50%;
+	z-index: 99;
+	text-align: center;
+	height: 30px;
+	width: 30px;
+	line-height: 30px;
+	font-size: 15pt;
+    background-color: <%= default_border_bg_color %>;
+    color: <%= default_main_color %>;
+    border: 1px solid <%= default_border_bg_color %>;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    -webkit-transition: all 0.3s ease;
+}
+.toTopRd:hover {
+    background-color: <%= default_main_color %>;
+    color: <%= default_border_bg_color %>;
+    border: 1px solid <%= default_border_bg_color %>;;
+}
+
+
+/*FOOTER*/
 </style>
