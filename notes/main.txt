@@ -8,7 +8,7 @@ http://stackoverflow.com/questions/5818312/mysql-with-node-js
 
 OPTIONS
 
-1) Node/Express as backend (node-mysql to connect to db).  Then Jade or http://handlebarsjs.com/ as templating engine?  Would need mailgun as email provider (possibly around $200-300/month). Security?  Does node handle cookies?  I think so, but if not, would need to go jwt
+1) Node/Express as backend (node-mysql to connect to db).  EJS as templating engine.  Would need mailgun as email provider (possibly around $200-300/month). Security?  Does node handle cookies?  I think so, but if not, would need to go jwt
     -Next steps for this version (nord-enterprises-node)
         a) basic page structure
             -get hoa_main- save proper vars in session (get from old codebase)

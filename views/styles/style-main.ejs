@@ -26,10 +26,20 @@
 	-moz-box-sizing: border-box;
 	box-sizing: border-box;
 }
+html {
+    height: 100%;
+}
 body {
 	margin: <%= hoa_lookfeel['page_margin_top'] %>px <%= hoa_lookfeel['page_margin_right'] %>px <%= hoa_lookfeel['page_margin_bottom'] %>px <%= hoa_lookfeel['page_margin_left'] %>px;
 	background: <%= hoa_lookfeel['page_bg_color'] %>;
+    height: 100%;
 }
+
+/*BOOTSTRAP OVERRIDES*/
+.row {
+    margin: 0 !important;
+}
+
 .content {
     background-color: <%= hoa_lookfeel['content_bg_color'] %>;
     color: <%= hoa_lookfeel['content_font_color'] %>;
@@ -92,6 +102,89 @@ body {
     text-decoration: none;
     color: <%= hoa_lookfeel['menu_font_color'] %>;
 }
+
+/*ADMIN LOGIN FORM*/
+/*Login form*/
+.login-form--wrapper {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  justify-content: center;
+  align-items: center;
+  background-color: #333;
+  background: radial-gradient(circle, #ffffff, #cccccc, #a9a9a9, #999999, #666666);
+}
+.login-form--inner {
+  width: 30%;
+  min-width: 400px;
+  background-color: rgba(255,255,255,0.4);
+  color: #f5f5f5;
+  border-radius: 5px;
+  padding-bottom: 12px;
+}
+.login-form--inner h1 {
+  font-weight: 100;
+  display: flex;
+  align-items: center;
+  color: #0B486B;
+  padding: 0;
+  margin: 0;
+  border-top-right-radius: 5px;
+  border-top-left-radius: 5px;
+}
+.login-form--inner h1 img {
+  height: 110px;
+  width: auto;
+}
+.subhead {
+  font-size: 12pt;
+  font-style: italic;
+}
+.login-form {
+  display: flex;
+  flex-direction: column;
+}
+.login-form input[type=text], .login-form input[type=password] {
+  border: 0;
+  border-left: 2px solid transparent;
+  background-color: inherit;
+  padding: 6px 12px 6px 12px;
+  width: 90%;
+  margin: 4px auto 8px auto;
+  font-size: 1.25em;
+  transition: border 0.6s ease;
+}
+.login-form input[type=text]:focus, .login-form input[type=password]:focus {
+  outline: 0;
+  border-left: 2px solid #E8860C;
+}
+.login-bottom--wrapper {
+  width: 100%;
+  text-align: center;
+  border-bottom-right-radius: 5px;
+  border-bottom-left-radius: 5px;
+  margin-top: 4px;
+}
+.login-form button {
+  border: 0;
+  background-color: rgba(11,72,107,1);
+  color: #f5f5f5;
+  padding: 6px 0 6px 0;
+  font-size: 1.15em;
+  width: 90%;
+  margin: 6px auto;
+  font-weight: 100;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.login-form button i {
+  margin-left: 6px;
+}
+.login-form button:hover {
+  background-color: rgba(11,72,107, 0.5);
+  color: #333;
+}
+
 
 /*Back to top button*/
 .toTopRd {

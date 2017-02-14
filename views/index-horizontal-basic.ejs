@@ -68,25 +68,33 @@
 
 <body>
     <div id="overDiv" style="position:absolute; visibility:hidden; z-index:1000;"></div>
-    <div class="content-outer">
-        <div class="content-inner">
+    <div class="content-outer container-fluid">
+        <div class="content-inner container">
             <% if(hoa_lookfeel["menu_vertical_pos"] === 'top' ) { %>
-                <% include ./menus/horizontal-menu %>
+                <div class="row">
+                    <% include ./menus/horizontal-menu %>
+                </div>
             <% } %>
 
-            <div class="header-wrapper">
+            <div class="header-wrapper row">
+                <!--add if: logo active, use this, set col-md-4 hidden mobile class-->
                 <div class="logo"></div>
                 <% include ./header %>
             </div>
 
             <% if(hoa_lookfeel["menu_vertical_pos"] === 'bottom' ) { %>
-                <% include ./menus/horizontal-menu %>
+                <div class="row">
+                    <% include ./menus/horizontal-menu %>
+                </div>
             <% } %>
 
-            <div class="page-title"><%- title %></div>
+            <!--add if: title has text, show otherwise, not-->
+            <div class="page-title row">
+                <%- title %>
+            </div>
 
-            <div class="content-main">
-                <div class="content">
+            <div class="content-main container-fluid">
+                <div class="content row">
                     <% for(var i = 0; i < pageAreas.length; i += 1) { %>
                         <% if(pageAreas[i].title && pageAreas[i].title !== '&nbsp;') { %>
                             <h3><%- pageAreas[i].title %></h3>
@@ -96,7 +104,7 @@
                 </div>
             </div>
 
-            <div class="footer-wrapper">
+            <div class="footer-wrapper row">
                 <% include ./footer %>
                 <div class="toTopRd" title="Back To Top">&#9650;</div>
                 <div class="notices">Include footer notices here</div>
@@ -112,11 +120,6 @@
 <script src="../static/js/jquery-migrate-1.2.1.min.js"></script>
 <!--Bootstrap js-->
 <script src="../static/js/bootstrap.min.js"></script>
-<!--This file is necessary for graphic menu items to work!-->
-<script src="../static/js/overlib_mini.js"></script>
-<!--Not sure on this one <script src="scripts/<?php print $pageutils ?>"></script>-->
-<script src="../static/js/jquery.bgiframe.js"></script>
-<script src="../static/js/jquery.dimensions.js"></script>
 <script src="../static/js/jquery.tooltip.js"></script>
 
 <!--

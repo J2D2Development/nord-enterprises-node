@@ -1,8 +1,73 @@
-<div class="admin-login-wrapper">
-    <h3>Log in to admin panel for <%= sitename %></h3>
-    <form action="/login-adminpost" method="POST">
-        <input type="text" name="username" placeholder="Username" />
-        <input type="text" name="password" placeholder="Password" />
-        <input type="submit" name="submit" value="Log In" />
-    </form>
-</div>
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta content="text/html" charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="Testing...">
+        <meta name="author" content="Nord Enterprises">
+
+        <title>Admin Login</title>
+
+        <!--Global Stylesheets-->
+        <link rel="stylesheet" type="text/css" href="../static/css/bootstrap.minNord.css" />
+
+        <!--Custom Google Fonts (only load if applied)-->
+        <%  
+        if(hoa_lookfeel['content_font'] == 'Raleway' ||
+            hoa_lookfeel['header_font'] == 'Raleway' ||
+            hoa_lookfeel['title_font'] == 'Raleway' ||
+            hoa_lookfeel['menu_font'] == 'Raleway') { %>
+            <link href='http://fonts.googleapis.com/css?family=Raleway' rel='stylesheet' type='text/css'>
+        <% } 
+        if(hoa_lookfeel['content_font'] == 'Playfair Display' ||
+            hoa_lookfeel['header_font'] == 'Playfair Display' ||
+            hoa_lookfeel['title_font'] == 'Playfair Display' ||
+            hoa_lookfeel['menu_font'] == 'Playfair Display') { %>
+            <link href='http://fonts.googleapis.com/css?family=Playfair+Display' rel='stylesheet' type='text/css'>
+        <% } 
+        if(hoa_lookfeel['content_font'] == 'Eagle Lake' ||
+            hoa_lookfeel['header_font'] == 'Eagle Lake' ||
+            hoa_lookfeel['title_font'] == 'Eagle Lake' ||
+            hoa_lookfeel['menu_font'] == 'Eagle Lake') { %>
+            <link href='http://fonts.googleapis.com/css?family=Eagle+Lake' rel='stylesheet' type='text/css'>
+        <% } 
+        if(hoa_lookfeel['content_font'] == 'Open Sans' ||
+            hoa_lookfeel['header_font'] == 'Open Sans' ||
+            hoa_lookfeel['title_font'] == 'Open Sans' ||
+            hoa_lookfeel['menu_font'] == 'Open Sans') { %>
+            <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+        <% } %>
+
+        <% include ../styles/style-main %>
+
+        <!--[if lt IE 9]>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+        <![endif]-->
+    </head>
+
+    <body>
+        <div class="login-form--wrapper">
+            <div class="login-form--inner">
+                <h1>
+                    <img src="../../static/img/ne-logo-medium.gif" alt="Nord Logo" />
+                    <div>
+                        <%= sitename %>
+                        <div class="subhead">Admin Access</div>
+                    </div>
+                </h1>
+                
+                <form class="login-form" action="/login-adminpost" method="POST">
+                    <input type="text" name="username" placeholder="Username" autoFocus />
+                    <input type="text" name="password" placeholder="Password" />
+                    <div class="login-bottom--wrapper">
+                        <button type="submit">
+                            Log In
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </body>
+</html>

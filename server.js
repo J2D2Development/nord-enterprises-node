@@ -3,6 +3,7 @@
 const path = require('path');
 const express = require('express');
 const bodyParser = require('body-parser');
+const favicon = require('serve-favicon');
 // const compression = require('compression');
 // const jwt = require('jsonwebtoken');
 const helmet = require('helmet');
@@ -32,6 +33,7 @@ app.set('view engine', 'ejs');
 
 // app.use(compression());
 app.use(helmet());
+app.use(favicon(__dirname + '/static/favicon.ico'));
 app.use('/static', express.static(path.join(__dirname, 'static')))
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
@@ -116,16 +118,39 @@ passport.use(new LocalStrategy(
     (req, username, password, done) => {
         const hoa_id = req.session['hoa_main']['hoa_id'];
         connection.query(`SELECT * FROM hoa_user WHERE hoa_id=${hoa_id} AND username='${username}'`, (error, results) => {
-            console.log('results in strat:', results[0]);
-            console.log('name:', results[0].first_name);
+            console.log(results[0].password);
             if(error) {
                 return done(error);
             } else if(!results || results[0].length === 0) {
-                return done(null, false, { message: 'No user found!' });
+                return done(null, false, { message: 'No user found' });
+            } else if(!mysql_old_password_decode(password, results[0].password)) {
+                return done(null, false, { message: 'Invalid Password' });
             } else {
                 return done(null, results[0]);
             }
         });
+
+        // function passwordDecode(submitted, dbHash) {
+        //     console.log('submitted password:', submitted);
+        //     console.log('db hash:', dbHash);
+        //     return true;
+        // }
+        function mysql_old_password_decode(password, hash) {
+            let nr = 1345345333, add = 7, nr2 = 0x12345671, tmp = null;
+            const inlen = password.length;
+            for (let i = 0; i < inlen; i += 1) {
+                let byte = password.slice(i, 1);  //substr($input, $i, 1);
+                if (byte === ' ' || byte === "\t") continue;
+                tmp = String.fromCharCode(byte); //tmp = ord(byte);
+                nr ^= (((nr & 63) + add) * tmp) + ((nr << 8) & 0xFFFFFFFF);
+                nr2 += ((nr2 << 8) & 0xFFFFFFFF) ^ nr;
+                add += tmp;
+            }
+            const out_a = nr & ((1 << 31) - 1);
+            const out_b = nr2 & ((1 << 31) - 1);
+            const output = sprintf("%08x%08x", out_a, out_b);
+            return output === hash;
+        }
     }
 ));
 
@@ -141,9 +166,9 @@ app.get('/', (req, res, next) => {
 //     });
 // });
 
-app.get('/logout', (req, res) => {
+app.get('/:sitename/logout', (req, res) => {
     req.logout();
-    res.redirect('/');
+    res.redirect(`/${req.session.sitename}/page`);
 });
 
 
@@ -163,7 +188,8 @@ app.get('/:sitename/login-admin', (req, res) => {
         res.redirect(`/${req.session['sitename']}/admin`);
     } else {
         res.render('cp/login-admin.ejs', {
-            sitename: req.session['sitename']
+            sitename: req.session['sitename'],
+            hoa_lookfeel: req.session['hoa_lookfeel'],
         });
     }
 });
@@ -180,14 +206,13 @@ app.get('/admin', (req, res) => {
 });
 
 app.get('/:sitename', (req, res, next) => {
-    console.log('/sitename redirect');
     res.redirect(`${req.session['sitename']}/page`);
 });
 
 app.get('/:sitename/admin', (req, res) => {
-    console.log(req.user);
     res.render('cp/index-admin.ejs', {
         sitename: req.session['sitename'],
+        hoa_lookfeel: req.session['hoa_lookfeel'],
         user: req.user
     });
 });
