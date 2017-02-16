@@ -3,6 +3,9 @@ Do we also need connector? https://github.com/mysqljs/mysql
 
 Trouble connecting to remote host- probably need auth user: http://stackoverflow.com/a/18821224
 
+Helpful php function testewr:
+http://php.fnlist.com/string/sprintf
+
 Useful tips for node-mysql
 http://stackoverflow.com/questions/5818312/mysql-with-node-js
 
@@ -23,7 +26,9 @@ OPTIONS
                     http://stackoverflow.com/questions/295566/sanitize-rewrite-html-on-the-client-side/430240#430240
         b) login with sessions
             -working for admin, but routing needs work.  currently, if go straight to login form, sitename not saved in session.
-            -
+            -!!!converted password decode from php to js- seems to work, needs more testing
+            -logout: seems to work, but cookie remains in browser?  why?
+            -on login, check if admin or not (or feature mng/pagemng)- allow access based on this level
         d) minify and concatenate all css/js files?  set up webpack maybe or just use gulp?
 
     -NOTES FOR THIS PROJECT

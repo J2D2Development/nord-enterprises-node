@@ -49,9 +49,12 @@
 
     <body>
         <div class="login-form--wrapper">
+            <% if(message) { %>
+                <div style="color:red;"><%= message %></div>
+            <% } %>
             <div class="login-form--inner">
                 <h1>
-                    <img src="../../static/img/ne-logo-medium.gif" alt="Nord Logo" />
+                    <!--<img src="../../static/img/ne-logo-medium.gif" alt="Nord Logo" />-->
                     <div>
                         <%= sitename %>
                         <div class="subhead">Admin Access</div>

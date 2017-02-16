@@ -2,6 +2,9 @@
 
 const path = require('path');
 const express = require('express');
+//app.use(cookieParser('secretString'));
+//app.use(session({cookie: { maxAge: 60000 }}));
+const flash = require('connect-flash');
 const bodyParser = require('body-parser');
 const favicon = require('serve-favicon');
 // const compression = require('compression');
@@ -9,6 +12,7 @@ const favicon = require('serve-favicon');
 const helmet = require('helmet');
 const connection = require('./db');
 const session = require('express-session');
+const sprintfJs = require("sprintf-js").sprintf; //needed for old password hash conversion
 // const bcrypt = require('bcrypt');
 
 
@@ -45,11 +49,13 @@ app.use(session({
 }));
 app.use(passport.initialize());
 app.use(passport.session());
+app.use(flash());
 
 app.disable('x-powered-by');
 
 app.use((req, res, next) => {
     let sitename = '';
+    //console.log(req.originalUrl);
 
     if(req.originalUrl === '/') {
         if(req.headers.host === 'localhost') {
@@ -59,7 +65,6 @@ app.use((req, res, next) => {
         }
         get_hoa_main();
     } else if(req.originalUrl.split('/').length > 1 && 
-        req.originalUrl.split('/')[1] !== 'favicon.ico' && 
         req.originalUrl.split('/')[1] !== 'login-adminpost' &&
         req.originalUrl.split('/')[1] !== 'logout') {
         const urlArray = req.originalUrl.split('/');
@@ -118,44 +123,37 @@ passport.use(new LocalStrategy(
     (req, username, password, done) => {
         const hoa_id = req.session['hoa_main']['hoa_id'];
         connection.query(`SELECT * FROM hoa_user WHERE hoa_id=${hoa_id} AND username='${username}'`, (error, results) => {
-            console.log(results[0].password);
             if(error) {
                 return done(error);
-            } else if(!results || results[0].length === 0) {
+            } else if(!results[0] || results[0].length === 0) {
                 return done(null, false, { message: 'No user found' });
             } else if(!mysql_old_password_decode(password, results[0].password)) {
                 return done(null, false, { message: 'Invalid Password' });
             } else {
-                return done(null, results[0]);
+                return done(null, results[0], { message: `Welcome back, ${results[0]['first_name']}`});
             }
         });
 
-        // function passwordDecode(submitted, dbHash) {
-        //     console.log('submitted password:', submitted);
-        //     console.log('db hash:', dbHash);
-        //     return true;
-        // }
         function mysql_old_password_decode(password, hash) {
             let nr = 1345345333, add = 7, nr2 = 0x12345671, tmp = null;
             const inlen = password.length;
             for (let i = 0; i < inlen; i += 1) {
-                let byte = password.slice(i, 1);  //substr($input, $i, 1);
+                let byte = password.substring(i, i+1);
                 if (byte === ' ' || byte === "\t") continue;
-                tmp = String.fromCharCode(byte); //tmp = ord(byte);
+                tmp = byte.charCodeAt(0);
                 nr ^= (((nr & 63) + add) * tmp) + ((nr << 8) & 0xFFFFFFFF);
                 nr2 += ((nr2 << 8) & 0xFFFFFFFF) ^ nr;
                 add += tmp;
             }
             const out_a = nr & ((1 << 31) - 1);
             const out_b = nr2 & ((1 << 31) - 1);
-            const output = sprintf("%08x%08x", out_a, out_b);
+            const output = sprintfJs("%08x%08x", out_a, out_b);
             return output === hash;
         }
     }
 ));
 
 app.get('/', (req, res, next) => {
-    console.log('homepage redirect');
     res.redirect(`${req.session['sitename']}/page`);
 });
 
@@ -167,31 +165,60 @@ app.get('/', (req, res, next) => {
 // });
 
 app.get('/:sitename/logout', (req, res) => {
+    const sitename = req.session['sitename'];
     req.logout();
-    res.redirect(`/${req.session.sitename}/page`);
+    console.log('session after logout:', req.session);
+    req.session.destroy(err => {
+        if(err) console.log('session destroy error:', err);
+        console.log('session after destroy:', req.session);
+        res.redirect(`/${sitename}/page`);
+    });
 });
 
 
 //admin login routes?
 app.post('/login-adminpost', (req, res, next) => {
-    console.log('posting to admin login:', req.session['sitename']);
     passport.authenticate('local', 
     { 
         successRedirect: `/${req.session['sitename']}/admin`,
-        failureRedirect: `/${req.session['sitename']}/login-admin`,
-        failureFlash: true
+        failureRedirect: `/${req.session['sitename']}/admin`,
+        failureFlash: true,
+        successFlash: true
     })(req, res, next);
 });
 
-app.get('/:sitename/login-admin', (req, res) => {
+app.get('/admin', (req, res) => {
+    res.redirect(`${req.session['sitename']}/admin`);
+});
+
+app.get('/:sitename/admin', (req, res) => {
+    console.log('on admin:', req.session['flash']);
     if(req.user) {
-        res.redirect(`/${req.session['sitename']}/admin`);
+        let message;
+        if(req.session['flash'] && req.session['flash']['success']) {
+            message = req.session['flash']['success'][0];
+            req.session['flash'] = {};
+        }
+
+        res.render('cp/index-admin.ejs', {
+            sitename: req.session['sitename'],
+            hoa_lookfeel: req.session['hoa_lookfeel'],
+            user: req.user,
+            message: message
+        });
     } else {
+        let message;
+        if(req.session['flash'] && req.session['flash']['error']) {
+            message = req.session['flash']['error'][0];
+            req.session['flash'] = {};
+        }
+
         res.render('cp/login-admin.ejs', {
             sitename: req.session['sitename'],
             hoa_lookfeel: req.session['hoa_lookfeel'],
+            message: message
         });
-    }
+    }  
 });
 
 app.get('/unavailable', (req, res) => {
@@ -201,20 +228,10 @@ app.get('/unavailable', (req, res) => {
     });
 });
 
-app.get('/admin', (req, res) => {
-    res.redirect(`${req.session['sitename']}/admin`);
-});
+
 
 app.get('/:sitename', (req, res, next) => {
     res.redirect(`${req.session['sitename']}/page`);
-});
-
-app.get('/:sitename/admin', (req, res) => {
-    res.render('cp/index-admin.ejs', {
-        sitename: req.session['sitename'],
-        hoa_lookfeel: req.session['hoa_lookfeel'],
-        user: req.user
-    });
 });
 
 app.get('/:sitename/page', (req, res, next) => {
