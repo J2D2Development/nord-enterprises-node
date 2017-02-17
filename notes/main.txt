@@ -48,3 +48,61 @@ OPTIONS
         a) create folder
         b) set up latest version of Django (may have to update desktop and laptop)
         c) start dev server and try to set up homepage routing (use urls.py for regex routes)
+
+
+TO READ FROM 2/17
+https://scotch.io/tutorials/building-a-morphing-hamburger-menu-with-css?utm_source=frontendfocus&utm_medium=email
+
+https://www.sitepoint.com/beginners-guide-to-webpack-2-and-module-bundling/?utm_source=frontendfocus&utm_medium=email
+
+https://appendto.com/2017/01/react-events-101/?utm_source=reactnl&utm_medium=email
+
+
+NOTES FROM 2/17
+
+<!--This file is necessary for graphic menu items to work!-->
+<script src="../static/js/overlib_mini.js"></script>
+<!--Not sure on this one <script src="scripts/<?php print $pageutils ?>"></script>-->
+<script src="../static/js/jquery.bgiframe.js"></script>
+<script src="../static/js/jquery.dimensions.js"></script>
+
+php function to conver old mysql323 password hash
+function mysql_old_password_hash($input, $hex = true)
+{
+  $nr = 1345345333; $add = 7; $nr2 = 0x12345671; $tmp = null;
+  $inlen = strlen($input);
+  for ($i = 0; $i < $inlen; $i++) {
+    $byte = substr($input, $i, 1);
+    if ($byte == ' ' || $byte == "\t") continue;
+    $tmp = ord($byte);
+    $nr ^= ((($nr & 63) + $add) * $tmp) + (($nr << 8) & 0xFFFFFFFF);
+    $nr2 += (($nr2 << 8) & 0xFFFFFFFF) ^ $nr;
+    $add += $tmp;
+  }
+  $out_a = $nr & ((1 << 31) - 1);
+  $out_b = $nr2 & ((1 << 31) - 1);
+  $output = sprintf("%08x%08x", $out_a, $out_b);
+  if ($hex) return $output;
+  return hex_hash_to_bin($output);
+}
+
+var sprintfJs = require("sprintf-js").sprintf;
+
+function mysql_old_password_decode(password, hash) {
+    let nr = 1345345333, add = 7, nr2 = 0x12345671, tmp = null;
+    const inlen = password.length;
+    for (let i = 0; i < inlen; i += 1) {
+        let byte = password.substring(i, i+1);
+        if (byte === ' ' || byte === "\t") continue;
+        tmp = byte.charCodeAt(0);
+        nr ^= (((nr & 63) + add) * tmp) + ((nr << 8) & 0xFFFFFFFF);
+        nr2 += ((nr2 << 8) & 0xFFFFFFFF) ^ nr;
+        add += tmp;
+    }
+    const out_a = nr & ((1 << 31) - 1);
+    const out_b = nr2 & ((1 << 31) - 1);
+    const output = sprintfJs("%08x%08x", out_a, out_b);
+    return output === hash;
+}
+
+mysql_old_password_decode('654321a', '0ba03e4f53f18469');
