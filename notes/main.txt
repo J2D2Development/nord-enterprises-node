@@ -60,6 +60,7 @@ https://appendto.com/2017/01/react-events-101/?utm_source=reactnl&utm_medium=ema
 
 NOTES FROM 2/17
 
+REMOVED FROM INDEX (should no longer be necessary)
 <!--This file is necessary for graphic menu items to work!-->
 <script src="../static/js/overlib_mini.js"></script>
 <!--Not sure on this one <script src="scripts/<?php print $pageutils ?>"></script>-->

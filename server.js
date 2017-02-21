@@ -2,6 +2,7 @@
 
 const path = require('path');
 const express = require('express');
+const Promise = require('bluebird');
 //app.use(cookieParser('secretString'));
 //app.use(session({cookie: { maxAge: 60000 }}));
 const flash = require('connect-flash');
@@ -55,67 +56,64 @@ app.disable('x-powered-by');
 
 app.use((req, res, next) => {
     let sitename = '';
-    //console.log(req.originalUrl);
 
     if(req.originalUrl === '/') {
-        if(req.headers.host === 'localhost') {
+        if(req.headers.host === 'localhost') { //this becomes 'home-owners-assoc.com' in production
             sitename = 'info';
         } else {
             sitename = req.headers.host;
         }
-        get_hoa_main();
+        get_hoa_main(sitename);
     } else if(req.originalUrl.split('/').length > 1 && 
         req.originalUrl.split('/')[1] !== 'login-adminpost' &&
         req.originalUrl.split('/')[1] !== 'logout') {
         const urlArray = req.originalUrl.split('/');
         sitename = urlArray[1];
-        get_hoa_main();
+        get_hoa_main(sitename);
     } else {
         next();
     }
-
-    function get_hoa_main() {
-        connection.query(`select * from hoa_main where hoa_id_name = '${sitename}'`, (error, results) => {
-            if(error || results.length === 0) {
-                req.session.sitename = sitename;
-                res.status(404).render('templates-error/site-not-found.ejs', {
-                    submittedSitename: req.session.sitename
-                });
-            } else {
-                req.session.sitename = results[0]['hoa_id_name'];
-                req.session['hoa_main'] = results[0];
-                get_hoa_main_aux(results[0]['hoa_id']);
-            }
-        });
-    }
-
-    function get_hoa_main_aux(hoa_id) {
-        connection.query(`SELECT * FROM hoa_main_aux WHERE hoa_id = ${hoa_id}`, (error, results) => {
-            if(error || results.length === 0) {
-                res.status(404).render('templates-error/site-not-found.ejs', {
-                    submittedSitename: req.session.sitename
-                });
-            } else {
-                req.session['hoa_main_aux'] = results[0];
-                get_hoa_lookfeel(hoa_id);
-            }
-        });
-    }
-
-    function get_hoa_lookfeel(hoa_id) {
-        connection.query(`SELECT * FROM hoa_pub_lookfeel WHERE hoa_id = ${hoa_id}`, (error, results) => {
-            if(error || results.length === 0) {
-                res.status(404).send('Not found!');
-                //might change this to 'no published look yet' error
-            } else {
-                req.session['hoa_lookfeel'] = results[0];
-                next();
-            }
-        });
-    }
-
-
 });
+
+function get_hoa_main(sitename) {
+    connection.query(`select * from hoa_main where hoa_id_name = '${sitename}'`, (error, results) => {
+        if(error || results.length === 0) {
+            req.session.sitename = sitename;
+            res.status(404).render('templates-error/site-not-found.ejs', {
+                submittedSitename: req.session.sitename
+            });
+        } else {
+            req.session.sitename = results[0]['hoa_id_name'];
+            req.session['hoa_main'] = results[0];
+            get_hoa_main_aux(results[0]['hoa_id']);
+        }
+    });
+}
+
+function get_hoa_main_aux(hoa_id) {
+    connection.query(`SELECT * FROM hoa_main_aux WHERE hoa_id = ${hoa_id}`, (error, results) => {
+        if(error || results.length === 0) {
+            res.status(404).render('templates-error/site-not-found.ejs', {
+                submittedSitename: req.session.sitename
+            });
+        } else {
+            req.session['hoa_main_aux'] = results[0];
+            get_hoa_lookfeel(hoa_id);
+        }
+    });
+}
+
+function get_hoa_lookfeel(hoa_id) {
+    connection.query(`SELECT * FROM hoa_pub_lookfeel WHERE hoa_id = ${hoa_id}`, (error, results) => {
+        if(error || results.length === 0) {
+            res.status(404).send('Not found!');
+            //might change this to 'no published look yet' error
+        } else {
+            req.session['hoa_lookfeel'] = results[0];
+            next();
+        }
+    });
+}
 
 
 passport.use(new LocalStrategy(
@@ -192,7 +190,6 @@ app.get('/admin', (req, res) => {
 });
 
 app.get('/:sitename/admin', (req, res) => {
-    console.log('on admin:', req.session['flash']);
     if(req.user) {
         let message;
         if(req.session['flash'] && req.session['flash']['success']) {

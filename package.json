@@ -4,13 +4,14 @@
   "description": "Conversion of php4 application to node",
   "main": "index.js",
   "scripts": {
-    "start": "node server",
+    "start": "nodemon server",
     "dev": "lite-server",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Joseph Driscoll",
   "license": "ISC",
   "dependencies": {
+    "bluebird": "^3.4.7",
     "body-parser": "^1.16.0",
     "compression": "^1.6.2",
     "connect-flash": "^0.1.1",
@@ -26,6 +27,7 @@
     "sprintf-js": "^1.0.3"
   },
   "devDependencies": {
-    "lite-server": "^2.2.2"
+    "lite-server": "^2.2.2",
+    "nodemon": "^1.11.0"
   }
 }
