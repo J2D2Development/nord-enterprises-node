@@ -16,6 +16,9 @@ const session = require('express-session');
 const sprintfJs = require("sprintf-js").sprintf; //needed for old password hash conversion
 // const bcrypt = require('bcrypt');
 
+//utility functions
+const basicUtils = require('./utilities/utilities-basic');
+
 
 //passport module - auth system
 const passport = require('passport');
@@ -63,63 +66,50 @@ app.use((req, res, next) => {
         } else {
             sitename = req.headers.host;
         }
-        get_hoa_main(sitename);
+        get_basic_info(sitename);
     } else if(req.originalUrl.split('/').length > 1 && 
         req.originalUrl.split('/')[1] !== 'login-adminpost' &&
         req.originalUrl.split('/')[1] !== 'logout') {
         const urlArray = req.originalUrl.split('/');
         sitename = urlArray[1];
-        get_hoa_main(sitename);
+        get_basic_info(sitename);
     } else {
         next();
     }
+
+    function get_basic_info(sitename) {
+        basicUtils.get_hoa_main(sitename)
+            .then(hoa_main => {
+                req.session.sitename = hoa_main['hoa_id_name'];
+                req.session['hoa_main'] = hoa_main;
+                return hoa_main['hoa_id'];
+            })
+            .then(hoa_id => {
+                Promise.all([basicUtils.get_hoa_main_aux(hoa_id), basicUtils.get_hoa_lookfeel(hoa_id)])
+                    .then(results => {
+                        req.session['hoa_main_aux'] = results[0];
+                        req.session['hoa_lookfeel'] = results[1];
+                    })
+                    .then(() => next());
+            })
+            .catch(error => {
+                req.session.sitename = sitename;
+                res.status(404).render('templates-error/site-not-found.ejs', {
+                    submittedSitename: req.session.sitename,
+                    error: error
+                });
+            });
+    }
 });
 
-function get_hoa_main(sitename) {
-    connection.query(`select * from hoa_main where hoa_id_name = '${sitename}'`, (error, results) => {
-        if(error || results.length === 0) {
-            req.session.sitename = sitename;
-            res.status(404).render('templates-error/site-not-found.ejs', {
-                submittedSitename: req.session.sitename
-            });
-        } else {
-            req.session.sitename = results[0]['hoa_id_name'];
-            req.session['hoa_main'] = results[0];
-            get_hoa_main_aux(results[0]['hoa_id']);
-        }
-    });
-}
 
-function get_hoa_main_aux(hoa_id) {
-    connection.query(`SELECT * FROM hoa_main_aux WHERE hoa_id = ${hoa_id}`, (error, results) => {
-        if(error || results.length === 0) {
-            res.status(404).render('templates-error/site-not-found.ejs', {
-                submittedSitename: req.session.sitename
-            });
-        } else {
-            req.session['hoa_main_aux'] = results[0];
-            get_hoa_lookfeel(hoa_id);
-        }
-    });
-}
-
-function get_hoa_lookfeel(hoa_id) {
-    connection.query(`SELECT * FROM hoa_pub_lookfeel WHERE hoa_id = ${hoa_id}`, (error, results) => {
-        if(error || results.length === 0) {
-            res.status(404).send('Not found!');
-            //might change this to 'no published look yet' error
-        } else {
-            req.session['hoa_lookfeel'] = results[0];
-            next();
-        }
-    });
-}
 
 
 passport.use(new LocalStrategy(
     { passReqToCallback: true },
     (req, username, password, done) => {
         const hoa_id = req.session['hoa_main']['hoa_id'];
+        console.log('hoa id on login:', hoa_id);
         connection.query(`SELECT * FROM hoa_user WHERE hoa_id=${hoa_id} AND username='${username}'`, (error, results) => {
             if(error) {
                 return done(error);
