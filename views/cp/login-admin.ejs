@@ -12,34 +12,9 @@
         <!--Global Stylesheets-->
         <link rel="stylesheet" type="text/css" href="../static/css/bootstrap.minNord.css" />
 
-        <!--Custom Google Fonts (only load if applied)-->
-        <%  
-        if(hoa_lookfeel['content_font'] == 'Raleway' ||
-            hoa_lookfeel['header_font'] == 'Raleway' ||
-            hoa_lookfeel['title_font'] == 'Raleway' ||
-            hoa_lookfeel['menu_font'] == 'Raleway') { %>
-            <link href='http://fonts.googleapis.com/css?family=Raleway' rel='stylesheet' type='text/css'>
-        <% } 
-        if(hoa_lookfeel['content_font'] == 'Playfair Display' ||
-            hoa_lookfeel['header_font'] == 'Playfair Display' ||
-            hoa_lookfeel['title_font'] == 'Playfair Display' ||
-            hoa_lookfeel['menu_font'] == 'Playfair Display') { %>
-            <link href='http://fonts.googleapis.com/css?family=Playfair+Display' rel='stylesheet' type='text/css'>
-        <% } 
-        if(hoa_lookfeel['content_font'] == 'Eagle Lake' ||
-            hoa_lookfeel['header_font'] == 'Eagle Lake' ||
-            hoa_lookfeel['title_font'] == 'Eagle Lake' ||
-            hoa_lookfeel['menu_font'] == 'Eagle Lake') { %>
-            <link href='http://fonts.googleapis.com/css?family=Eagle+Lake' rel='stylesheet' type='text/css'>
-        <% } 
-        if(hoa_lookfeel['content_font'] == 'Open Sans' ||
-            hoa_lookfeel['header_font'] == 'Open Sans' ||
-            hoa_lookfeel['title_font'] == 'Open Sans' ||
-            hoa_lookfeel['menu_font'] == 'Open Sans') { %>
-            <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
-        <% } %>
+        <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
 
-        <% include ../styles/style-main %>
+        <% include ../styles/style-admin %>
 
         <!--[if lt IE 9]>
             <script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.js"></script>

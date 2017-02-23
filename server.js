@@ -57,14 +57,14 @@ app.use(flash());
 
 app.disable('x-powered-by');
 app.use((req, res, next) => {
-    connection.connect(error => {
-        if(error) {
-            res.status(404).render('templates-error/db-unavailable.ejs', {
-                    submittedSitename: `${req.headers.host}${req.originalUrl}`,
-                    error: error
-                });
-        }
-    });
+    // connection.connect(error => {
+    //     if(error) {
+    //         return res.status(404).render('templates-error/db-unavailable.ejs', {
+    //                 submittedSitename: `${req.headers.host}${req.originalUrl}`,
+    //                 error: error
+    //             });
+    //     }
+    // });
 
     //all went well
     let sitename = '';
@@ -230,42 +230,68 @@ app.get('/:sitename', (req, res, next) => {
     res.redirect(`${req.session['sitename']}/page`);
 });
 
-app.get('/:sitename/page', (req, res, next) => {
+app.get('/:sitename/page', (req, res) => {
     const hoa_main = req.session['hoa_main'];
     const hoa_main_aux = req.session['hoa_main_aux'];
     const hoa_lookfeel = req.session['hoa_lookfeel'];
     const page_id = +req.query['page_id'] || 1;
-    get_page_info(page_id);
+    
+    Promise.all([
+        basicUtils.getPageInfo(`SELECT * FROM hoa_pub_page WHERE hoa_id = ${hoa_main['hoa_id']} AND page_id = ${connection.escape(page_id)};`), 
+        basicUtils.getPageInfo(`SELECT * FROM hoa_pub_page_area WHERE hoa_id = ${hoa_main['hoa_id']} AND page_id = ${connection.escape(page_id)};`), 
+        basicUtils.getPageInfo(`SELECT * FROM hoa_pub_menuitem WHERE hoa_id = ${hoa_main['hoa_id']} AND page_id = ${connection.escape(page_id)};`)
+    ])
+    .then(results => {
+        if(results[0].length === 0) {
+            return res.status(404).send('Not found!');
+        } else {
+            const pageInfo = results[0];
+            const title = req.query['page_id'] && req.query['page_id'] !== 1 ? pageInfo['title'] : hoa_main['short_name'];
+            const template = templates[hoa_lookfeel['nav_orientation']];
 
-    function get_page_info(pageid) {
+            return res.render(template, {
+                hoa_main: hoa_main,
+                hoa_main_aux: hoa_main_aux,
+                hoa_lookfeel: hoa_lookfeel,
+                title: title,
+                pageAreas: results[1],
+                menuItems: results[2]
+            });
+        }
+    })
+    .catch(error => {
+        throw error;
+    });
+
+    //function get_page_info(pageid) {
         //using multiple statements in one query- need to be sure to sanitize/escape all input data- also explore 'q' library for switchng to promises:
             //escape data: https://github.com/mysqljs/mysql#escaping-query-values
                 //-use connection.escape(var) ?
             //http://stackoverflow.com/questions/6622746/approach-to-multiple-mysql-queries-with-node-js
             //http://www.thegeekstuff.com/2014/01/mysql-nodejs-intro/?utm_source=tuicool
-        connection.query(`SELECT * FROM hoa_pub_page WHERE hoa_id = ${hoa_main['hoa_id']} AND page_id = ${connection.escape(pageid)}; SELECT * FROM hoa_pub_page_area WHERE hoa_id = ${hoa_main['hoa_id']} AND page_id = ${connection.escape(pageid)}; SELECT * FROM hoa_pub_menuitem WHERE hoa_id = ${hoa_main['hoa_id']} AND page_id = ${connection.escape(pageid)};`, (error, results) => {
-            if(error) {
-                throw error;
-            } else {
-                if(results[0].length === 0) {
-                    res.status(404).send('Not found!');
-                } else {
-                    const pageInfo = results[0][0];
-                    const title = req.query['page_id'] && req.query['page_id'] !== 1 ? pageInfo['title'] : hoa_main['short_name'];
-                    const template = templates[hoa_lookfeel['nav_orientation']];
+        // connection.query(`SELECT * FROM hoa_pub_page WHERE hoa_id = ${hoa_main['hoa_id']} AND page_id = ${connection.escape(pageid)}; SELECT * FROM hoa_pub_page_area WHERE hoa_id = ${hoa_main['hoa_id']} AND page_id = ${connection.escape(pageid)}; SELECT * FROM hoa_pub_menuitem WHERE hoa_id = ${hoa_main['hoa_id']} AND page_id = ${connection.escape(pageid)};`, (error, results) => {
+        //     if(error) {
+        //         throw error;
+        //     } else {
+        //         if(results[0].length === 0) {
+        //             res.status(404).send('Not found!');
+        //         } else {
+        //             const pageInfo = results[0][0];
+        //             const title = req.query['page_id'] && req.query['page_id'] !== 1 ? pageInfo['title'] : hoa_main['short_name'];
+        //             const template = templates[hoa_lookfeel['nav_orientation']];
 
-                    res.render(template, {
-                        hoa_main: hoa_main,
-                        hoa_main_aux: hoa_main_aux,
-                        hoa_lookfeel: hoa_lookfeel,
-                        title: title,
-                        pageAreas: results[1],
-                        menuItems: results[2]
-                    });
-                }
-            }
-        })
-    }
+        //             res.render(template, {
+        //                 hoa_main: hoa_main,
+        //                 hoa_main_aux: hoa_main_aux,
+        //                 hoa_lookfeel: hoa_lookfeel,
+        //                 title: title,
+        //                 pageAreas: results[1],
+        //                 menuItems: results[2]
+        //             });
+        //         }
+        //     }
+        // })
+    //}
 });
 
 

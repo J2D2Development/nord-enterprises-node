@@ -32,7 +32,13 @@ OPTIONS
             -!!!converted password decode from php to js- seems to work, needs more testing
             -logout: seems to work, but cookie remains in browser?  why?
             -on login, check if admin or not (or feature mng/pagemng)- allow access based on this level
+        c) cron jobs (for oldl event removal, event reminders, etc)
+            -https://help.ubuntu.com/community/CronHowto
         d) minify and concatenate all css/js files?  set up webpack maybe or just use gulp?
+        e) production build
+            -https://expressjs.com/en/advanced/best-practice-performance.html
+            -node module: forever to keep it running
+            -host on aws elastic beanstalk?  (load balancing, crash mitigation, etc)
 
     -NOTES FOR THIS PROJECT
         https://github.com/mde/ejs
