@@ -9,6 +9,9 @@ http://php.fnlist.com/string/sprintf
 Useful tips for node-mysql
 http://stackoverflow.com/questions/5818312/mysql-with-node-js
 
+Security
+-we have helmet installed, but might also want to try https://github.com/krakenjs/lusca (session security?)
+
 OPTIONS
 
 1) Node/Express as backend (node-mysql to connect to db).  EJS as templating engine.  Would need mailgun as email provider (possibly around $200-300/month). Security?  Does node handle cookies?  I think so, but if not, would need to go jwt

@@ -56,8 +56,17 @@ app.use(passport.session());
 app.use(flash());
 
 app.disable('x-powered-by');
-
 app.use((req, res, next) => {
+    connection.connect(error => {
+        if(error) {
+            res.status(404).render('templates-error/db-unavailable.ejs', {
+                    submittedSitename: `${req.headers.host}${req.originalUrl}`,
+                    error: error
+                });
+        }
+    });
+
+    //all went well
     let sitename = '';
 
     if(req.originalUrl === '/') {

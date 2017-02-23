@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta content="text/html" charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style type="text/css">
+            html, body {
+                height: 100%;
+                background-image: url('../static/img/philipp-berndt-173197.jpg');
+                background-size: cover;
+            }
+            .site-unavailable-wrapper {
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                font-family: 'Open Sans', sans-serif;
+                height: 100%;
+                background-color: rgba(255,255,255,0.3);
+            }
+            img {
+                max-width: 100%;
+                max-height: 200px;
+            }
+            h1, h3 {
+                font-weight: normal;
+            }
+            h1 {
+                margin-bottom: 0;
+            }
+            h3 {
+                margin-top: 0;
+            }
+            .center {
+                text-align: center;
+            }
+        </style>
+        <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+    </head>
+
+    <body>
+        <div class="site-unavailable-wrapper">
+            <img src="../static/img/ne-logo.gif" alt="Nord Enterprises" />
+            <h1>Sorry, but <%= submittedSitename %> is temporarily unavailable</h1>
+            <h3>It should be up again soon...</h3>
+            <p class="center">It appears that the server is under a heavy load, the network is turtle slow, or there is some other unfortunate circumstance.  Either way, the page you requested is currently unavailable.  We apologize for the inconvenience- please come back and try us again soon!</p>
+            <p class="center">If you see this notice repeatedly, please contact us at custcare-director@nordenterprises.com and we will get our development gnomes working on it right away!</p>
+        </div>
+    </body>
+</html>
