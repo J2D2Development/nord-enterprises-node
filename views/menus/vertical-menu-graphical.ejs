@@ -1,6 +1,9 @@
 <div class="vertical-menu-wrapper">
     <% for(var i = 0; i < menuItems.length; i += 1) { %>
-        <a class="menuitem-vertical-img" href="#" title="<%= menuItems[i]['help_text'] %>">
+        <a class="menuitem-vertical-img" 
+            href="<%= menuItems[i]['urlString'] %>" 
+            title="<%= menuItems[i]['help_text'] %>"
+        >
             <%= menuItems[i]["title"] %>
         </a>
     <% } %>

@@ -42,12 +42,24 @@ const utilFunctions = {
     getPageInfo: function(query) {
         return new Promise((resolve, reject) => {
                 connection.query(query, (error, results) => {
-                    if(error || results.length === 0) {
+                    if(error) {
                         reject(error);
                     } else {
                         resolve(results);
                     }
                 });
+        });
+    },
+
+    getGraphicalMenuItemImage: function(button_id) {
+        return new Promise((resolve, reject) => {
+            connection.query(`SELECT * FROM hoa_buttons WHERE button_id = ${button_id}`, (error, results) => {
+                if(error) {
+                    reject(error);
+                } else {
+                    resolve(results);
+                }
+            });
         });
     }
 }

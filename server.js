@@ -99,9 +99,13 @@ app.use((req, res, next) => {
                         req.session['hoa_main_aux'] = results[0];
                         req.session['hoa_lookfeel'] = results[1];
                     })
-                    .then(() => next());
+                    .then(() => next())
+                    .catch(error => {
+                        console.error('ERROR IN .ALL BLOCK:', error);
+                    });
             })
             .catch(error => {
+                console.log('in error block:', error);
                 req.session.sitename = sitename;
                 res.status(404).render('templates-error/site-not-found.ejs', {
                     submittedSitename: req.session.sitename,
@@ -150,7 +154,8 @@ passport.use(new LocalStrategy(
     }
 ));
 
-app.get('/', (req, res, next) => {
+app.get('/', (req, res) => {
+    console.log(`redirect to: ${req.session['sitename']}/page`);
     res.redirect(`${req.session['sitename']}/page`);
 });
 
@@ -226,7 +231,7 @@ app.get('/unavailable', (req, res) => {
 
 
 
-app.get('/:sitename', (req, res, next) => {
+app.get('/:sitename', (req, res) => {
     res.redirect(`${req.session['sitename']}/page`);
 });
 
@@ -246,52 +251,63 @@ app.get('/:sitename/page', (req, res) => {
             return res.status(404).send('Not found!');
         } else {
             const pageInfo = results[0];
+            const pageAreas = results[1];
             const title = req.query['page_id'] && req.query['page_id'] !== 1 ? pageInfo['title'] : hoa_main['short_name'];
             const template = templates[hoa_lookfeel['nav_orientation']];
 
+            //if menu item is graphical, get the background image
+            //!!! need to add a new function to handle the menuItems array gen- call it in this block as well as below?
+            if(hoa_lookfeel['menu_button_type'] === 'bg_image') {
+                const button_id = hoa_lookfeel['menu_button_id'];
+                console.log('passing button id:', button_id);
+                const buttonUrl = basicUtils.getGraphicalMenuItemImage(hoa_main['hoa_id'], button_id)
+                    .then(button => {
+                        console.log('got button info:', button);
+                        return button;
+                    })
+                    .catch(error => {
+                        console.log('Error getting button bg image:', error);
+                    });
+            }
+            
+            //if page has menu items, generate the string url
+            let menuItems = [];
+            if(results[2].length) {
+                menuItems = results[2].map(item => {
+                    let urlString = '';
+                    if(item.action === 'p') {
+                        urlString = `/:sitename/page?page_id=${item.action_id}`;
+                    } else if(item.action === 'f') {
+                        urlString = `/:sitename/feature?feature_id=${item.action_id}&item_id=${item.action_item}`;
+                    } else if(item.action === 'x') {
+                        //need to add check for string
+                        //1) if http already exists
+                        //2) if uses https
+                        urlString = `http://${item.action_url}`;
+                    }
+
+                    return {
+                        order: item.order,
+                        title: item.title,
+                        help_text: item.help_text,
+                        urlString
+                    };
+                });
+            }
+
             return res.render(template, {
-                hoa_main: hoa_main,
-                hoa_main_aux: hoa_main_aux,
-                hoa_lookfeel: hoa_lookfeel,
-                title: title,
-                pageAreas: results[1],
-                menuItems: results[2]
+                hoa_main,
+                hoa_main_aux,
+                hoa_lookfeel,
+                title,
+                pageAreas,
+                menuItems
             });
         }
     })
     .catch(error => {
-        throw error;
+        console.log(error);
     });
-
-    //function get_page_info(pageid) {
-        //using multiple statements in one query- need to be sure to sanitize/escape all input data- also explore 'q' library for switchng to promises:
-            //escape data: https://github.com/mysqljs/mysql#escaping-query-values
-                //-use connection.escape(var) ?
-            //http://stackoverflow.com/questions/6622746/approach-to-multiple-mysql-queries-with-node-js
-            //http://www.thegeekstuff.com/2014/01/mysql-nodejs-intro/?utm_source=tuicool
-        // connection.query(`SELECT * FROM hoa_pub_page WHERE hoa_id = ${hoa_main['hoa_id']} AND page_id = ${connection.escape(pageid)}; SELECT * FROM hoa_pub_page_area WHERE hoa_id = ${hoa_main['hoa_id']} AND page_id = ${connection.escape(pageid)}; SELECT * FROM hoa_pub_menuitem WHERE hoa_id = ${hoa_main['hoa_id']} AND page_id = ${connection.escape(pageid)};`, (error, results) => {
-        //     if(error) {
-        //         throw error;
-        //     } else {
-        //         if(results[0].length === 0) {
-        //             res.status(404).send('Not found!');
-        //         } else {
-        //             const pageInfo = results[0][0];
-        //             const title = req.query['page_id'] && req.query['page_id'] !== 1 ? pageInfo['title'] : hoa_main['short_name'];
-        //             const template = templates[hoa_lookfeel['nav_orientation']];
-
-        //             res.render(template, {
-        //                 hoa_main: hoa_main,
-        //                 hoa_main_aux: hoa_main_aux,
-        //                 hoa_lookfeel: hoa_lookfeel,
-        //                 title: title,
-        //                 pageAreas: results[1],
-        //                 menuItems: results[2]
-        //             });
-        //         }
-        //     }
-        // })
-    //}
 });
 
 
