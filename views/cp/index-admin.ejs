@@ -1,5 +1,41 @@
-<% if(message) { %>
-    <div class="notifyr"><%= message %></div>
-<% } %>
-<h1><%= sitename %> Admin panel</h1>
-<p>Logged in as: <%= user.first_name %> <%= user.last_name %></p>
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta content="text/html" charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="Testing...">
+        <meta name="author" content="Nord Enterprises">
+
+        <!--update this with values from db-->
+        <meta name="DESCRIPTION" content="<%= hoa_main_aux['gc_site_desc'] %>">
+        <meta name="KEYWORDS" content="<%= hoa_main_aux['gc_site_keywords'] %>">
+
+        <title><%= title %></title>
+
+        <!--Global Stylesheets-->
+        <link rel="stylesheet" type="text/css" href="../static/css/bootstrap.minNord.css" />
+
+        <% include ./styles/style-admin %>
+
+        <!--[if lt IE 9]>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+        <![endif]-->
+    </head>
+
+    <body>
+        <% if(message) { %> <div class="notifyr"><%= message %></div>  <% } %>
+        <div class="row">
+            <div class="container-fluid">
+                Admin Menu...
+            </div>
+        </div>
+        <div class="row">
+            <div class="container-fluid">
+                <h1><%= sitename %> Admin panel</h1>
+                <p>Logged in as: <%= user.first_name %> <%= user.last_name %></p>
+            </div>
+        </div>
+    </body>
+</html>

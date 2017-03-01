@@ -16,6 +16,7 @@ OPTIONS
 
 1) Node/Express as backend (node-mysql to connect to db).  EJS as templating engine.  Would need mailgun as email provider (possibly around $200-300/month). Security?  Does node handle cookies?  I think so, but if not, would need to go jwt
     -Next steps for this version (nord-enterprises-node)
+        0) admin panel layout: use 'themepanda-freebie' as template
         a) basic page structure
             -get hoa_main- save proper vars in session (get from old codebase)
             -get hoa_lookfeel- apply
@@ -39,6 +40,10 @@ OPTIONS
             -https://expressjs.com/en/advanced/best-practice-performance.html
             -node module: forever to keep it running
             -host on aws elastic beanstalk?  (load balancing, crash mitigation, etc)
+        f) ssl - use let's encrypt
+            -https://medium.com/@yash.kulshrestha/using-lets-encrypt-with-express-e069c7abe625#.g8hyhokjf
+            -but will it work with external domains feeding to my server?  test this!
+            -or, use AV's method.  anytime going to a login form, redirect to 'secure.home-owners-assoc.com' with the end site's name/domain as a param.  set the 'secure' subdomain to use https always and it should protect the login form.  after that, go back to their domain with no https?
 
     -NOTES FOR THIS PROJECT
         https://github.com/mde/ejs
