@@ -61,6 +61,28 @@ const utilFunctions = {
                 }
             });
         });
+    },
+
+    getMenuItems: function(arr) {
+        let menuItems = [];
+        if(arr.length) {
+            menuItems = arr.map(item => {
+                let urlString = '';
+                if(item.action === 'p') {
+                    urlString = `page?page_id=${item.action_id}`;
+                } else if(item.action === 'f') {
+                    urlString = `feature?feature_id=${item.action_id}&item_id=${item.action_item}`;
+                } else if(item.action === 'x') {
+                    //need to add check for string
+                    //1) if http already exists
+                    //2) if uses https
+                    urlString = `http://${item.action_url}`;
+                }
+                item.urlString = urlString;
+                return item;
+            });
+        }
+        return menuItems;        
     }
 }
 

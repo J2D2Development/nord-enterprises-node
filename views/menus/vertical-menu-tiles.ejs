@@ -1,3 +1,10 @@
 <div class="vertical-menu-wrapper">
-    Vertical menu (color tile bg)
+    <% for(var i = 0; i < menuItems.length; i += 1) { %>
+        <a class="menuitem-vertical-tile" 
+            href="<%= menuItems[i]['urlString'] %>" 
+            title="<%= menuItems[i]['help_text'] %>"
+        >
+            <%= menuItems[i]["title"] %>
+        </a>
+    <% } %>
 </div>

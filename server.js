@@ -259,50 +259,42 @@ app.get('/:sitename/page', (req, res) => {
             //!!! need to add a new function to handle the menuItems array gen- call it in this block as well as below?
             if(hoa_lookfeel['menu_button_type'] === 'bg_image') {
                 const button_id = hoa_lookfeel['menu_button_id'];
-                console.log('passing button id:', button_id);
-                const buttonUrl = basicUtils.getGraphicalMenuItemImage(hoa_main['hoa_id'], button_id)
+                basicUtils.getGraphicalMenuItemImage(button_id)
                     .then(button => {
-                        console.log('got button info:', button);
-                        return button;
+                        //using graphic menu items- got item, now generate info
+                        const menuItems = basicUtils.getMenuItems(results[2]);
+                        const buttonBgInfo = {
+                            buttonBgImg: `../static/images/${button[0].normal_file}`,
+                            buttonHoverImg: `../static/images/${button[0].hover_file}`,
+                            width: `${button[0].file_width}px`,
+                            height: `${button[0].file_height}px`,
+                            padding: `0 ${button[0].pad_right}px 0 ${button[0].pad_left}px`
+                        };
+                        return res.render(template, {
+                            hoa_main,
+                            hoa_main_aux,
+                            hoa_lookfeel,
+                            title,
+                            pageAreas,
+                            menuItems,
+                            buttonBgInfo
+                        });
                     })
                     .catch(error => {
                         console.log('Error getting button bg image:', error);
                     });
-            }
-            
-            //if page has menu items, generate the string url
-            let menuItems = [];
-            if(results[2].length) {
-                menuItems = results[2].map(item => {
-                    let urlString = '';
-                    if(item.action === 'p') {
-                        urlString = `/:sitename/page?page_id=${item.action_id}`;
-                    } else if(item.action === 'f') {
-                        urlString = `/:sitename/feature?feature_id=${item.action_id}&item_id=${item.action_item}`;
-                    } else if(item.action === 'x') {
-                        //need to add check for string
-                        //1) if http already exists
-                        //2) if uses https
-                        urlString = `http://${item.action_url}`;
-                    }
-
-                    return {
-                        order: item.order,
-                        title: item.title,
-                        help_text: item.help_text,
-                        urlString
-                    };
+            } else {
+                //not using graphical menu items, don't need to fetch bg image
+                let menuItems = basicUtils.getMenuItems(results[2]);
+                return res.render(template, {
+                    hoa_main,
+                    hoa_main_aux,
+                    hoa_lookfeel,
+                    title,
+                    pageAreas,
+                    menuItems
                 });
             }
-
-            return res.render(template, {
-                hoa_main,
-                hoa_main_aux,
-                hoa_lookfeel,
-                title,
-                pageAreas,
-                menuItems
-            });
         }
     })
     .catch(error => {

@@ -16,3 +16,5 @@ build
 .DS_Store
 .env
 npm-debug.log
+static/images
+static/upld_files
