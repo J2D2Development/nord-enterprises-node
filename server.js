@@ -18,6 +18,7 @@ const sprintfJs = require("sprintf-js").sprintf; //needed for old password hash 
 
 //utility functions
 const basicUtils = require('./utilities/utilities-basic');
+const pageUtils = require('./utilities/cp-page-utilities');
 
 
 //passport module - auth system
@@ -155,7 +156,6 @@ passport.use(new LocalStrategy(
 ));
 
 app.get('/', (req, res) => {
-    console.log(`redirect to: ${req.session['sitename']}/page`);
     res.redirect(`${req.session['sitename']}/page`);
 });
 
@@ -203,7 +203,6 @@ app.get('/:sitename/admin', (req, res) => {
 
         res.render('cp/index-admin.ejs', {
             sitename: req.session['sitename'],
-            hoa_lookfeel: req.session['hoa_lookfeel'],
             user: req.user,
             message: message
         });
@@ -216,11 +215,44 @@ app.get('/:sitename/admin', (req, res) => {
 
         res.render('cp/login-admin.ejs', {
             sitename: req.session['sitename'],
-            hoa_lookfeel: req.session['hoa_lookfeel'],
             message: message
         });
     }  
 });
+
+app.get('/:sitename/admin/pages', (req, res) => {
+    const hoa_id = req.session['hoa_main']['hoa_id'];
+    const page_id = req.params['page_id'] || 1;
+    const sitename = req.session['sitename'];
+
+    pageUtils.getPageList(hoa_id)
+        .then(result => {
+            const page = result.find(p => p.page_id === page_id);
+            res.render('cp/pages.ejs', {
+                sitename,
+                page,
+                pages: result
+            });
+        });
+});
+
+app.get('/:sitename/admin/pages/:page_id', (req, res) => {
+    const hoa_id = req.session['hoa_main']['hoa_id'];
+    const page_id = +req.params['page_id'] || 1;
+    console.log('page id is:', page_id);
+    const sitename = req.session['sitename'];
+
+    pageUtils.getPageList(hoa_id)
+        .then(result => {
+            const page = result.find(p => p.page_id === page_id);
+            console.log('on page:', page);
+            res.render('cp/pages.ejs', {
+                sitename,
+                page,
+                pages: result
+            });
+        });
+})
 
 app.get('/unavailable', (req, res) => {
     req.session.destroy(err => {

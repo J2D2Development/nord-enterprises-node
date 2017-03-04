@@ -11,10 +11,10 @@
         <meta name="DESCRIPTION" content="Admin panel description">
         <meta name="KEYWORDS" content="Admin panel keywords">
 
-        <title>Admin | Home</title>
+        <title>Admin | Pages</title>
 
         <!--Global Stylesheets-->
-        <link rel="stylesheet" type="text/css" href="../static/css/bootstrap.minNord.css" />
+        <link rel="stylesheet" type="text/css" href="/static/css/bootstrap.minNord.css" />
 
         <% include ./styles/style-admin %>
 
@@ -25,15 +25,25 @@
     </head>
 
     <body>
-        <% if(message) { %> <div class="notifyr"><%= message %></div>  <% } %>
         <div class="container-fluid admin-flex-wrapper">
             <% include ./admin-nav %>
             <div class="row admin-main">
-                <div class="container">
-                    <h1><%= sitename %> Admin panel</h1>
-                    <div>Metrics</div>
-                    <div>Nord News</div>
-                    <div>Resources</div>
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <h4>Page List</h4>
+                            <% for(var i = 0; i < pages.length; i += 1) { %>
+                                <a href="/<%=sitename%>/admin/pages/<%=pages[i].page_id%>">
+                                    <%= pages[i].title %>
+                                </a>
+                                <br />
+                            <% } %>
+                        </div>
+                        <div class="col-xs-6">
+                            Currently Editing: <%= page.title %><br />
+                            Add the actual content here...
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="row admin-footer">Admin footer links</div>

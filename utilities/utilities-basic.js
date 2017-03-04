@@ -2,7 +2,7 @@
 const connection = require('../db');
 const Promise = require('bluebird');
 
-const utilFunctions = {
+module.exports = {
     get_hoa_main: function(sitename) {
         return new Promise((resolve, reject) => {
                 connection.query(`select * from hoa_main where hoa_id_name = '${sitename}'`, (error, results) => {
@@ -85,5 +85,3 @@ const utilFunctions = {
         return menuItems;        
     }
 }
-
-module.exports = utilFunctions;
