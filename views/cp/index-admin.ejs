@@ -8,10 +8,10 @@
         <meta name="author" content="Nord Enterprises">
 
         <!--update this with values from db-->
-        <meta name="DESCRIPTION" content="<%= hoa_main_aux['gc_site_desc'] %>">
-        <meta name="KEYWORDS" content="<%= hoa_main_aux['gc_site_keywords'] %>">
+        <meta name="DESCRIPTION" content="Admin panel description">
+        <meta name="KEYWORDS" content="Admin panel keywords">
 
-        <title><%= title %></title>
+        <title>Admin | Home</title>
 
         <!--Global Stylesheets-->
         <link rel="stylesheet" type="text/css" href="../static/css/bootstrap.minNord.css" />
@@ -26,16 +26,21 @@
 
     <body>
         <% if(message) { %> <div class="notifyr"><%= message %></div>  <% } %>
-        <div class="row">
-            <div class="container-fluid">
-                Admin Menu...
+        <div class="container-fluid admin-flex-wrapper">
+            <% include ./admin-nav %>
+            <div class="row admin-main">
+                <div class="container">
+                    <h1><%= sitename %> Admin panel</h1>
+                    <div>Metrics</div>
+                    <div>Nord News</div>
+                    <div>Resources</div>
+                </div>
             </div>
-        </div>
-        <div class="row">
-            <div class="container-fluid">
-                <h1><%= sitename %> Admin panel</h1>
-                <p>Logged in as: <%= user.first_name %> <%= user.last_name %></p>
-            </div>
+            <div class="row admin-footer">Admin footer links</div>
         </div>
     </body>
+    <script src="../static/js/jquery-1.11.2.min.js"></script>
+    <script src="../static/js/jquery-migrate-1.2.1.min.js"></script>
+    <!--Bootstrap js-->
+    <script src="../static/js/bootstrap.min.js"></script>
 </html>
