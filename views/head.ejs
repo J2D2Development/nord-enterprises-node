@@ -1,0 +1,63 @@
+<meta content="text/html" charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Testing...">
+<meta name="author" content="Nord Enterprises">
+
+<!--update this with values from db-->
+<meta name="DESCRIPTION" content="<%= hoa_main_aux['gc_site_desc'] %>">
+<meta name="KEYWORDS" content="<%= hoa_main_aux['gc_site_keywords'] %>">
+
+<title><%= title %></title>
+
+<!--Conditional stylesheets-->
+<!--Stylesheet for user profiles
+    need ejs for if user is logged in and user profiles is active
+    "SELECT * FROM hoa_user_profiles WHERE hoa_id = ${hoa_main['hoa_id']}"
+    then get the user's info:
+    if($profile_status['profiles_enabled'] == 'y') {
+        //get this user's info
+        $username = $_SESSION["us_valid_user"];
+        $query_profile_user = "SELECT * FROM hoa_user
+                    WHERE hoa_id = ${hoa_main["hoa_id"]}
+                    AND username = '${username}'";
+-->
+<link rel="stylesheet" type="text/css" href="/static/css/user-profile-slider.css" />
+<link rel="stylesheet" type="text/css" href="/static/css/jquery.tooltip.css" />
+
+<!--Global Stylesheets-->
+<link rel="stylesheet" type="text/css" href="/static/css/bootstrap.minNord.css" />
+
+<!--Custom Google Fonts (only load if applied)-->
+<%  
+if(hoa_lookfeel['content_font'] == 'Raleway' ||
+    hoa_lookfeel['header_font'] == 'Raleway' ||
+    hoa_lookfeel['title_font'] == 'Raleway' ||
+    hoa_lookfeel['menu_font'] == 'Raleway') { %>
+    <link href='http://fonts.googleapis.com/css?family=Raleway' rel='stylesheet' type='text/css'>
+<% } 
+if(hoa_lookfeel['content_font'] == 'Playfair Display' ||
+    hoa_lookfeel['header_font'] == 'Playfair Display' ||
+    hoa_lookfeel['title_font'] == 'Playfair Display' ||
+    hoa_lookfeel['menu_font'] == 'Playfair Display') { %>
+    <link href='http://fonts.googleapis.com/css?family=Playfair+Display' rel='stylesheet' type='text/css'>
+<% } 
+if(hoa_lookfeel['content_font'] == 'Eagle Lake' ||
+    hoa_lookfeel['header_font'] == 'Eagle Lake' ||
+    hoa_lookfeel['title_font'] == 'Eagle Lake' ||
+    hoa_lookfeel['menu_font'] == 'Eagle Lake') { %>
+    <link href='http://fonts.googleapis.com/css?family=Eagle+Lake' rel='stylesheet' type='text/css'>
+<% } 
+if(hoa_lookfeel['content_font'] == 'Open Sans' ||
+    hoa_lookfeel['header_font'] == 'Open Sans' ||
+    hoa_lookfeel['title_font'] == 'Open Sans' ||
+    hoa_lookfeel['menu_font'] == 'Open Sans') { %>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+<% } %>
+
+<% include ./styles/style-main %>
+
+<!--[if lt IE 9]>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+<![endif]-->

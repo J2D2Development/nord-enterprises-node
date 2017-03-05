@@ -1,0 +1,39 @@
+<div class="content-outer proxy-body">
+    <div class="content-inner container-fluid">
+
+        <div class="header-wrapper row">
+            <a href="/">
+                <div class="logo"></div>
+            </a>
+            <% include ../header %>
+        </div>
+
+        <div class="page-title row">
+            <%- title %>
+        </div>
+
+        <div class="content-main-flex row">
+            <% if(hoa_lookfeel["menu_button_type"] === 'bg_image') { %>
+                <% include ../menus/vertical-menu-graphical %>
+            <% } else { %>
+                <% include ../menus/vertical-menu-tiles %>
+            <% } %>
+            <div class="content-main">
+                <div class="content">
+                    <% for(var i = 0; i < pageAreas.length; i += 1) { %>
+                        <% if(pageAreas[i].title && pageAreas[i].title !== '&nbsp;') { %>
+                            <h3><%- pageAreas[i].title %></h3>
+                        <% } %>
+                        <div><%- pageAreas[i].area_text %></div>
+                    <% } %>
+                </div>
+
+                <div class="footer-wrapper">
+                    <% include ../footer %>
+                    <div class="toTopRd" title="Back To Top">&#9650;</div>
+                    <div class="notices">Include footer notices here</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

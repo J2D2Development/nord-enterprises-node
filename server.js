@@ -18,7 +18,12 @@ const sprintfJs = require("sprintf-js").sprintf; //needed for old password hash 
 
 //utility functions
 const basicUtils = require('./utilities/utilities-basic');
-const pageUtils = require('./utilities/cp-page-utilities');
+
+//import routes files
+const adminPageRoutes = require('./routes/admin/page/admin-page.routes');
+
+//import globals
+const templates = require('./templates.js');
 
 
 //passport module - auth system
@@ -159,12 +164,7 @@ app.get('/', (req, res) => {
     res.redirect(`${req.session['sitename']}/page`);
 });
 
-//for some reason this redirects too many times.
-// app.get('/site-not-found', (req, res) => {
-//     res.status(404).render('templates-error/site-not-found.ejs', {
-//         submittedSitename: req.session.sitename
-//     });
-// });
+
 
 app.get('/:sitename/logout', (req, res) => {
     const sitename = req.session['sitename'];
@@ -189,84 +189,18 @@ app.post('/login-adminpost', (req, res, next) => {
     })(req, res, next);
 });
 
-app.get('/admin', (req, res) => {
-    res.redirect(`${req.session['sitename']}/admin`);
-});
-
-app.get('/:sitename/admin', (req, res) => {
-    if(req.user) {
-        let message;
-        if(req.session['flash'] && req.session['flash']['success']) {
-            message = req.session['flash']['success'][0];
-            req.session['flash'] = {};
-        }
-
-        res.render('cp/index-admin.ejs', {
-            sitename: req.session['sitename'],
-            user: req.user,
-            message: message
-        });
-    } else {
-        let message;
-        if(req.session['flash'] && req.session['flash']['error']) {
-            message = req.session['flash']['error'][0];
-            req.session['flash'] = {};
-        }
-
-        res.render('cp/login-admin.ejs', {
-            sitename: req.session['sitename'],
-            message: message
-        });
-    }  
-});
-
-app.get('/:sitename/admin/pages', (req, res) => {
-    const hoa_id = req.session['hoa_main']['hoa_id'];
-    const page_id = req.params['page_id'] || 1;
-    const sitename = req.session['sitename'];
-
-    pageUtils.getPageList(hoa_id)
-        .then(result => {
-            const page = result.find(p => p.page_id === page_id);
-            res.render('cp/pages.ejs', {
-                sitename,
-                page,
-                pages: result
-            });
-        });
-});
-
-app.get('/:sitename/admin/pages/:page_id', (req, res) => {
-    const hoa_id = req.session['hoa_main']['hoa_id'];
-    const page_id = +req.params['page_id'] || 1;
-    console.log('page id is:', page_id);
-    const sitename = req.session['sitename'];
-
-    pageUtils.getPageList(hoa_id)
-        .then(result => {
-            const page = result.find(p => p.page_id === page_id);
-            console.log('on page:', page);
-            res.render('cp/pages.ejs', {
-                sitename,
-                page,
-                pages: result
-            });
-        });
-})
-
-app.get('/unavailable', (req, res) => {
-    req.session.destroy(err => {
-        if(err) console.log('session destroy error:', err);
-        res.render('db-down.ejs');
-    });
-});
-
-
-
+//redirects (so sitename is always first position in url array)
 app.get('/:sitename', (req, res) => {
     res.redirect(`${req.session['sitename']}/page`);
 });
 
+app.get('/admin', (req, res) => {
+    res.redirect(`${req.session['sitename']}/admin`);
+});
+
+
+//base site route - homepage
+//split this to new file, and have /page and /page/page_id routes (instead of passing via query in url string)
 app.get('/:sitename/page', (req, res) => {
     const hoa_main = req.session['hoa_main'];
     const hoa_main_aux = req.session['hoa_main_aux'];
@@ -285,7 +219,8 @@ app.get('/:sitename/page', (req, res) => {
             const pageInfo = results[0];
             const pageAreas = results[1];
             const title = req.query['page_id'] && req.query['page_id'] !== 1 ? pageInfo['title'] : hoa_main['short_name'];
-            const template = templates[hoa_lookfeel['nav_orientation']];
+            const template = templates[hoa_lookfeel['nav_orientation']].template;
+            const folder = templates[hoa_lookfeel['nav_orientation']].folder;
 
             //if menu item is graphical, get the background image
             //!!! need to add a new function to handle the menuItems array gen- call it in this block as well as below?
@@ -302,7 +237,8 @@ app.get('/:sitename/page', (req, res) => {
                             height: `${button[0].file_height}px`,
                             padding: `0 ${button[0].pad_right}px 0 ${button[0].pad_left}px`
                         };
-                        return res.render(template, {
+                        return res.render('index-main.ejs', {
+                            main_template_body: `${folder}/${template}`,
                             hoa_main,
                             hoa_main_aux,
                             hoa_lookfeel,
@@ -334,12 +270,43 @@ app.get('/:sitename/page', (req, res) => {
     });
 });
 
+//base admin route (login or dashboard- depending on session)
+app.get('/:sitename/admin', (req, res) => {
+    if(req.user) {
+        let message;
+        if(req.session['flash'] && req.session['flash']['success']) {
+            message = req.session['flash']['success'][0];
+            req.session['flash'] = {};
+        }
 
-//testing templates: get lookfeel value and render different template (could extend this to have more template options if it works)
-const templates = {
-    "v": "index-vertical-basic.ejs",
-    "h": "index-horizontal-basic.ejs"  
-};
+        res.render('admin/index-admin.ejs', {
+            sitename: req.session['sitename'],
+            user: req.user,
+            message: message
+        });
+    } else {
+        let message;
+        if(req.session['flash'] && req.session['flash']['error']) {
+            message = req.session['flash']['error'][0];
+            req.session['flash'] = {};
+        }
+
+        res.render('admin/login-admin.ejs', {
+            sitename: req.session['sitename'],
+            message: message
+        });
+    }  
+});
+
+//admin 'pages' editing routes
+app.use('/:sitename/admin/pages', adminPageRoutes);
+
+app.get('/unavailable', (req, res) => {
+    req.session.destroy(err => {
+        if(err) console.log('session destroy error:', err);
+        res.render('db-down.ejs');
+    });
+});
 
 const server = app.listen(80, '127.0.0.1', function() {
 	console.log('Server started!');

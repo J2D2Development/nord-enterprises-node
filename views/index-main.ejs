@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <% include ./head %>
+</head>
+
+<body>
+    <%- include(main_template_body) %>
+</body>
+
+<!--
+    GLOBAL JS FILES
+-->
+<script src="/static/js/jquery-1.11.2.min.js"></script>
+<script src="/static/js/jquery-migrate-1.2.1.min.js"></script>
+<!--Bootstrap js-->
+<script src="/static/js/bootstrap.min.js"></script>
+<script src="/static/js/jquery.tooltip.js"></script>
+
+<!--
+    CONDITIONAL JS FILES
+-->
+<!--Js for user profiles
+<script src="/static/js/user-profile.js"></script>
+-->
+<script src="/static/js/searchFunctions.js"></script>
+
+<script>
+$(document).ready(function() {
+    
+	//smooth scroll to top button
+	$(window).scroll(function() {
+		if($(this).scrollTop() > 200) {
+			$('.toTopRd').fadeIn(500);
+		} else {
+			$('.toTopRd').hide();
+		}
+	});
+
+	$('.toTopRd').click(function() {
+		$('html, body').animate({scrollTop: 0}, 400);
+		return false;
+	});
+
+    //if tooltips enabled (update this)
+    $(function(){
+        if($('.header_tooltip')) {
+            $('.header_tooltip').tooltip({
+                showURL: false,
+                track: true,
+                delay: 0,
+                top: 10,
+                left: 10
+            });
+        }
+    });
+});
+</script>
+</html>

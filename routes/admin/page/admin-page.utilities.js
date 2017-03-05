@@ -1,5 +1,5 @@
 'use strict';
-const connection = require('../db');
+const connection = require('../../../db');
 const Promise = require('bluebird');
 
 module.exports = {

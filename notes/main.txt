@@ -19,6 +19,7 @@ OPTIONS
         0) admin panel layout: use 'themepanda-freebie' as template
         0.1) link up admin nav- create new file for admin routes (then a file each for main tabs for those sub routes and include all into server.js)
             -!!!next: on page admin route: change page list into drop down at top.  render out lnf and all content of page on admin panel.  should links be clickable to edit those as well?  do we render out features too?
+                -basic lnf rendering on 'page' admin route- need to get menu items and page areas, then features, disable links and have click on any item be an 'edit' (put icon for edit on any editable area- on click, go to edit route or show modal to edit?)
         0.2) security: on all routes, add check: if req.params.sitename !== session['sitename'], nuke session and redirect to login (someone trying to jump from one hoa to another)
         a) basic page structure
             -get hoa_main- save proper vars in session (get from old codebase)
