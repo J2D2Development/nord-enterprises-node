@@ -32,14 +32,52 @@
     </head>
 
     <body>
+        <div id="main-menu" class="slideout-right">
+            <span id="close-menu" class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+            This will be the menu for more options?<br />
+            <a href="/<%=sitename%>/logout">Log Out</a>
+        </div>
         <div class="container-fluid admin-flex-wrapper">
-            <% include ./admin-nav %>
+            <div class="row menu-row">
+                <div class="flex-row-apart">
+                    <a class="navbar-brand" href="#">
+                        <img src="/static/images/logos/transparent-white-n.png" alt="Nord" />
+                    </a>
+                    <div class="page-menu-right">
+                        <span id="open-menu" class="glyphicon glyphicon-menu-hamburger" aria-hidden="true"></span>
+                    </div>
+                </div>
+            </div>
             <div class="row admin-main page-lnf-bg">
-                <!--embed lnf and content here-->
                 <%- include(main_page_template) %>
             </div>
-            <div class="row admin-footer">Admin footer links</div>
+            <div class="row admin-footer">
+                You are editing page: <%= currentPage.title %>
+                Switch to:
+                <select class="admin-select-list">
+                    <% for(var i = 0; i < pageList.length; i += 1) { %>
+                        <option value=""><%= pageList[i].title %></option>
+                    <% } %>
+                </select>
+            </div>
         </div>
+        <div id="bg-screen" class="bg-screen"></div>
     </body>
     <% include ./scripts-admin %>
+    <script>
+        var openMenuButton = document.querySelector('#open-menu');
+        var closeMenuButton = document.querySelector('#close-menu');
+        var menu = document.querySelector('#main-menu');
+        var bg = document.querySelector('#bg-screen');
+        openMenuButton.addEventListener('click', function() {
+            menu.classList.add('slideout-right--show');
+            bg.classList.add('bg-show');
+        });
+        [closeMenuButton, bg].forEach(function(element) {
+            element.addEventListener('click', function() {
+                menu.classList.remove('slideout-right--show');
+                bg.classList.remove('bg-show');
+            });
+        });
+    </script>
 </html>

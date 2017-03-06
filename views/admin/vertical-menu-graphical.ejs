@@ -1,0 +1,9 @@
+<div class="vertical-menu-wrapper">
+    <% for(var i = 0; i < menuItems.length; i += 1) { %>
+        <a class="menuitem-vertical-img"
+            title="Edit Menu Item">
+            <%= menuItems[i]["title"] %>
+            <span class="glyphicon glyphicon-pencil edit-icon-right" aria-hidden="true"></span>
+        </a>
+    <% } %>
+</div>

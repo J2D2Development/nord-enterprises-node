@@ -19,10 +19,10 @@ pageRouter.route('/')
         const hoa_lookfeel = req.session['hoa_lookfeel'];
 
         Promise.all([
-            pageUtils.getPageList(hoa_id),
             basicUtils.getPageInfo(`SELECT * FROM hoa_pub_page WHERE hoa_id = ${hoa_main['hoa_id']} AND page_id = ${connection.escape(page_id)};`), 
             basicUtils.getPageInfo(`SELECT * FROM hoa_pub_page_area WHERE hoa_id = ${hoa_main['hoa_id']} AND page_id = ${connection.escape(page_id)};`), 
-            basicUtils.getPageInfo(`SELECT * FROM hoa_pub_menuitem WHERE hoa_id = ${hoa_main['hoa_id']} AND page_id = ${connection.escape(page_id)};`)
+            basicUtils.getPageInfo(`SELECT * FROM hoa_pub_menuitem WHERE hoa_id = ${hoa_main['hoa_id']} AND page_id = ${connection.escape(page_id)};`),
+            pageUtils.getPageList(hoa_id)
         ])
         .then(results => {
             if(results[0].length === 0) {
@@ -30,9 +30,12 @@ pageRouter.route('/')
             } else {
                 const pageInfo = results[0];
                 const pageAreas = results[1];
+                const pageList = results[3];
+
                 const title = req.query['page_id'] && req.query['page_id'] !== 1 ? pageInfo['title'] : hoa_main['short_name'];
                 const template = templates[hoa_lookfeel['nav_orientation']].template;
                 const folder = templates[hoa_lookfeel['nav_orientation']].folder;
+                const currentPage = pageList.find(p => p.page_id === page_id);
 
                 //if menu item is graphical, get the background image
                 //!!! need to add a new function to handle the menuItems array gen- call it in this block as well as below?
@@ -50,7 +53,7 @@ pageRouter.route('/')
                                 padding: `0 ${button[0].pad_right}px 0 ${button[0].pad_left}px`
                             };
                             return res.render('admin/pages.ejs', {
-                                main_page_template: `../${folder}/${template}`,
+                                main_page_template: `./${template}`,
                                 hoa_main,
                                 hoa_main_aux,
                                 hoa_lookfeel,
@@ -58,7 +61,9 @@ pageRouter.route('/')
                                 pageAreas,
                                 menuItems,
                                 buttonBgInfo,
-                                sitename
+                                sitename,
+                                pageList,
+                                currentPage
                             });
                         })
                         .catch(error => {
