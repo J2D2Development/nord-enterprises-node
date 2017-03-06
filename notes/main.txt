@@ -16,7 +16,7 @@ OPTIONS
 
 1) Node/Express as backend (node-mysql to connect to db).  EJS as templating engine.  Would need mailgun as email provider (possibly around $200-300/month). Security?  Does node handle cookies?  I think so, but if not, would need to go jwt
     -Next steps for this version (nord-enterprises-node)
-        0) admin panel layout: use 'themepanda-freebie' as template
+        0) admin panel layout: use dash ex in notes folder as template
         0.1) link up admin nav- create new file for admin routes (then a file each for main tabs for those sub routes and include all into server.js)
             -!!!next: on page admin route: change page list into drop down at top.  render out lnf and all content of page on admin panel.  should links be clickable to edit those as well?  do we render out features too?
                 -basic lnf rendering on 'page' admin route- need to get menu items and page areas, then features, disable links and have click on any item be an 'edit' (put icon for edit on any editable area- on click, go to edit route or show modal to edit?)

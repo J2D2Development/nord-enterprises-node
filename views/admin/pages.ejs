@@ -40,9 +40,21 @@
         <div class="container-fluid admin-flex-wrapper">
             <div class="row menu-row">
                 <div class="flex-row-apart">
-                    <a class="navbar-brand" href="#">
-                        <img src="/static/images/logos/transparent-white-n.png" alt="Nord" />
-                    </a>
+                    <div class="page-menu-left">
+                        Editing page:
+                        <select id="switch-page" class="admin-select-list form-inline form-group">
+                            <% for(var i = 0; i < pageList.length; i += 1) { %>
+                                <option
+                                    <% if(pageList[i].selected) { %>
+                                        selected 
+                                    <% } %>
+                                    value="<%= pageList[i].page_id %>"
+                                >
+                                    <%= pageList[i].title %>
+                                </option>
+                            <% } %>
+                        </select>
+                    </div>
                     <div class="page-menu-right">
                         <span id="open-menu" class="glyphicon glyphicon-menu-hamburger" aria-hidden="true"></span>
                     </div>
@@ -52,13 +64,7 @@
                 <%- include(main_page_template) %>
             </div>
             <div class="row admin-footer">
-                You are editing page: <%= currentPage.title %>
-                Switch to:
-                <select class="admin-select-list">
-                    <% for(var i = 0; i < pageList.length; i += 1) { %>
-                        <option value=""><%= pageList[i].title %></option>
-                    <% } %>
-                </select>
+                Admin Footer links here
             </div>
         </div>
         <div id="bg-screen" class="bg-screen"></div>
@@ -69,15 +75,25 @@
         var closeMenuButton = document.querySelector('#close-menu');
         var menu = document.querySelector('#main-menu');
         var bg = document.querySelector('#bg-screen');
+        var switchPageSelect = document.querySelector('#switch-page');
+
         openMenuButton.addEventListener('click', function() {
             menu.classList.add('slideout-right--show');
             bg.classList.add('bg-show');
         });
+
         [closeMenuButton, bg].forEach(function(element) {
             element.addEventListener('click', function() {
                 menu.classList.remove('slideout-right--show');
                 bg.classList.remove('bg-show');
             });
+        });
+
+        switchPageSelect.addEventListener('change', function(evt) {
+            var pathArr = window.location.pathname.split('/');
+            pathArr[4] = evt.target.value;
+            var newPath = window.location.origin + pathArr.join('/');
+            window.location = newPath;
         });
     </script>
 </html>
