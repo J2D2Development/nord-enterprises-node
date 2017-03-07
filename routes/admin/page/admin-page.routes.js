@@ -19,9 +19,11 @@ pageRouter.route('/')
         const hoa_lookfeel = req.session['hoa_lookfeel'];
 
         Promise.all([
-            basicUtils.getPageInfo(`SELECT * FROM hoa_pub_page WHERE hoa_id = ${hoa_main['hoa_id']} AND page_id = ${connection.escape(page_id)};`), 
-            basicUtils.getPageInfo(`SELECT * FROM hoa_pub_page_area WHERE hoa_id = ${hoa_main['hoa_id']} AND page_id = ${connection.escape(page_id)};`), 
-            basicUtils.getPageInfo(`SELECT * FROM hoa_pub_menuitem WHERE hoa_id = ${hoa_main['hoa_id']} AND page_id = ${connection.escape(page_id)};`),
+            basicUtils.getDBInfo(`SELECT * FROM hoa_pub_page WHERE hoa_id = ${hoa_main['hoa_id']} AND page_id = ${connection.escape(page_id)};`), 
+            basicUtils.getDBInfo(`SELECT * FROM hoa_pub_page_area WHERE hoa_id = ${hoa_main['hoa_id']} AND page_id = ${connection.escape(page_id)};`), 
+            basicUtils.getDBInfo(`SELECT * FROM hoa_pub_menuitem WHERE hoa_id = ${hoa_main['hoa_id']} AND page_id = ${connection.escape(page_id)};`),
+            basicUtils.getDBInfo(`SELECT * FROM hoa_feature WHERE hoa_id = ${hoa_main['hoa_id']};`),
+            basicUtils.getDBInfo(`SELECT * FROM hoa_feature_item WHERE hoa_id = ${hoa_main['hoa_id']};`),
             pageUtils.getPageList(hoa_id)
         ])
         .then(results => {
@@ -30,7 +32,9 @@ pageRouter.route('/')
             } else {
                 const pageInfo = results[0];
                 const pageAreas = results[1];
-                const pageList = results[3];
+                const featureList = results[3];
+                const featureItemList = results[4];
+                const pageList = results[5];
 
                 const title = req.query['page_id'] && req.query['page_id'] !== 1 ? pageInfo['title'] : hoa_main['short_name'];
                 const template = templates[hoa_lookfeel['nav_orientation']].template;
@@ -68,6 +72,8 @@ pageRouter.route('/')
                                 buttonBgInfo,
                                 sitename,
                                 pageList,
+                                featureList,
+                                featureItemList,
                                 currentPage
                             });
                         })
@@ -102,9 +108,11 @@ pageRouter.route('/:page_id')
         const hoa_lookfeel = req.session['hoa_lookfeel'];
 
         Promise.all([
-            basicUtils.getPageInfo(`SELECT * FROM hoa_pub_page WHERE hoa_id = ${hoa_main['hoa_id']} AND page_id = ${connection.escape(page_id)};`), 
-            basicUtils.getPageInfo(`SELECT * FROM hoa_pub_page_area WHERE hoa_id = ${hoa_main['hoa_id']} AND page_id = ${connection.escape(page_id)};`), 
-            basicUtils.getPageInfo(`SELECT * FROM hoa_pub_menuitem WHERE hoa_id = ${hoa_main['hoa_id']} AND page_id = ${connection.escape(page_id)};`),
+            basicUtils.getDBInfo(`SELECT * FROM hoa_pub_page WHERE hoa_id = ${hoa_main['hoa_id']} AND page_id = ${connection.escape(page_id)};`), 
+            basicUtils.getDBInfo(`SELECT * FROM hoa_pub_page_area WHERE hoa_id = ${hoa_main['hoa_id']} AND page_id = ${connection.escape(page_id)};`), 
+            basicUtils.getDBInfo(`SELECT * FROM hoa_pub_menuitem WHERE hoa_id = ${hoa_main['hoa_id']} AND page_id = ${connection.escape(page_id)};`),
+            basicUtils.getDBInfo(`SELECT * FROM hoa_feature WHERE hoa_id = ${hoa_main['hoa_id']};`),
+            basicUtils.getDBInfo(`SELECT * FROM hoa_feature_item WHERE hoa_id = ${hoa_main['hoa_id']};`),
             pageUtils.getPageList(hoa_id)
         ])
         .then(results => {
@@ -113,7 +121,10 @@ pageRouter.route('/:page_id')
             } else {
                 const pageInfo = results[0];
                 const pageAreas = results[1];
-                const pageList = results[3];
+                const menuItems = results[2];
+                const featureList = results[3];
+                const featureItemList = results[4];
+                const pageList = results[5];
 
                 const title = req.query['page_id'] && req.query['page_id'] !== 1 ? pageInfo['title'] : hoa_main['short_name'];
                 const template = templates[hoa_lookfeel['nav_orientation']].template;
@@ -131,7 +142,6 @@ pageRouter.route('/:page_id')
                     basicUtils.getGraphicalMenuItemImage(button_id)
                         .then(button => {
                             //using graphic menu items- got item, now generate info
-                            const menuItems = basicUtils.getMenuItems(results[2]);
                             const buttonBgInfo = {
                                 buttonBgImg: `/static/images/${button[0].normal_file}`,
                                 buttonHoverImg: `/static/images/${button[0].hover_file}`,
@@ -150,6 +160,8 @@ pageRouter.route('/:page_id')
                                 buttonBgInfo,
                                 sitename,
                                 pageList,
+                                featureList,
+                                featureItemList,
                                 currentPage
                             });
                         })

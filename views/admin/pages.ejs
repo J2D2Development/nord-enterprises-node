@@ -67,6 +67,68 @@
                 Admin Footer links here
             </div>
         </div>
+
+        <div class="modal fade" tabindex="-1" role="dialog" id="menuItemModal">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Edit Menu Item</h4>
+                </div>
+                <div class="modal-body">
+                    <p>
+                        <form>
+                            <div class="flex-row">
+                                <div class="form-group half-width">
+                                    <label>Title</label><br />
+                                    <small><em>Text to appear as title</em></small><br />
+                                    <input type="text" class="form-control" id="menuItemTitle" placeholder="Title" />
+                                </div>
+                                <div class="form-group half-width">
+                                    <label>Help Text</label><br />
+                                    <small><em>Will show on hover- optional</em></small><br />
+                                    <input type="text" class="form-control" id="menuItemHelpText" placeholder="Help Text" />
+                                </div>
+                            </div>
+                            <div class="flex-row">
+                                <div class="form-group full-width">
+                                    <label>Action</label><br />
+                                    <small><em>Choose link action</em></small><br />
+                                    <div class="flex-row">
+                                        Link to a feature <input type="radio" id="menuItemAction" value="f" />
+                                        Link to a page <input type="radio" id="menuItemAction" value="p" />
+                                        Link to an external site <input type="radio" id="menuItemAction" value="x" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex-row">
+                                <div class="form-group half-width">
+                                    <label>Current link</label><br />
+                                    <small><em>Page/Item to Link To</em></small><br />
+                                    <select>
+                                        <option value="">Test</option>
+                                    </select>
+                                </div>
+                                <div class="form-group half-width">
+                                    <label>Specific Item</label><br />
+                                    <small><em>Test</em></small><br />
+                                    <select>
+                                        <option value="">Test</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </form>
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Save changes</button>
+                </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
+
+        <!--Slideout/modal background-->
         <div id="bg-screen" class="bg-screen"></div>
     </body>
     <% include ./scripts-admin %>
@@ -94,6 +156,15 @@
             pathArr[4] = evt.target.value;
             var newPath = window.location.origin + pathArr.join('/');
             window.location = newPath;
+        });
+
+        $('.openMenuItemModal').on('click', function() {
+            console.log('this is:', $(this).data());
+            var itemData = $(this).data();
+            $('#menuItemTitle').val(itemData.title);
+            $('#menuItemHelpText').val(itemData.helptext);
+            $('#menuItemAction').val(itemData.action);
+            $('#menuItemModal').modal('show');
         });
     </script>
 </html>

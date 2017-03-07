@@ -17,6 +17,7 @@ body {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  height: 100%;
   min-height: 100%;
 }
 .admin-main {
@@ -26,6 +27,9 @@ body {
 /*BOOTSTRAP OVERRIDES*/
 .row {
     margin: 0 !important;
+}
+.modal-open {
+  padding-right: 0 !important;
 }
 
 /*ADMIN LOGIN FORM*/
@@ -154,6 +158,22 @@ body {
   background-color: #ccc !important;
   color: inherit !important;
   border-bottom: 2px solid red;
+}
+
+/*EDIT MODAL FORM*/
+.flex-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+label {
+  margin-bottom: 0;
+}
+.half-width {
+  width: 48%;
+}
+.full-width {
+  width: 100%;
 }
 
 /*Back to top button*/

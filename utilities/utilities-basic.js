@@ -39,7 +39,7 @@ module.exports = {
         });
     },
 
-    getPageInfo: function(query) {
+    getDBInfo: function(query) {
         return new Promise((resolve, reject) => {
                 connection.query(query, (error, results) => {
                     if(error) {
