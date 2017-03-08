@@ -20,7 +20,12 @@ OPTIONS
         0.1) link up admin nav- create new file for admin routes (then a file each for main tabs for those sub routes and include all into server.js)
             -!!!next: on page admin route: change page list into drop down at top.  render out lnf and all content of page on admin panel.  should links be clickable to edit those as well?  do we render out features too?
                 -basic lnf rendering on 'page' admin route- need to get menu items and page areas, then features, disable links and have click on any item be an 'edit' (put icon for edit on any editable area- on click, go to edit route or show modal to edit?)
-                -slidout right for admin jumping and other options.  need to set up modals (editing page areas) and popovers (editing menu items)- or edit page area in place (click edit link and page area text becomes ckeditor textarea?)
+                -slidout right for admin jumping and other options.  need to set up modals (editing page areas) - or edit page area in place (click edit link and page area text becomes ckeditor textarea?)
+                -edit menu items: modal working, getting page and feature list, next:
+                    1) GET FEATURE ITEM LIST
+                    2) SET SELECTED PAGE/FEATURE/FEATURE ITEM IN FORM (PULL FROM DB)
+                    3) ENABLE EXT LINK OPTION
+                    4) ADD BLANK FORM FOR 'ADD NEW ITEM' OPTION
         0.2) security: on all routes, add check: if req.params.sitename !== session['sitename'], nuke session and redirect to login (someone trying to jump from one hoa to another)
         0.3) ditch captcha on forms- use bot honeypot (hidden form input field that normal user can't find, but bot would automatically fill out- test with this)
         a) basic page structure

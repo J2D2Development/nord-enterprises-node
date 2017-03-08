@@ -2,9 +2,11 @@
     <% for(var i = 0; i < menuItems.length; i += 1) { %>
         <a class="menuitem-vertical-img openMenuItemModal"
             title="Edit Menu Item"
-            data-helpText="<%= menuItems[i]['help_text'] %>"
+            data-helptext="<%= menuItems[i]['help_text'] %>"
             data-title="<%= menuItems[i]['title'] %>"
-            data-action="<%= menuItems[i]['action'] %>">
+            data-action="<%= menuItems[i]['action'] %>"
+            data-linkeditemid="<%= menuItems[i]['action_id'] %>"
+            data-linkeditemspecific="<%= menuItems[i]['action_item'] %>">
             <%= menuItems[i]["title"] %>
             <span class="glyphicon glyphicon-pencil edit-icon-right" aria-hidden="true"></span>
         </a>

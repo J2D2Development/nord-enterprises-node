@@ -102,7 +102,6 @@ pageRouter.route('/:page_id')
         const hoa_id = req.session['hoa_main']['hoa_id'];
         const page_id = +req.params['page_id'];
         const sitename = req.session['sitename'];
-
         const hoa_main = req.session['hoa_main'];
         const hoa_main_aux = req.session['hoa_main_aux'];
         const hoa_lookfeel = req.session['hoa_lookfeel'];
@@ -111,7 +110,7 @@ pageRouter.route('/:page_id')
             basicUtils.getDBInfo(`SELECT * FROM hoa_pub_page WHERE hoa_id = ${hoa_main['hoa_id']} AND page_id = ${connection.escape(page_id)};`), 
             basicUtils.getDBInfo(`SELECT * FROM hoa_pub_page_area WHERE hoa_id = ${hoa_main['hoa_id']} AND page_id = ${connection.escape(page_id)};`), 
             basicUtils.getDBInfo(`SELECT * FROM hoa_pub_menuitem WHERE hoa_id = ${hoa_main['hoa_id']} AND page_id = ${connection.escape(page_id)};`),
-            basicUtils.getDBInfo(`SELECT * FROM hoa_feature WHERE hoa_id = ${hoa_main['hoa_id']};`),
+            basicUtils.getDBInfo(`SELECT * FROM hoa_feature WHERE hoa_id = ${hoa_main['hoa_id']} AND feature_id != 8;`),
             basicUtils.getDBInfo(`SELECT * FROM hoa_feature_item WHERE hoa_id = ${hoa_main['hoa_id']};`),
             pageUtils.getPageList(hoa_id)
         ])
@@ -130,7 +129,7 @@ pageRouter.route('/:page_id')
                 const template = templates[hoa_lookfeel['nav_orientation']].template;
                 const currentPage = pageList.find(p => p.page_id === page_id);
 
-                //insert selected prop on current page
+                //insert selected prop on current page drop down
                 pageList.forEach(page => {
                     page.selected = page.page_id === currentPage.page_id;
                 });
