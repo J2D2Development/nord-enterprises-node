@@ -98,6 +98,10 @@ pageRouter.route('/')
     //.post and so on... - this .post would be to add new page?
 
 pageRouter.route('/:page_id')
+    .all((req, res, next) => {
+        //do we need to check session login here?  already doing it at base level
+        next();
+    })
     .get((req, res) => {
         const hoa_id = req.session['hoa_main']['hoa_id'];
         const page_id = +req.params['page_id'];
@@ -182,6 +186,43 @@ pageRouter.route('/:page_id')
             }
         });
     });
-    //.post for ??? .put for updating page, .delete for deleting page
+
+pageRouter.route('/:page_id/menuitems')
+    .get((req, res) => {
+        const hoa_id = req.session['hoa_main']['hoa_id'];
+        const page_id = +req.params['page_id'];
+
+        basicUtils.getDBInfo(`SELECT * FROM hoa_pub_menuitem WHERE hoa_id = ${hoa_id} AND page_id = ${connection.escape(page_id)};`)
+            .then(result => {
+                const formattedResult = result.map(item => {
+                    return `
+                        <a title="Click to edit" 
+                            class="menuitem-vertical-img openMenuItemModal"
+                            data-helptext="${item.help_text}"
+                            data-title="${item.title}"
+                            data-action="${item.action}"
+                            data-linkeditemid="${item.action_id}"
+                            data-linkeditemspecific="${item.action_item}">
+                            ${item.title}
+                        <span class="glyphicon glyphicon-pencil edit-icon-right" aria-hidden="true"></span>
+                        </a>
+                    `;
+                });
+                formattedResult.push(`
+                    <a id="addnew-menuitem" class="menuitem-vertical-img openMenuItemModal" title="Add Menu Item">
+                        Add Menu Item
+                        <span class="glyphicon glyphicon-plus edit-icon-right" aria-hidden="true"></span>
+                    </a>
+                `);
+                res.json(formattedResult);
+            })
+            .catch(err => console.log(err));
+    })
+    .post((req, res) => {
+        //add new menu item
+    })
+    .put((req, res) => {
+        //update menu item- but how to get the id?
+    })
 
 module.exports = pageRouter;

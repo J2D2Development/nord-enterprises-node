@@ -33,9 +33,13 @@
 
     <body>
         <div id="main-menu" class="slideout-right">
-            <span id="close-menu" class="glyphicon glyphicon-remove" aria-hidden="true"></span>
-            This will be the menu for more options?<br />
-            <a href="/<%=sitename%>/logout">Log Out</a>
+            <div class="slideout-top">
+                <span id="close-menu" class="glyphicon glyphicon-circle-arrow-left rotatable" aria-hidden="true"></span>
+                <span>Options</span>
+            </div>
+            <div class="slideout-main">
+                <a href="/<%=sitename%>/logout">Log Out</a>
+            </div>
         </div>
         <div class="container-fluid admin-flex-wrapper">
             <div class="row menu-row">
@@ -69,6 +73,7 @@
         </div>
 
         <div class="modal fade" tabindex="-1" role="dialog" id="menuItemModal">
+            <form id="menu-item-edit-form">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                 <div class="modal-header">
@@ -77,17 +82,16 @@
                 </div>
                 <div class="modal-body">
                     <p>
-                        <form id="menu-item-edit-form">
                             <div class="flex-row">
                                 <div class="form-group half-width">
                                     <label>Title</label>
                                     <small><em>Text to appear as title</em></small><br />
-                                    <input type="text" class="form-control" id="menuItemTitle" placeholder="Title" />
+                                    <input type="text" name="title" class="form-control" id="menuItemTitle" placeholder="Title" />
                                 </div>
                                 <div class="form-group half-width">
                                     <label>Help Text</label>
                                     <small><em>Will show on hover- optional</em></small><br />
-                                    <input type="text" class="form-control" id="menuItemHelpText" placeholder="Help Text" />
+                                    <input type="text" name="help_text" class="form-control" id="menuItemHelpText" placeholder="Help Text" />
                                 </div>
                             </div>
                             <div class="flex-row">
@@ -116,7 +120,7 @@
                                 <div class="form-group full-width">
                                     <label>Current link</label>
                                     <small><em>Page this button links to</em></small><br />
-                                    <select class="form-control">
+                                    <select name="current-page" class="form-control">
                                         <% for(var i = 0; i < pageList.length; i += 1) { %>
                                             <option value="<%= pageList[i].page_id %>">
                                                 <%= pageList[i].title %>
@@ -131,7 +135,7 @@
                                 <div class="form-group half-width">
                                     <label>Current link</label>
                                     <small><em>Feature this button links to</em></small><br />
-                                    <select class="form-control">
+                                    <select name="current-feature" class="form-control">
                                         <% for(var i = 0; i < featureList.length; i += 1) { %>
                                             <option value="<%= featureList[i].feature_id %>">
                                                 <%= featureList[i].title %>
@@ -142,7 +146,7 @@
                                 <div class="form-group half-width">
                                     <label>Specific Item</label>
                                     <small><em>Test</em></small><br />
-                                    <select class="form-control">
+                                    <select name="current-feature-item" class="form-control">
                                         <option value="">Test</option>
                                     </select>
                                 </div>
@@ -153,18 +157,18 @@
                                 <div class="form-group full-width">
                                     <label>Current link</label>
                                     <small><em>Url this button links to</em></small><br />
-                                    <input type="text" class="form-control" id="menuItemExtLink" placeholder="Enter url" />
+                                    <input type="text" name="current-ext-link" class="form-control" id="menuItemExtLink" placeholder="Enter url" />
                                 </div>
                             </div>
-                        </form>
                     </p>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary">Save changes</button>
+                    <input type="submit" class="btn btn-primary" value="Save Changes" />
                 </div>
                 </div>
             </div>
+            </form>
         </div>
 
         <!--Slideout/modal background-->
@@ -173,6 +177,32 @@
     <% include ./scripts-admin %>
     <script>
         $(document).ready(function() {
+            var menuItemForm = $('#menu-item-edit-form');
+
+            //testing ajax get menu item info
+            $.get(window.location.pathname + '/menuitems', function(data) {
+                $('#menu-items').html(data);
+            });
+
+            menuItemForm.on('submit', function(evt) {
+                evt.preventDefault();
+
+                //format data
+                var dataArr = menuItemForm.serializeArray();
+                var dataObj = dataArr.reduce(function(total, item) {
+                    total[item.name] = item.value;
+                    return total;
+                }, {});
+                console.log(dataObj);
+
+                //submit data
+                $.post(window.location.pathname + '/menuitems', {
+                    title: 'test'
+                }, function(data) {
+                    console.log('post success?', data);
+                });
+            });
+
             var openMenuButton = document.querySelector('#open-menu');
             var closeMenuButton = document.querySelector('#close-menu');
             var menu = document.querySelector('#main-menu');
@@ -182,12 +212,14 @@
             openMenuButton.addEventListener('click', function() {
                 menu.classList.add('slideout-right--show');
                 bg.classList.add('bg-show');
+                closeMenuButton.classList.add('menu-open');
             });
 
             [closeMenuButton, bg].forEach(function(element) {
                 element.addEventListener('click', function() {
                     menu.classList.remove('slideout-right--show');
                     bg.classList.remove('bg-show');
+                    closeMenuButton.classList.remove('menu-open');
                 });
             });
 
@@ -199,7 +231,8 @@
             });
 
             //menu item edit functionality
-            $('.openMenuItemModal').on('click', function() {
+            $('body').on('click', '.openMenuItemModal', function() {
+                console.log('item clicked!');
                 //get the data-attr info from the button element clicked to open this modal
                 var itemData = $(this).data();
 
