@@ -38,6 +38,7 @@
                 <span>Options</span>
             </div>
             <div class="slideout-main">
+                <a href="/<%=sitename%>/admin/pages">Pages</a>
                 <a href="/<%=sitename%>/logout">Log Out</a>
             </div>
         </div>
@@ -82,84 +83,84 @@
                 </div>
                 <div class="modal-body">
                     <p>
-                            <div class="flex-row">
-                                <div class="form-group half-width">
-                                    <label>Title</label>
-                                    <small><em>Text to appear as title</em></small><br />
-                                    <input type="text" name="title" class="form-control" id="menuItemTitle" placeholder="Title" />
-                                </div>
-                                <div class="form-group half-width">
-                                    <label>Help Text</label>
-                                    <small><em>Will show on hover- optional</em></small><br />
-                                    <input type="text" name="help_text" class="form-control" id="menuItemHelpText" placeholder="Help Text" />
-                                </div>
+                        <div class="flex-row">
+                            <div class="form-group half-width">
+                                <label>Title</label>
+                                <small><em>Text to appear as title</em></small><br />
+                                <input type="text" name="title" class="form-control" id="title" placeholder="Title" />
                             </div>
-                            <div class="flex-row">
-                                <div class="form-group full-width">
-                                    <label>Action</label>
-                                    <small><em>Choose type of link</em></small><br />
-                                    <div class="flex-row" style="justify-content:space-around;">
-                                        <div>
-                                            Link to a feature 
-                                            <input type="radio" name="menuItemAction" value="f" />
-                                        </div>
-                                        <div>
-                                            Link to a page 
-                                            <input type="radio" name="menuItemAction" value="p" />
-                                        </div>
-                                        <div>
-                                            Link to an external site 
-                                            <input type="radio" name="menuItemAction" value="x" />
-                                        </div>
+                            <div class="form-group half-width">
+                                <label>Help Text</label>
+                                <small><em>Will show on hover- optional</em></small><br />
+                                <input type="text" name="help_text" class="form-control" id="help_text" placeholder="Help Text" />
+                            </div>
+                        </div>
+                        <div class="flex-row">
+                            <div class="form-group full-width">
+                                <label>Action</label>
+                                <small><em>Choose type of link</em></small><br />
+                                <div class="flex-row" style="justify-content:space-around;">
+                                    <div>
+                                        Link to a feature 
+                                        <input type="radio" name="action" value="f" />
+                                    </div>
+                                    <div>
+                                        Link to a page 
+                                        <input type="radio" name="action" value="p" />
+                                    </div>
+                                    <div>
+                                        Link to an external site 
+                                        <input type="radio" name="action" value="x" />
                                     </div>
                                 </div>
                             </div>
+                        </div>
 
-                            <!--Shows if item links to a page-->
-                            <div class="flex-row" id="button-page">
-                                <div class="form-group full-width">
-                                    <label>Current link</label>
-                                    <small><em>Page this button links to</em></small><br />
-                                    <select name="current-page" class="form-control">
-                                        <% for(var i = 0; i < pageList.length; i += 1) { %>
-                                            <option value="<%= pageList[i].page_id %>">
-                                                <%= pageList[i].title %>
-                                            </option>
-                                        <% } %>
-                                    </select>
-                                </div>
+                        <!--Shows if item links to a page-->
+                        <div class="flex-row" id="button-page">
+                            <div class="form-group full-width">
+                                <label>Current link</label>
+                                <small><em>Page this button links to</em></small><br />
+                                <select name="page_action_id" class="form-control">
+                                    <% for(var i = 0; i < pageList.length; i += 1) { %>
+                                        <option value="<%= pageList[i].page_id %>">
+                                            <%= pageList[i].title %>
+                                        </option>
+                                    <% } %>
+                                </select>
                             </div>
+                        </div>
 
-                            <!--Shows if item links to a feature-->
-                            <div class="flex-row" id="button-feature">
-                                <div class="form-group half-width">
-                                    <label>Current link</label>
-                                    <small><em>Feature this button links to</em></small><br />
-                                    <select name="current-feature" class="form-control">
-                                        <% for(var i = 0; i < featureList.length; i += 1) { %>
-                                            <option value="<%= featureList[i].feature_id %>">
-                                                <%= featureList[i].title %>
-                                            </option>
-                                        <% } %>
-                                    </select>
-                                </div>
-                                <div class="form-group half-width">
-                                    <label>Specific Item</label>
-                                    <small><em>Test</em></small><br />
-                                    <select name="current-feature-item" class="form-control">
-                                        <option value="">Test</option>
-                                    </select>
-                                </div>
+                        <!--Shows if item links to a feature-->
+                        <div class="flex-row" id="button-feature">
+                            <div class="form-group half-width">
+                                <label>Current link</label>
+                                <small><em>Feature this button links to</em></small><br />
+                                <select name="feature_action_id" class="form-control">
+                                    <% for(var i = 0; i < featureList.length; i += 1) { %>
+                                        <option value="<%= featureList[i].feature_id %>">
+                                            <%= featureList[i].title %>
+                                        </option>
+                                    <% } %>
+                                </select>
                             </div>
+                            <div class="form-group half-width">
+                                <label>Specific Item</label>
+                                <small><em>Test</em></small><br />
+                                <select name="action_item" class="form-control">
+                                    <option value="">Test</option>
+                                </select>
+                            </div>
+                        </div>
 
-                            <!--Shows if item links to an external site-->
-                            <div class="flex-row" id="button-external">
-                                <div class="form-group full-width">
-                                    <label>Current link</label>
-                                    <small><em>Url this button links to</em></small><br />
-                                    <input type="text" name="current-ext-link" class="form-control" id="menuItemExtLink" placeholder="Enter url" />
-                                </div>
+                        <!--Shows if item links to an external site-->
+                        <div class="flex-row" id="button-external">
+                            <div class="form-group full-width">
+                                <label>Current link</label>
+                                <small><em>Url this button links to</em></small><br />
+                                <input type="text" name="action_url" class="form-control" id="action_url" placeholder="Enter url" />
                             </div>
+                        </div>
                     </p>
                 </div>
                 <div class="modal-footer">
@@ -177,6 +178,8 @@
     <% include ./scripts-admin %>
     <script>
         $(document).ready(function() {
+            //track type of menu item (p, f, x)
+            var menuItemType = '';
             var menuItemForm = $('#menu-item-edit-form');
 
             //testing ajax get menu item info
@@ -189,18 +192,42 @@
 
                 //format data
                 var dataArr = menuItemForm.serializeArray();
-                var dataObj = dataArr.reduce(function(total, item) {
+                var dataObj = dataArr.map(item => {
+                    if(menuItemType === 'p') {
+                        if(item.name === 'page_action_id') { item.value = +item.value }
+                    } else if (menuItemType === 'f') {
+                        if(item.name === 'feature_action_id') { item.value = +item.value }
+                    }
+                    
+                    if(item.name === 'action_item' && item.value === '') {
+                        item.value = 0;
+                    } else if(item.name === 'action_item') {
+                        item.value = +item.value;
+                    }
+
+                    return item;
+                })
+                .filter(item => {
+                    if(menuItemType === 'p') {
+                        return item.name !== 'feature_action_id' && item.name !== 'action_url';
+                    } else if (menuItemType === 'f') {
+                        return item.name !== 'page_action_id' && item.name !== 'action_url';
+                    } else {
+                        return item.name !== 'feature_action_id' && item.name !== 'action_item' && item.name !== 'page_action_id';
+                    }
+                })
+                .reduce(function(total, item) {
                     total[item.name] = item.value;
                     return total;
                 }, {});
                 console.log(dataObj);
 
                 //submit data
-                $.post(window.location.pathname + '/menuitems', {
-                    title: 'test'
-                }, function(data) {
-                    console.log('post success?', data);
-                });
+                // $.post(window.location.pathname + '/menuitems', {
+                //     title: 'test'
+                // }, function(data) {
+                //     console.log('post success?', data);
+                // });
             });
 
             var openMenuButton = document.querySelector('#open-menu');
@@ -237,49 +264,45 @@
                 var itemData = $(this).data();
 
                 //set the form fields
-                $('#menuItemTitle').val(itemData.title);
-                $('#menuItemHelpText').val(itemData.helptext);
-                $('input[name=menuItemAction][value='+itemData.action+']').prop('checked', 'checked');
+                $('#title').val(itemData.title);
+                $('#help_text').val(itemData.helptext);
+                $('input[name=action][value='+itemData.action+']').prop('checked', 'checked');
 
                 //show the proper edit fields for this type (feature vs page vs external)
-                if(itemData.action === 'p') {
-                    $('#button-feature').hide();
-                    $('#button-external').hide();
-                    $('#button-page').show();
-                } else if(itemData.action === 'f') {
-                    $('#button-page').hide();
-                    $('#button-external').hide();
-                    $('#button-feature').show();
-                } else {
-                    $('#button-page').hide();
-                    $('#button-feature').hide();
-                    $('#button-external').show();
-                }
+                adjustForMenuItemType(itemData.action);
 
                 //open the modal
                 $('#menuItemModal').modal('show');
             });
 
-            $('input[name=menuItemAction]').on('change', function(evt) {
-                console.log('value changed!', evt.target.value);
-                if(evt.target.value === 'p') {
-                    $('#button-feature').hide();
-                    $('#button-external').hide();
-                    $('#button-page').show();
-                } else if(evt.target.value === 'f') {
-                    $('#button-page').hide();
-                    $('#button-external').hide();
-                    $('#button-feature').show();
-                } else {
-                    $('#button-page').hide();
-                    $('#button-feature').hide();
-                    $('#button-external').show();
-                }
+            $('input[name=action]').on('change', function(evt) {
+                console.log('radio changed');
+                adjustForMenuItemType(evt.target.value);
             });
 
             $('#menuItemModal').on('hidden.bs.modal', function(evt) {
                 $('#menu-item-edit-form')[0].reset();
             });
+
+            function adjustForMenuItemType(type) {
+                console.log('adjusting:', type);
+                if(type === 'p') {
+                    $('#button-feature').hide();
+                    $('#button-external').hide();
+                    $('#button-page').show();
+                    menuItemType = 'p';
+                } else if(type === 'f') {
+                    $('#button-page').hide();
+                    $('#button-external').hide();
+                    $('#button-feature').show();
+                    menuItemType = 'f';
+                } else {
+                    $('#button-page').hide();
+                    $('#button-feature').hide();
+                    $('#button-external').show();
+                    menuItemType = 'x';
+                }
+            }
         });
     </script>
 </html>
