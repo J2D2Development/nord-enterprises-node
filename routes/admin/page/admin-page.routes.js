@@ -17,7 +17,6 @@ pageRouter.route('/')
 
         pageUtils.getPageList(hoa_id)
         .then(results => {
-            console.log(results);
             if(results.length === 0) {
                 return res.status(404).send('Not found!');
             } else {
@@ -157,16 +156,29 @@ pageRouter.route('/:page_id/menuitems')
     .post((req, res) => {
         //add new menu item
         console.log(req.body);
+        console.log(req.user);
         const hoa_id = req.session['hoa_main']['hoa_id'];
         const page_id = +req.params['page_id'];
-        res.send('Post received!');
+        const update = req.body;
+        //!!!3 different kinds of menu item (p, f, x)- how to tell what to pass as update?  just pass everything?  figure that out next!
+        res.status(200).send('post received...');
+
+        //need to use backtics because 'order' is a keyword in sql and query doesn't work otherwise!
         basicUtils.getDBInfo('SELECT MAX(`order`) AS next FROM hoa_pv_menuitem WHERE hoa_id = ' + hoa_id + ' AND page_id = ' + page_id)
             .then(result => {
-                console.log(result);
-                //use result as order to insert into hoa_pv_menuitem
+                console.log(result.next + 1);
+                const nextOrder = result.next + 1;
+                //sql query
+                const query = `INSERT INTO hoa_pv_menuitem SET hoa_id = ${hoa_id}, page_id = ${page_id}, order = ${nextOrder}, title = ${connection.escape()} ... updt_user = ${req.user.username}`;
+
+                // basicUtils.getDBInfo(``)
+                //     .then(result => {
+
+                //     })
             });
     });
 
+    //edit/delete individual menu items
     pageRouter.route('/:page_id/menuitems/:menu_item_id')
         .put((req, res) => {
             //update existing menu item

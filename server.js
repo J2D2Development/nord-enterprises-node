@@ -271,6 +271,7 @@ app.get('/:sitename/page', (req, res) => {
 });
 
 //base admin route (login or dashboard- depending on session)
+//move this to own file with adminRouter instance- on that, use .all to always check login session before allowing any access
 app.get('/:sitename/admin', (req, res) => {
     if(req.user) {
         let message;
@@ -299,6 +300,7 @@ app.get('/:sitename/admin', (req, res) => {
 });
 
 //admin 'pages' editing routes
+//do we move this to the adminRouter file and make them subroutes?  that way, the session checking is only done once
 app.use('/:sitename/admin/pages', adminPageRoutes);
 
 app.get('/unavailable', (req, res) => {
