@@ -156,11 +156,21 @@ pageRouter.route('/:page_id/menuitems')
     })
     .post((req, res) => {
         //add new menu item
+        console.log(req.body);
+        const hoa_id = req.session['hoa_main']['hoa_id'];
+        const page_id = +req.params['page_id'];
+        res.send('Post received!');
+        basicUtils.getDBInfo('SELECT MAX(`order`) AS next FROM hoa_pv_menuitem WHERE hoa_id = ' + hoa_id + ' AND page_id = ' + page_id)
+            .then(result => {
+                console.log(result);
+                //use result as order to insert into hoa_pv_menuitem
+            });
     });
 
     pageRouter.route('/:page_id/menuitems/:menu_item_id')
         .put((req, res) => {
             //update existing menu item
+            
         })
         .delete((req, res) => {
             //delete existing menu item

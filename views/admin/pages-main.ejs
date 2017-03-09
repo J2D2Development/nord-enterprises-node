@@ -80,6 +80,20 @@
                 var newPath = window.location.origin + pathArr.join('/');
                 window.location = newPath;
             });
+
+            openMenuButton.addEventListener('click', function() {
+                menu.classList.add('slideout-right--show');
+                bg.classList.add('bg-show');
+                closeMenuButton.classList.add('menu-open');
+            });
+
+            [closeMenuButton, bg].forEach(function(element) {
+                element.addEventListener('click', function() {
+                    menu.classList.remove('slideout-right--show');
+                    bg.classList.remove('bg-show');
+                    closeMenuButton.classList.remove('menu-open');
+                });
+            });
         });
     </script>
 </html>

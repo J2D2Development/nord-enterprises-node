@@ -178,15 +178,17 @@
     <% include ./scripts-admin %>
     <script>
         $(document).ready(function() {
+            console.log(window.location);
             //track type of menu item (p, f, x)
             var menuItemType = '';
+            //track form type (addnew or update)
+            var menuItemFormType = 'update';
             var menuItemForm = $('#menu-item-edit-form');
+            
+            //initial get of menu items
+            getMenuItems();
 
-            //testing ajax get menu item info
-            $.get(window.location.pathname + '/menuitems', function(data) {
-                $('#menu-items').html(data);
-            });
-
+            //form submit handler
             menuItemForm.on('submit', function(evt) {
                 evt.preventDefault();
 
@@ -220,15 +222,28 @@
                     total[item.name] = item.value;
                     return total;
                 }, {});
-                console.log(dataObj);
 
-                //submit data
-                // $.post(window.location.pathname + '/menuitems', {
-                //     title: 'test'
-                // }, function(data) {
-                //     console.log('post success?', data);
-                // });
+                //check form- set api url (for new item vs update item)
+                // if(menuItemFormType === 'update') {
+                //     updateMenuItem(dataObj, )
+                // }
+                if(menuItemFormType === 'addnew') {
+                    addMenuItem(dataObj, window.location.pathname + '/menuitems');
+                }
             });
+
+            function addMenuItem(data, url) {
+                $.post(url, data, 
+                    function(response) {
+                        console.log('post success?', response);
+                    });
+            }
+
+            function updateMenuItem(data, url) {
+                console.log('update menu item with info:', data);
+                console.log('api url:', url);
+                //$.put(window.location.pathname + '/menuitems/' + )
+            }
 
             var openMenuButton = document.querySelector('#open-menu');
             var closeMenuButton = document.querySelector('#close-menu');
@@ -259,9 +274,12 @@
 
             //menu item edit functionality
             $('body').on('click', '.openMenuItemModal', function() {
-                console.log('item clicked!');
                 //get the data-attr info from the button element clicked to open this modal
                 var itemData = $(this).data();
+
+                //check button id- if exists, we are adding a new menu item, if not, updating existing
+                var addnew = $(this).prop('id');
+                menuItemFormType = addnew ? 'addnew' : 'update';
 
                 //set the form fields
                 $('#title').val(itemData.title);
@@ -283,6 +301,12 @@
             $('#menuItemModal').on('hidden.bs.modal', function(evt) {
                 $('#menu-item-edit-form')[0].reset();
             });
+
+            function getMenuItems() {
+                $.get(window.location.pathname + '/menuitems', function(data) {
+                    $('#menu-items').html(data);
+                });
+            }
 
             function adjustForMenuItemType(type) {
                 console.log('adjusting:', type);

@@ -16,8 +16,9 @@ OPTIONS
 
 1) Node/Express as backend (node-mysql to connect to db).  EJS as templating engine.  Would need mailgun as email provider (possibly around $200-300/month). Security?  Does node handle cookies?  I think so, but if not, would need to go jwt
     FOR 3/8/17
-        0) finish form setup: add 'add new' form and set the page/feature/external options to only be applied in submit if corresponding action is selected.
+        0) finish form setup: if action is feature, have checkbox for 'link to specific item', if checked, have drop down with items from that feature only.
         1) get post route: need to signify when 'add new' form is being used.  then use 'post' route to save (need to only send proper data- if 'p' is action, send page, if 'f' is action, send feature, if specific item selected, send that, otherwise 0);
+        2) put route- update existing item (but how to get item to update- no id available?- use order?)
     -Next steps for this version (nord-enterprises-node)
         0) admin panel layout: use dash ex in notes folder as template
         0.1) link up admin nav- create new file for admin routes (then a file each for main tabs for those sub routes and include all into server.js)
