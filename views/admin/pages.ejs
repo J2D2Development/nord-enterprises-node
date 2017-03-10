@@ -33,13 +33,50 @@
 
     <body>
         <div id="main-menu" class="slideout-right">
-            <div class="slideout-top">
-                <span id="close-menu" class="glyphicon glyphicon-circle-arrow-left rotatable" aria-hidden="true"></span>
-                <span>Options</span>
-            </div>
-            <div class="slideout-main">
-                <a href="/<%=sitename%>/admin/pages">Pages</a>
-                <a href="/<%=sitename%>/logout">Log Out</a>
+            <div class="slideout-wrapper">
+                <div class="slideout-header">
+                    <span id="close-menu" class="glyphicon glyphicon-circle-arrow-left rotatable" aria-hidden="true"></span>
+                    <span>Options</span>
+                </div>
+                <div class="slideout-main">
+                    <div class="slideout-options">
+                        <div class="slideout-options__panel">
+                            <button class="slideout-options__button" id="acc1">
+                                Upload a picture
+                            </button>
+                            <div class="slideout-options__content" id="acc1content">
+                                Picture uploading info and button
+                            </div>
+                        </div>
+                        <div class="slideout-options__panel">
+                            <button class="slideout-options__button" id="acc2">
+                                Upload a document
+                            </button>
+                            <div class="slideout-options__content" id="acc2content">
+                                Document uploading info and button
+                            </div>
+                        </div>
+                        <div class="slideout-options__panel">
+                            <button class="slideout-options__button" id="acc3">
+                                Another Task
+                            </button>
+                            <div class="slideout-options__content" id="acc3content">
+                                More Info!
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="slideout-footer">
+                    <h4>Quicklinks</h4>
+                    <div class="slideout__quicklinks">
+                        <a href="/<%=sitename%>/admin">Dashboard</a>
+                        <a href="http://help.home-owners-assoc.com" target="_blank">Help Site</a>
+                        <a href="/<%=sitename%>/admin/pages">Pages</a>
+                        <a href="/<%=sitename%>/admin/features">Features</a>
+                        <a href="/<%=sitename%>/admin/pages">Users</a>
+                        <a href="/<%=sitename%>/logout">Log Out</a>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="container-fluid admin-flex-wrapper">
@@ -327,6 +364,19 @@
                     menuItemType = 'x';
                 }
             }
+
+            var accButtons = document.querySelectorAll('.slideout-options__button');
+            accButtons.forEach(function(button) {
+                var _this = this;
+                button.addEventListener('click', function() {
+                    var myContentDiv = document.querySelector('#'+this.id+'content');
+                    var allContentDivs = document.querySelectorAll('.slideout-options__content');
+                    console.log(myContentDiv);
+                    console.log(allContentDivs);
+                    //slideout-options__content - class
+
+                }, false);
+            })
         });
     </script>
 </html>
