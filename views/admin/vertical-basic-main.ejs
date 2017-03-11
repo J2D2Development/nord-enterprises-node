@@ -14,18 +14,20 @@
 
         <div class="content-main-flex row">
             <% if(hoa_lookfeel["menu_button_type"] === 'bg_image') { %>
-                <div id="menu-items" class="vertical-menu-wrapper graphical">
-                    <div class="loading-wrapper">
-                        <div class="spinner">
-                            <div class="bounce1"></div>
-                            <div class="bounce2"></div>
-                            <div class="bounce3"></div>
+                <div id="graphical-menu-test" class="vertical-menu-wrapper graphical">
+                    
+                        <div class="loading-wrapper">
+                            <div class="spinner">
+                                <div class="bounce1"></div>
+                                <div class="bounce2"></div>
+                                <div class="bounce3"></div>
+                            </div>
+                            <div style="color: #333;">Loading Menu</div>
                         </div>
-                        <div style="color: #333;">Loading Menu</div>
-                    </div>
+                    
                 </div>
             <% } else { %>
-                <div id="menu-items" class="vertical-menu-wrapper graphical"></div>
+                <div id="menu-items" class="vertical-menu-wrapper defined-tiles"></div>
             <% } %>
             <div class="content-main">
                 <div class="content">

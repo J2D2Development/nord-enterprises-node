@@ -14,6 +14,8 @@ Security
 
 OPTIONS
 
+POSSIBLY SWITCHING ADMIN PANELPAGES ELEMENTS TO REACT?  TRY TO MAKE IT WORK WITH MENU ITEMS AND SEE.  WOULD NEED TO BE ABLE TO INCLUDE REACT ELEMENTS ONLY ON CERTAIN PAGES- ADDED SIZE OF LIBRARY MIGHT NOT MAKE IT WORTH IT
+
 1) Node/Express as backend (node-mysql to connect to db).  EJS as templating engine.  Would need mailgun as email provider (possibly around $200-300/month). Security?  Does node handle cookies?  I think so, but if not, would need to go jwt
     FOR 3/8/17
         0) finish form setup: if action is feature, have checkbox for 'link to specific item', if checked, have drop down with items from that feature only.
