@@ -3,6 +3,9 @@
   "version": "0.0.1",
   "description": "Conversion of php4 application to node",
   "main": "index.js",
+  "babel": {
+    "presets": [ "es2015" ]
+  },
   "scripts": {
     "start": "nodemon server",
     "start-remote": "nodemon server remote",
@@ -25,8 +28,6 @@
     "mysql": "^2.13.0",
     "passport": "^0.3.2",
     "passport-local": "^1.0.0",
-    "react": "^15.4.2",
-    "react-dom": "^15.4.2",
     "serve-favicon": "^2.3.2",
     "sprintf-js": "^1.0.3"
   },
@@ -35,8 +36,6 @@
     "babel-core": "^6.23.1",
     "babel-loader": "^6.4.0",
     "babel-preset-es2015": "^6.22.0",
-    "babel-preset-react": "^6.23.0",
-    "lite-server": "^2.2.2",
     "nodemon": "^1.11.0",
     "webpack": "^2.2.1"
   }
