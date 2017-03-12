@@ -227,6 +227,7 @@
             //form submit handler
             menuItemForm.on('submit', function(evt) {
                 evt.preventDefault();
+                console.log('form submit');
 
                 //format data
                 var dataArr = menuItemForm.serializeArray();
@@ -269,6 +270,7 @@
             });
 
             function addMenuItem(data, url) {
+                console.log('add menu iltem:', data, url);
                 $.post(url, data, 
                     function(response) {
                         console.log('post success?', response);

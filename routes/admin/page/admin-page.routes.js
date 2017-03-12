@@ -131,7 +131,11 @@ pageRouter.route('/:page_id/menuitems')
             .then(result => {
                 res.json(result);
             })
-            .catch(err => console.log(err));
+            .catch(err => {
+                console.log(err);
+                const error = { errorMsg: 'Error getting menu items', err };
+                res.json(error);
+            });
     })
     .post((req, res) => {
         //add new menu item
