@@ -130,27 +130,6 @@ pageRouter.route('/:page_id/menuitems')
         basicUtils.getDBInfo(`SELECT * FROM hoa_pub_menuitem WHERE hoa_id = ${hoa_id} AND page_id = ${connection.escape(page_id)};`)
             .then(result => {
                 res.json(result);
-                // const formattedResult = result.map(item => {
-                //     return `
-                //         <a title="Click to edit" 
-                //             class="menuitem-vertical-img openMenuItemModal"
-                //             data-helptext="${item.help_text}"
-                //             data-title="${item.title}"
-                //             data-action="${item.action}"
-                //             data-linkeditemid="${item.action_id}"
-                //             data-linkeditemspecific="${item.action_item}">
-                //             ${item.title}
-                //         <span class="glyphicon glyphicon-pencil edit-icon-right" aria-hidden="true"></span>
-                //         </a>
-                //     `;
-                // });
-                // formattedResult.push(`
-                //     <a id="addnew-menuitem" class="menuitem-vertical-img openMenuItemModal" title="Add Menu Item">
-                //         Add Menu Item
-                //         <span class="glyphicon glyphicon-plus edit-icon-right" aria-hidden="true"></span>
-                //     </a>
-                // `);
-                // res.json(formattedResult);
             })
             .catch(err => console.log(err));
     })
