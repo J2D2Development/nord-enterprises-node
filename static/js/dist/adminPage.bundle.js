@@ -63,11 +63,12 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 3);
+/******/ 	return __webpack_require__(__webpack_require__.s = 17);
 /******/ })
 /************************************************************************/
-/******/ ([
-/* 0 */
+/******/ ({
+
+/***/ 0:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -88,7 +89,267 @@ exports.GraphicalMenuItem = GraphicalMenuItem;
 exports.AddNewGraphicalMenuItem = AddNewGraphicalMenuItem;
 
 /***/ }),
-/* 1 */
+
+/***/ 1:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+var PageArea = function PageArea(props) {
+    var areaTitleExists = props.title && props.title !== '&nbsp;';
+    var editButton = '<button id="edit-' + props.order + '" class="edit-button">Edit</button>';
+    var areaTitle = '';
+    if (areaTitleExists) {
+        areaTitle = '<div>' + props.title + '<div>';
+    }
+    return '<div>' + editButton + areaTitle + '<div>' + props.area_text + '</div></div>';
+};
+
+var AddNewPageArea = function AddNewPageArea() {
+    return '<div><button id="add-page-area" class="add-button">Add</button>Add a page area</div>';
+};
+
+exports.PageArea = PageArea;
+exports.AddNewPageArea = AddNewPageArea;
+
+/***/ }),
+
+/***/ 17:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _graphicalMenuItem = __webpack_require__(0);
+
+var _pageAreas = __webpack_require__(1);
+
+var _jquery = __webpack_require__(3);
+
+var _jquery2 = _interopRequireDefault(_jquery);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+// window.$ = window.jQuery = $;
+// import * as bootstrap from 'bootstrap';
+// bootstrap.$ = bootstrap.jQuery = $;
+
+var menu = document.querySelector('#graphical-menu');
+var pageAreas = document.querySelector('#page-areas');
+
+_jquery2.default.get(window.location.pathname + '/menuitems').done(function (data) {
+    if (data.errorMsg) {
+        return 'Error getting menu items: ' + data.err;
+    }
+    var existingItems = data.map(function (item) {
+        return (0, _graphicalMenuItem.GraphicalMenuItem)(item);
+    });
+    existingItems.push((0, _graphicalMenuItem.AddNewGraphicalMenuItem)());
+
+    menu.innerHTML = existingItems.join('');
+}).fail(function (error) {
+    console.log('xhr request failed:', error);
+}).always(function () {
+    console.log('always block!');
+});
+
+_jquery2.default.get(window.location.pathname + '/pageareas').done(function (data) {
+    if (data.errorMsg) {
+        return 'Error getting page areas: ' + data.err;
+    }
+    var existingAreas = data.map(function (item) {
+        return (0, _pageAreas.PageArea)(item);
+    });
+    existingAreas.push((0, _pageAreas.AddNewPageArea)());
+
+    pageAreas.innerHTML = existingAreas.join('');
+}).fail(function (error) {
+    console.log('xhr request failed:', error);
+}).always(function () {
+    console.log('always block!');
+});
+
+//track type of menu item (p, f, x)
+var menuItemType = '';
+//track form type (addnew or update)
+var menuItemFormType = 'update';
+
+var menuItemForm = (0, _jquery2.default)('#menu-item-edit-form');
+
+//form submit handler
+menuItemForm.on('submit', function (evt) {
+    evt.preventDefault();
+
+    //format data
+    var dataArr = menuItemForm.serializeArray();
+    var dataObj = dataArr.map(function (item) {
+        if (menuItemType === 'p') {
+            if (item.name === 'page_action_id') {
+                item.value = +item.value;
+            }
+        } else if (menuItemType === 'f') {
+            if (item.name === 'feature_action_id') {
+                item.value = +item.value;
+            }
+        }
+
+        if (item.name === 'action_item' && item.value === '') {
+            item.value = 0;
+        } else if (item.name === 'action_item') {
+            item.value = +item.value;
+        }
+
+        return item;
+    }).filter(function (item) {
+        if (menuItemType === 'p') {
+            return item.name !== 'feature_action_id' && item.name !== 'action_url';
+        } else if (menuItemType === 'f') {
+            return item.name !== 'page_action_id' && item.name !== 'action_url';
+        } else {
+            return item.name !== 'feature_action_id' && item.name !== 'action_item' && item.name !== 'page_action_id';
+        }
+    }).reduce(function (total, item) {
+        total[item.name] = item.value;
+        return total;
+    }, {});
+
+    //should have 'order' here- use as id for api call
+    console.log('should have order prop:', dataObj);
+
+    //check form- set api url (for new item vs update item)
+    if (menuItemFormType === 'update') {
+        updateMenuItem(dataObj, window.location.pathname + '/menuitems/' + dataObj.order);
+    } else if (menuItemFormType === 'addnew') {
+        addMenuItem(dataObj, window.location.pathname + '/menuitems');
+    } else {
+        console.log('could not find update type');
+    }
+});
+
+function addMenuItem(data, url) {
+    //!!!add validation (no empty title field- others?)
+    _jquery2.default.post(url, data).done(function (data) {
+        //!!!show notifyr, close modal, fire 'get' call
+        console.log('returned info to client:', data);
+    }).fail(function (error) {
+        //!!!show notifyr error
+        console.log('returned but with error:', error);
+    });
+}
+
+function updateMenuItem(data, url) {
+    console.log('update menu item with info:', data);
+    console.log('api url:', url);
+    //$.put(window.location.pathname + '/menuitems/' + )
+}
+
+var openMenuButton = document.querySelector('#open-menu');
+var closeMenuButton = document.querySelector('#close-menu');
+var sidebarMenu = document.querySelector('#main-menu');
+var bg = document.querySelector('#bg-screen');
+var switchPageSelect = document.querySelector('#switch-page');
+
+openMenuButton.addEventListener('click', function () {
+    sidebarMenu.classList.add('slideout-right--show');
+    bg.classList.add('bg-show');
+    closeMenuButton.classList.add('menu-open');
+});
+
+[closeMenuButton, bg].forEach(function (element) {
+    element.addEventListener('click', function () {
+        sidebarMenu.classList.remove('slideout-right--show');
+        bg.classList.remove('bg-show');
+        closeMenuButton.classList.remove('menu-open');
+    });
+});
+
+switchPageSelect.addEventListener('change', function (evt) {
+    var pathArr = window.location.pathname.split('/');
+    pathArr[4] = evt.target.value;
+    var newPath = window.location.origin + pathArr.join('/');
+    window.location = newPath;
+});
+
+var modalElement = (0, _jquery2.default)('#menuItemModal');
+//menu item edit functionality
+(0, _jquery2.default)('body').on('click', '.openMenuItemModal', function () {
+    //get the data-attr info from the button element clicked to open this modal
+    var itemData = (0, _jquery2.default)(this).data();
+    //check button id- if exists, we are adding a new menu item, if not, updating existing
+    var addnew = (0, _jquery2.default)(this).prop('id');
+    menuItemFormType = addnew ? 'addnew' : 'update';
+
+    //set the form fields
+    (0, _jquery2.default)('#title').val(itemData.title);
+    (0, _jquery2.default)('#help_text').val(itemData.helptext);
+    (0, _jquery2.default)('input[name=action][value=' + itemData.action + ']').prop('checked', 'checked');
+    (0, _jquery2.default)('#action_url').val(itemData.actionurl);
+
+    //show the proper edit fields for this type (feature vs page vs external)
+    adjustForMenuItemType(itemData.action);
+
+    //open the modal
+    modalElement.addClass('modal-show');
+    bg.classList.add('bg-show');
+});
+
+(0, _jquery2.default)('input[name=action]').on('change', function (evt) {
+    console.log('radio changed');
+    adjustForMenuItemType(evt.target.value);
+});
+
+(0, _jquery2.default)('#menuItemModal').on('hidden.bs.modal', function (evt) {
+    (0, _jquery2.default)('#menu-item-edit-form')[0].reset();
+});
+
+var closeModalButtons = document.querySelectorAll("[data-dismiss='modal']");
+closeModalButtons.forEach(function (button) {
+    button.addEventListener('click', closeModal, false);
+});
+function closeModal() {
+    modalElement.removeClass('modal-show');
+    bg.classList.remove('bg-show');
+}
+
+function adjustForMenuItemType(type) {
+    console.log('adjusting:', type);
+    if (type === 'p') {
+        (0, _jquery2.default)('#button-feature').hide();
+        (0, _jquery2.default)('#button-external').hide();
+        (0, _jquery2.default)('#button-page').show();
+        menuItemType = 'p';
+    } else if (type === 'f') {
+        (0, _jquery2.default)('#button-page').hide();
+        (0, _jquery2.default)('#button-external').hide();
+        (0, _jquery2.default)('#button-feature').show();
+        menuItemType = 'f';
+    } else {
+        (0, _jquery2.default)('#button-page').hide();
+        (0, _jquery2.default)('#button-feature').hide();
+        (0, _jquery2.default)('#button-external').show();
+        menuItemType = 'x';
+    }
+}
+
+var accButtons = document.querySelectorAll('.slideout-options__button');
+accButtons.forEach(function (button) {
+    var _this = this;
+    button.addEventListener('click', function () {
+        var myContentDiv = document.querySelector('#' + this.id + 'content');
+        var allContentDivs = document.querySelectorAll('.slideout-options__content');
+        console.log(myContentDiv);
+        console.log(allContentDivs);
+        //slideout-options__content - class
+    }, false);
+});
+
+/***/ }),
+
+/***/ 3:
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -10314,245 +10575,6 @@ return jQuery;
 } );
 
 
-/***/ }),
-/* 2 */,
-/* 3 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var _graphicalMenuItem = __webpack_require__(0);
-
-var _pageAreas = __webpack_require__(4);
-
-var _jquery = __webpack_require__(1);
-
-var _jquery2 = _interopRequireDefault(_jquery);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var menu = document.querySelector('#graphical-menu');
-var pageAreas = document.querySelector('#page-areas');
-
-_jquery2.default.get(window.location.pathname + '/menuitems').done(function (data) {
-    console.log('menu items:', data);
-    if (data.errorMsg) {
-        return 'Error getting menu items: ' + data.err;
-    }
-    var existingItems = data.map(function (item) {
-        return (0, _graphicalMenuItem.GraphicalMenuItem)(item);
-    });
-    existingItems.push((0, _graphicalMenuItem.AddNewGraphicalMenuItem)());
-
-    menu.innerHTML = existingItems.join('');
-}).fail(function (error) {
-    console.log('xhr request failed:', error);
-}).always(function () {
-    console.log('always block!');
-});
-
-_jquery2.default.get(window.location.pathname + '/pageareas').done(function (data) {
-    if (data.errorMsg) {
-        return 'Error getting page areas: ' + data.err;
-    }
-    var existingAreas = data.map(function (item) {
-        return (0, _pageAreas.PageArea)(item);
-    });
-    existingAreas.push((0, _pageAreas.AddNewPageArea)());
-
-    pageAreas.innerHTML = existingAreas.join('');
-}).fail(function (error) {
-    console.log('xhr request failed:', error);
-}).always(function () {
-    console.log('always block!');
-});
-
-//track type of menu item (p, f, x)
-var menuItemType = '';
-//track form type (addnew or update)
-var menuItemFormType = 'update';
-
-var menuItemForm = (0, _jquery2.default)('#menu-item-edit-form');
-
-//form submit handler
-menuItemForm.on('submit', function (evt) {
-    evt.preventDefault();
-    console.log('form submit');
-
-    //format data
-    var dataArr = menuItemForm.serializeArray();
-    var dataObj = dataArr.map(function (item) {
-        if (menuItemType === 'p') {
-            if (item.name === 'page_action_id') {
-                item.value = +item.value;
-            }
-        } else if (menuItemType === 'f') {
-            if (item.name === 'feature_action_id') {
-                item.value = +item.value;
-            }
-        }
-
-        if (item.name === 'action_item' && item.value === '') {
-            item.value = 0;
-        } else if (item.name === 'action_item') {
-            item.value = +item.value;
-        }
-
-        return item;
-    }).filter(function (item) {
-        if (menuItemType === 'p') {
-            return item.name !== 'feature_action_id' && item.name !== 'action_url';
-        } else if (menuItemType === 'f') {
-            return item.name !== 'page_action_id' && item.name !== 'action_url';
-        } else {
-            return item.name !== 'feature_action_id' && item.name !== 'action_item' && item.name !== 'page_action_id';
-        }
-    }).reduce(function (total, item) {
-        total[item.name] = item.value;
-        return total;
-    }, {});
-
-    //check form- set api url (for new item vs update item)
-    // if(menuItemFormType === 'update') {
-    //     updateMenuItem(dataObj, )
-    // }
-    if (menuItemFormType === 'addnew') {
-        addMenuItem(dataObj, window.location.pathname + '/menuitems');
-    }
-});
-
-function addMenuItem(data, url) {
-    console.log('add menu iltem:', data, url);
-    _jquery2.default.post(url, data).done(function (data) {
-        console.log('returned info to client:', data);
-    }).fail(function (error) {
-        console.log('returned but with error:', error);
-    });
-}
-
-function updateMenuItem(data, url) {
-    console.log('update menu item with info:', data);
-    console.log('api url:', url);
-    //$.put(window.location.pathname + '/menuitems/' + )
-}
-
-var openMenuButton = document.querySelector('#open-menu');
-var closeMenuButton = document.querySelector('#close-menu');
-var sidebarMenu = document.querySelector('#main-menu');
-var bg = document.querySelector('#bg-screen');
-var switchPageSelect = document.querySelector('#switch-page');
-
-openMenuButton.addEventListener('click', function () {
-    sidebarMenu.classList.add('slideout-right--show');
-    bg.classList.add('bg-show');
-    closeMenuButton.classList.add('menu-open');
-});
-
-[closeMenuButton, bg].forEach(function (element) {
-    element.addEventListener('click', function () {
-        sidebarMenu.classList.remove('slideout-right--show');
-        bg.classList.remove('bg-show');
-        closeMenuButton.classList.remove('menu-open');
-    });
-});
-
-switchPageSelect.addEventListener('change', function (evt) {
-    var pathArr = window.location.pathname.split('/');
-    pathArr[4] = evt.target.value;
-    var newPath = window.location.origin + pathArr.join('/');
-    window.location = newPath;
-});
-
-//menu item edit functionality
-(0, _jquery2.default)('body').on('click', '.openMenuItemModal', function () {
-    //get the data-attr info from the button element clicked to open this modal
-    var itemData = (0, _jquery2.default)(this).data();
-
-    //check button id- if exists, we are adding a new menu item, if not, updating existing
-    var addnew = (0, _jquery2.default)(this).prop('id');
-    menuItemFormType = addnew ? 'addnew' : 'update';
-
-    //set the form fields
-    (0, _jquery2.default)('#title').val(itemData.title);
-    (0, _jquery2.default)('#help_text').val(itemData.helptext);
-    (0, _jquery2.default)('input[name=action][value=' + itemData.action + ']').prop('checked', 'checked');
-    (0, _jquery2.default)('#action_url').val(itemData.actionurl);
-
-    //show the proper edit fields for this type (feature vs page vs external)
-    adjustForMenuItemType(itemData.action);
-
-    //open the modal
-    (0, _jquery2.default)('#menuItemModal').modal('show');
-});
-
-(0, _jquery2.default)('input[name=action]').on('change', function (evt) {
-    console.log('radio changed');
-    adjustForMenuItemType(evt.target.value);
-});
-
-(0, _jquery2.default)('#menuItemModal').on('hidden.bs.modal', function (evt) {
-    (0, _jquery2.default)('#menu-item-edit-form')[0].reset();
-});
-
-function adjustForMenuItemType(type) {
-    console.log('adjusting:', type);
-    if (type === 'p') {
-        (0, _jquery2.default)('#button-feature').hide();
-        (0, _jquery2.default)('#button-external').hide();
-        (0, _jquery2.default)('#button-page').show();
-        menuItemType = 'p';
-    } else if (type === 'f') {
-        (0, _jquery2.default)('#button-page').hide();
-        (0, _jquery2.default)('#button-external').hide();
-        (0, _jquery2.default)('#button-feature').show();
-        menuItemType = 'f';
-    } else {
-        (0, _jquery2.default)('#button-page').hide();
-        (0, _jquery2.default)('#button-feature').hide();
-        (0, _jquery2.default)('#button-external').show();
-        menuItemType = 'x';
-    }
-}
-
-var accButtons = document.querySelectorAll('.slideout-options__button');
-accButtons.forEach(function (button) {
-    var _this = this;
-    button.addEventListener('click', function () {
-        var myContentDiv = document.querySelector('#' + this.id + 'content');
-        var allContentDivs = document.querySelectorAll('.slideout-options__content');
-        console.log(myContentDiv);
-        console.log(allContentDivs);
-        //slideout-options__content - class
-    }, false);
-});
-
-/***/ }),
-/* 4 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-var PageArea = function PageArea(props) {
-    var areaTitleExists = props.title && props.title !== '&nbsp;';
-    var editButton = '<button id="edit-' + props.order + '" class="edit-button">Edit</button>';
-    var areaTitle = '';
-    if (areaTitleExists) {
-        areaTitle = '<div>' + props.title + '<div>';
-    }
-    return '<div>' + editButton + areaTitle + '<div>' + props.area_text + '</div></div>';
-};
-
-var AddNewPageArea = function AddNewPageArea() {
-    return '<div><button id="add-page-area" class="add-button">Add</button>Add a page area</div>';
-};
-
-exports.PageArea = PageArea;
-exports.AddNewPageArea = AddNewPageArea;
-
 /***/ })
-/******/ ]);
+
+/******/ });

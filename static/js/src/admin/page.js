@@ -1,13 +1,15 @@
 import { GraphicalMenuItem, AddNewGraphicalMenuItem } from './graphical-menu-item';
 import { PageArea, AddNewPageArea } from './page-areas';
-import $ from "jquery";
+import $ from 'jquery';
+// window.$ = window.jQuery = $;
+// import * as bootstrap from 'bootstrap';
+// bootstrap.$ = bootstrap.jQuery = $;
 
 const menu = document.querySelector('#graphical-menu');
 const pageAreas = document.querySelector('#page-areas');
 
 $.get(window.location.pathname + '/menuitems')
     .done(data => {
-        console.log('menu items:', data);
         if(data.errorMsg) {
             return `Error getting menu items: ${data.err}`;
         }
@@ -54,7 +56,6 @@ const menuItemForm = $('#menu-item-edit-form');
 //form submit handler
 menuItemForm.on('submit', function(evt) {
     evt.preventDefault();
-    console.log('form submit');
 
     //format data
     var dataArr = menuItemForm.serializeArray();
@@ -87,22 +88,28 @@ menuItemForm.on('submit', function(evt) {
         return total;
     }, {});
 
+    //should have 'order' here- use as id for api call
+    console.log('should have order prop:', dataObj);
+
     //check form- set api url (for new item vs update item)
-    // if(menuItemFormType === 'update') {
-    //     updateMenuItem(dataObj, )
-    // }
-    if(menuItemFormType === 'addnew') {
-        addMenuItem(dataObj, window.location.pathname + '/menuitems');
+    if(menuItemFormType === 'update') {
+        updateMenuItem(dataObj, `${window.location.pathname}/menuitems/${dataObj.order}`);
+    } else if(menuItemFormType === 'addnew') {
+        addMenuItem(dataObj, `${window.location.pathname}/menuitems`);
+    } else {
+        console.log('could not find update type');
     }
 });
 
 function addMenuItem(data, url) {
-    console.log('add menu iltem:', data, url);
+    //!!!add validation (no empty title field- others?)
     $.post(url, data)
         .done(function(data) {
+            //!!!show notifyr, close modal, fire 'get' call
             console.log('returned info to client:', data);
         })
         .fail(function(error) {
+            //!!!show notifyr error
             console.log('returned but with error:', error);
         });
 }
@@ -113,11 +120,11 @@ function updateMenuItem(data, url) {
     //$.put(window.location.pathname + '/menuitems/' + )
 }
 
-var openMenuButton = document.querySelector('#open-menu');
-var closeMenuButton = document.querySelector('#close-menu');
-var sidebarMenu = document.querySelector('#main-menu');
-var bg = document.querySelector('#bg-screen');
-var switchPageSelect = document.querySelector('#switch-page');
+const openMenuButton = document.querySelector('#open-menu');
+const closeMenuButton = document.querySelector('#close-menu');
+const sidebarMenu = document.querySelector('#main-menu');
+const bg = document.querySelector('#bg-screen');
+const switchPageSelect = document.querySelector('#switch-page');
 
 openMenuButton.addEventListener('click', function() {
     sidebarMenu.classList.add('slideout-right--show');
@@ -140,15 +147,15 @@ switchPageSelect.addEventListener('change', function(evt) {
     window.location = newPath;
 });
 
+const modalElement = $('#menuItemModal');
 //menu item edit functionality
 $('body').on('click', '.openMenuItemModal', function() {
     //get the data-attr info from the button element clicked to open this modal
-    var itemData = $(this).data();
-
+    const itemData = $(this).data();
     //check button id- if exists, we are adding a new menu item, if not, updating existing
-    var addnew = $(this).prop('id');
+    const addnew = $(this).prop('id');
     menuItemFormType = addnew ? 'addnew' : 'update';
-
+    
     //set the form fields
     $('#title').val(itemData.title);
     $('#help_text').val(itemData.helptext);
@@ -159,7 +166,9 @@ $('body').on('click', '.openMenuItemModal', function() {
     adjustForMenuItemType(itemData.action);
 
     //open the modal
-    $('#menuItemModal').modal('show');
+    modalElement.addClass('modal-show');
+    bg.classList.add('bg-show');
+
 });
 
 $('input[name=action]').on('change', function(evt) {
@@ -170,6 +179,15 @@ $('input[name=action]').on('change', function(evt) {
 $('#menuItemModal').on('hidden.bs.modal', function(evt) {
     $('#menu-item-edit-form')[0].reset();
 });
+
+const closeModalButtons = document.querySelectorAll("[data-dismiss='modal']");
+closeModalButtons.forEach(button => {
+    button.addEventListener('click', closeModal, false);
+});
+function closeModal() {
+    modalElement.removeClass('modal-show');
+    bg.classList.remove('bg-show');
+}
 
 function adjustForMenuItemType(type) {
     console.log('adjusting:', type);
