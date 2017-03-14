@@ -30,13 +30,15 @@
                 <div id="menu-items" class="vertical-menu-wrapper defined-tiles"></div>
             <% } %>
             <div class="content-main">
-                <div class="content">
-                    <% for(var i = 0; i < pageAreas.length; i += 1) { %>
-                        <% if(pageAreas[i].title && pageAreas[i].title !== '&nbsp;') { %>
-                            <h3><%- pageAreas[i].title %></h3>
-                        <% } %>
-                        <div><%- pageAreas[i].area_text %></div>
-                    <% } %>
+                <div class="content" id="page-areas">
+                    <div class="loading-wrapper">
+                        <div class="spinner">
+                            <div class="bounce1"></div>
+                            <div class="bounce2"></div>
+                            <div class="bounce3"></div>
+                        </div>
+                        <div style="color: #333;">Loading Page Areas</div>
+                    </div>
                 </div>
 
                 <div class="footer-wrapper">

@@ -127,7 +127,7 @@ pageRouter.route('/:page_id/menuitems')
         const hoa_id = req.session['hoa_main']['hoa_id'];
         const page_id = +req.params['page_id'];
 
-        basicUtils.getDBInfo(`SELECT * FROM hoa_pub_menuitem WHERE hoa_id = ${hoa_id} AND page_id = ${connection.escape(page_id)};`)
+        basicUtils.getDBInfo(`SELECT * FROM hoa_pv_menuitem WHERE hoa_id = ${hoa_id} AND page_id = ${connection.escape(page_id)};`)
             .then(result => {
                 res.json(result);
             })
@@ -139,6 +139,73 @@ pageRouter.route('/:page_id/menuitems')
     })
     .post((req, res) => {
         //add new menu item
+        console.log('user:', req.user);
+        
+        const hoa_id = req.session['hoa_main']['hoa_id'];
+        const page_id = +req.params['page_id'];
+        const update = req.body;
+
+        //parse the update
+        const title = update.title || '';
+        const help_text = update.help_text || '';
+        const action = update.action;
+        const action_item = update.action_item || 0;
+        const action_url = update.action_url || null;
+        const updt_user = req.user || 'Unknown User';
+        const updt_dttm = new Date();
+
+        //figure out what type of action and set id
+        let action_id = 0;
+        if(update.page_action_id) {
+            action_id = update.page_action_id;
+        } else if(update.feature_action_id) {
+            action_id = update.feature_action_id;
+        }
+
+        //need to use backtics because 'order' is a keyword in sql and query doesn't work otherwise!
+        basicUtils.getDBInfo('SELECT MAX(`order`) AS next FROM hoa_pv_menuitem WHERE hoa_id = ' + hoa_id + ' AND page_id = ' + connection.escape(page_id))
+            .then(result => {
+                const nextOrder = result[0].next ? result[0].next + 1 : 1;
+                const query = "INSERT INTO hoa_pv_menuitem SET hoa_id = " + hoa_id + ", page_id = " + page_id + ", `order` = " + nextOrder + ", title = " + connection.escape(title) + ", help_text = " + connection.escape(help_text) + ", action = " + connection.escape(action) + ", action_id = " + action_id + ", action_item = " + action_item + ", action_url = " + connection.escape(action_url) + ", updt_user = " + connection.escape(updt_user);
+
+                basicUtils.getDBInfo(query)
+                    .then(result => {
+                        console.log('query result on server:', result);
+                        res.status(200).send('query succeeded?');
+                    })
+                    .catch(err => {
+                        console.log('error:', err);
+                        res.status(200).send('error adding menu item');
+                    });
+            });
+    });
+
+    //edit/delete individual menu items
+    pageRouter.route('/:page_id/menuitems/:menu_item_id')
+        .put((req, res) => {
+            //update existing menu item- no unique id field so use order
+            
+        })
+        .delete((req, res) => {
+            //delete existing menu item
+        });
+
+pageRouter.route('/:page_id/pageareas')
+    .get((req, res) => {
+        const hoa_id = req.session['hoa_main']['hoa_id'];
+        const page_id = +req.params['page_id'];
+
+        basicUtils.getDBInfo(`SELECT * FROM hoa_pv_page_area WHERE hoa_id = ${hoa_id} AND page_id = ${connection.escape(page_id)};`)
+            .then(result => {
+                res.json(result);
+            })
+            .catch(err => {
+                console.log(err);
+                const error = { errorMsg: 'Error getting page areas', err };
+                res.json(error);
+            });
+    })
+    .post((req, res) => {
         console.log(req.body);
         console.log(req.user);
         const hoa_id = req.session['hoa_main']['hoa_id'];
@@ -148,12 +215,13 @@ pageRouter.route('/:page_id/menuitems')
         res.status(200).send('post received...');
 
         //need to use backtics because 'order' is a keyword in sql and query doesn't work otherwise!
-        basicUtils.getDBInfo('SELECT MAX(`order`) AS next FROM hoa_pv_menuitem WHERE hoa_id = ' + hoa_id + ' AND page_id = ' + page_id)
+        basicUtils.getDBInfo('SELECT MAX(`order`) AS next FROM hoa_pv_page_area WHERE hoa_id = ' + hoa_id + ' AND page_id = ' + page_id)
             .then(result => {
-                console.log(result.next + 1);
-                const nextOrder = result.next + 1;
+                const nextOrder = result[0].next ? result[0].next + 1 : 1;
+                console.log('next page area order:', nextOrder);
+                console.log('adding page area:', update);
                 //sql query
-                const query = `INSERT INTO hoa_pv_menuitem SET hoa_id = ${hoa_id}, page_id = ${page_id}, order = ${nextOrder}, title = ${connection.escape()} ... updt_user = ${req.user.username}`;
+                //const query = `INSERT INTO hoa_pv_page_area SET hoa_id = ${hoa_id}, page_id = ${page_id}, order = ${nextOrder}, title = ${connection.escape()} ... updt_user = ${req.user.username}`;
 
                 // basicUtils.getDBInfo(``)
                 //     .then(result => {
@@ -161,16 +229,6 @@ pageRouter.route('/:page_id/menuitems')
                 //     })
             });
     });
-
-    //edit/delete individual menu items
-    pageRouter.route('/:page_id/menuitems/:menu_item_id')
-        .put((req, res) => {
-            //update existing menu item
-            
-        })
-        .delete((req, res) => {
-            //delete existing menu item
-        });
 
 
 module.exports = pageRouter;
