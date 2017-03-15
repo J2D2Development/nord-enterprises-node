@@ -1,50 +1,53 @@
 import { GraphicalMenuItem, AddNewGraphicalMenuItem } from './graphical-menu-item';
 import { PageArea, AddNewPageArea } from './page-areas';
 import $ from 'jquery';
-// window.$ = window.jQuery = $;
-// import * as bootstrap from 'bootstrap';
-// bootstrap.$ = bootstrap.jQuery = $;
 
 const menu = document.querySelector('#graphical-menu');
 const pageAreas = document.querySelector('#page-areas');
 
-$.get(window.location.pathname + '/menuitems')
-    .done(data => {
-        if(data.errorMsg) {
-            return `Error getting menu items: ${data.err}`;
-        }
-        const existingItems = data.map(item => {
-            return GraphicalMenuItem(item);
+const getMenuItems = () => {
+    $.get(window.location.pathname + '/menuitems')
+        .done(data => {
+            if(data.errorMsg) {
+                return `Error getting menu items: ${data.err}`;
+            }
+            const existingItems = data.map(item => {
+                return GraphicalMenuItem(item);
+            })
+            existingItems.push(AddNewGraphicalMenuItem())
+            
+            menu.innerHTML = existingItems.join('');
         })
-        existingItems.push(AddNewGraphicalMenuItem())
-        
-        menu.innerHTML = existingItems.join('');
-    })
-    .fail(error => {
-        console.log('xhr request failed:', error);
-    })
-    .always(() => {
-        console.log('always block!');
-    });
+        .fail(error => {
+            console.log('xhr request failed:', error);
+        })
+        .always(() => {
+            console.log('always block!');
+        });
+};
+getMenuItems();
 
-$.get(window.location.pathname + '/pageareas')
-    .done(data => {
-        if(data.errorMsg) {
-            return `Error getting page areas: ${data.err}`;
-        }
-        const existingAreas = data.map(item => {
-            return PageArea(item);
+const getPageAreas = () => {
+    $.get(window.location.pathname + '/pageareas')
+        .done(data => {
+            if(data.errorMsg) {
+                return `Error getting page areas: ${data.err}`;
+            }
+            const existingAreas = data.map(item => {
+                return PageArea(item);
+            })
+            existingAreas.push(AddNewPageArea())
+            
+            pageAreas.innerHTML = existingAreas.join('');
         })
-        existingAreas.push(AddNewPageArea())
-        
-        pageAreas.innerHTML = existingAreas.join('');
-    })
-    .fail(error => {
-        console.log('xhr request failed:', error);
-    })
-    .always(() => {
-        console.log('always block!');
-    });
+        .fail(error => {
+            console.log('xhr request failed:', error);
+        })
+        .always(() => {
+            console.log('always block!');
+        });
+};
+getPageAreas();
 
 //track type of menu item (p, f, x)
 let menuItemType = '';
@@ -107,6 +110,8 @@ function addMenuItem(data, url) {
         .done(function(data) {
             //!!!show notifyr, close modal, fire 'get' call
             console.log('returned info to client:', data);
+            closeModal();
+            getMenuItems();
         })
         .fail(function(error) {
             //!!!show notifyr error
@@ -148,6 +153,7 @@ switchPageSelect.addEventListener('change', function(evt) {
 });
 
 const modalElement = $('#menuItemModal');
+
 //menu item edit functionality
 $('body').on('click', '.openMenuItemModal', function() {
     //get the data-attr info from the button element clicked to open this modal
@@ -156,28 +162,37 @@ $('body').on('click', '.openMenuItemModal', function() {
     const addnew = $(this).prop('id');
     menuItemFormType = addnew ? 'addnew' : 'update';
     
-    //set the form fields
+    //set the basic form fields
     $('#title').val(itemData.title);
     $('#help_text').val(itemData.helptext);
     $('input[name=action][value='+itemData.action+']').prop('checked', 'checked');
-    $('#action_url').val(itemData.actionurl);
+    
+    //check item type- set appropriate fields
+    if(itemData.action === 'p') {
+        $('#page_action_id').val(itemData.actionid);
+    } else if(itemData.action === 'f') {
+        $('#feature_action_id').val(itemData.actionid);
+        //add set for specific item id
+    } else {
+        $('#action_url').val(itemData.actionurl);
+    }
 
     //show the proper edit fields for this type (feature vs page vs external)
     adjustForMenuItemType(itemData.action);
 
+    //add delete button handler
+    $('#menuitem-delete').on('click', () => {
+        console.log('adding handler:', itemData.order);
+        console.log('deleting item:', itemData.order);
+    });
+
     //open the modal
     modalElement.addClass('modal-show');
     bg.classList.add('bg-show');
-
 });
 
 $('input[name=action]').on('change', function(evt) {
-    console.log('radio changed');
     adjustForMenuItemType(evt.target.value);
-});
-
-$('#menuItemModal').on('hidden.bs.modal', function(evt) {
-    $('#menu-item-edit-form')[0].reset();
 });
 
 const closeModalButtons = document.querySelectorAll("[data-dismiss='modal']");
@@ -187,10 +202,11 @@ closeModalButtons.forEach(button => {
 function closeModal() {
     modalElement.removeClass('modal-show');
     bg.classList.remove('bg-show');
+    $('#menu-item-edit-form')[0].reset();
+    $('#menuitem-delete').off('click');
 }
 
 function adjustForMenuItemType(type) {
-    console.log('adjusting:', type);
     if(type === 'p') {
         $('#button-feature').hide();
         $('#button-external').hide();
@@ -209,6 +225,7 @@ function adjustForMenuItemType(type) {
     }
 }
 
+//sidebar accordion?
 var accButtons = document.querySelectorAll('.slideout-options__button');
 accButtons.forEach(function(button) {
     var _this = this;
