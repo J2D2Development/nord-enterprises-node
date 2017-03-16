@@ -1,0 +1,8 @@
+<select id="switch-page" class="admin-select-list form-inline form-group">
+    <option value="" selected>Choose page to edit</option>
+    <% for(var i = 0; i < pageList.length; i += 1) { %>
+        <option value="<%= pageList[i].page_id %>">
+            <%= pageList[i].title %>
+        </option>
+    <% } %>
+</select>

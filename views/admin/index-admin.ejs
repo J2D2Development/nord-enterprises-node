@@ -7,6 +7,15 @@
 
     <body>
         <% if(message) { %> <div class="notifyr"><%= message %></div>  <% } %>
+        <div id="main-menu" class="slideout-right">
+            <div class="slideout-top">
+                <i id="close-menu" class="fa chevron-circle-left rotatable" aria-hidden="true"></i>
+                <span>Options</span>
+            </div>
+            <div class="slideout-main" id="slideout-main">
+                options here
+            </div>
+        </div>
         <div class="container-fluid admin-flex-wrapper">
             <% include ./admin-nav %>
             <div class="row admin-main">
@@ -19,6 +28,9 @@
             </div>
             <div class="row admin-footer">Admin footer links</div>
         </div>
+
+        <!--Slideout/modal background-->
+        <div id="bg-screen" class="bg-screen"></div>
     </body>
     <script src="/static/js/dist/adminDashboard.bundle.js"></script>
 </html>

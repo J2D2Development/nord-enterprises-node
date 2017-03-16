@@ -1,60 +1,34 @@
 <!doctype html>
 <html lang="en">
     <head>
-        <meta content="text/html" charset="UTF-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <meta name="description" content="Testing...">
-        <meta name="author" content="Nord Enterprises">
-
-        <!--update this with values from db-->
-        <meta name="DESCRIPTION" content="Admin panel description">
-        <meta name="KEYWORDS" content="Admin panel keywords">
-
+        <% include ./admin-head %>
         <title>Admin | Pages</title>
-
-        <!--Global Stylesheets-->
-        <link rel="stylesheet" type="text/css" href="/static/css/bootstrap.minNord.css" />
-
-        <% include ./styles/style-admin %>
-
-        <!--[if lt IE 9]>
-            <script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.js"></script>
-            <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-        <![endif]-->
     </head>
 
     <body>
         <div id="main-menu" class="slideout-right">
             <div class="slideout-top">
-                <span id="close-menu" class="glyphicon glyphicon-circle-arrow-left rotatable" aria-hidden="true"></span>
+                <i id="close-menu" class="fa fa-2x fa-chevron-circle-left rotatable" aria-hidden="true"></i>
                 <span>Options</span>
             </div>
-            <div class="slideout-main">
+            <div class="slideout-main" id="slideout-main">
                 <a href="/<%=sitename%>/admin/pages">Pages</a>
                 <a href="/<%=sitename%>/logout">Log Out</a>
             </div>
         </div>
         <div class="container-fluid admin-flex-wrapper">
-            <div class="row menu-row">
-                <div class="flex-row-apart">
-                    <div class="page-menu-left">
-                        Editing page:
-                        <select id="switch-page" class="admin-select-list form-inline form-group">
-                            <option value="" selected>Choose page to edit</option>
-                            <% for(var i = 0; i < pageList.length; i += 1) { %>
-                                <option value="<%= pageList[i].page_id %>">
-                                    <%= pageList[i].title %>
-                                </option>
-                            <% } %>
-                        </select>
-                    </div>
-                    <div class="page-menu-right">
-                        <span id="open-menu" class="glyphicon glyphicon-menu-hamburger" aria-hidden="true"></span>
-                    </div>
-                </div>
-            </div>
+            <% include ./admin-nav %>
             <div class="row admin-main">
+                Editing page:
+                            <select id="switch-page" class="admin-select-list form-inline form-group">
+                                <option value="" selected>Choose page to edit</option>
+                                <% for(var i = 0; i < pageList.length; i += 1) { %>
+                                    <option value="<%= pageList[i].page_id %>">
+                                        <%= pageList[i].title %>
+                                    </option>
+                                <% } %>
+                            </select>
+
                 Edit a page!!!
             </div>
             <div class="row admin-footer">
@@ -82,6 +56,7 @@
             });
 
             openMenuButton.addEventListener('click', function() {
+                console.log('open menu');
                 menu.classList.add('slideout-right--show');
                 bg.classList.add('bg-show');
                 closeMenuButton.classList.add('menu-open');

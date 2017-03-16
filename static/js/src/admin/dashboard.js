@@ -1,1 +1,6 @@
-console.log('accessed dashboard screen');
+import $ from 'jquery';
+import { slideout } from './menu-slideout';
+
+$(document).ready(function() {
+    slideout();
+});
