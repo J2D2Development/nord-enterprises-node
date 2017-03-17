@@ -14,10 +14,16 @@
                 <!-- Collect the nav links, forms, and other content for toggling -->
                 <div class="collapse navbar-collapse" style="flex:1" id="bs-example-navbar-collapse-1">
                     <ul class="nav navbar-nav">
-                        <li><a href="/<%=sitename%>/admin">Dashboard</a></li>
+                        <li>
+                            <a id="dashboard-link" href="/<%=sitename%>/admin">Dashboard</a>
+                            <div id="dashboard-arrow" class="arrow-down"></div>
+                        </li>
                         <li><a href="#">General</a></li>
                         <li><a href="#">Users</a></li>
-                        <li><a href="/<%=sitename%>/admin/pages">Pages</a></li>
+                        <li>
+                            <a id="pages-link" href="/<%=sitename%>/admin/pages">Pages</a>
+                            <div id="pages-arrow" class="arrow-down"></div>
+                            </li>
                         <li><a href="#">Features</a></li>
                         <li><a href="#">Publish</a></li>
                     </ul>
@@ -36,3 +42,15 @@
         </nav>
     </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var pathArr = window.location.pathname.split('/');
+        var selected = pathArr[3] || 'dashboard';
+        var selectedMenuItem = document.querySelector('#'+selected+'-link');
+        var selectedMenuItemArrow = document.querySelector('#'+selected+'-arrow');
+        
+        selectedMenuItem.classList.add('menuitem-selected');
+        selectedMenuItemArrow.classList.add('show');
+    }, false);
+</script>

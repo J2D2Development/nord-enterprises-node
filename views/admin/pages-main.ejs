@@ -19,17 +19,29 @@
         <div class="container-fluid admin-flex-wrapper">
             <% include ./admin-nav %>
             <div class="row admin-main">
-                Editing page:
-                            <select id="switch-page" class="admin-select-list form-inline form-group">
-                                <option value="" selected>Choose page to edit</option>
-                                <% for(var i = 0; i < pageList.length; i += 1) { %>
-                                    <option value="<%= pageList[i].page_id %>">
-                                        <%= pageList[i].title %>
-                                    </option>
-                                <% } %>
-                            </select>
-
-                Edit a page!!!
+                <h1 class="admin-h1">Choose a page to edit</h1>
+                <div class="pagelist-wrapper">
+                    
+                    <div class="pagelist-instructions">
+                        Your available pages are below.  Click the edit icon to edit the basic info about the page (title, password protection, etc).  Click the arrow icon to view the page contents and edit text, pictures, layout, and the menu.
+                    </div>
+                    <ul>
+                        <% for(var i = 0; i < pageList.length; i += 1) { %>
+                            <li>
+                                <h3><%= pageList[i].title %></h3>
+                                <div class="pagelist-main">
+                                    Page desc of some kind?
+                                </div>
+                                <div class="pagelist-links">
+                                    <a id="edit-page-basics" data-pageid="<%= pageList[i].page_id %>">Edit Page Basics</a>
+                                    <a href="pages/<%= pageList[i].page_id %>">Edit Page Content</a>
+                                </div>
+                            </li>
+                        <% } %>
+                        <li>
+                            <a id="create-new-page">Create New Page</a>
+                        </li>
+                    </ul>
             </div>
             <div class="row admin-footer">
                 Admin Footer links here
@@ -46,14 +58,14 @@
             var closeMenuButton = document.querySelector('#close-menu');
             var menu = document.querySelector('#main-menu');
             var bg = document.querySelector('#bg-screen');
-            var switchPageSelect = document.querySelector('#switch-page');
+            // var switchPageSelect = document.querySelector('#switch-page');
 
-            switchPageSelect.addEventListener('change', function(evt) {
-                var pathArr = window.location.pathname.split('/');
-                pathArr[4] = evt.target.value;
-                var newPath = window.location.origin + pathArr.join('/');
-                window.location = newPath;
-            });
+            // switchPageSelect.addEventListener('change', function(evt) {
+            //     var pathArr = window.location.pathname.split('/');
+            //     pathArr[4] = evt.target.value;
+            //     var newPath = window.location.origin + pathArr.join('/');
+            //     window.location = newPath;
+            // });
 
             openMenuButton.addEventListener('click', function() {
                 console.log('open menu');

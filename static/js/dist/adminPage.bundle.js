@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 4);
+/******/ 	return __webpack_require__(__webpack_require__.s = 5);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -76,46 +76,29 @@
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-var GraphicalMenuItem = function GraphicalMenuItem(props) {
-    return "<a title=\"Click to edit\" class=\"menuitem-vertical-img openMenuItemModal\" data-order=\"" + props.order + "\" data-helptext=\"" + props.help_text + "\" data-title=\"" + props.title + "\" data-action=\"" + props.action + "\" data-actionid=\"" + props.action_id + "\" data-actionitem=\"" + props.action_item + "\" data-actionurl=\"" + props.action_url + "\">" + props.title + "<span class=\"glyphicon glyphicon-pencil edit-icon-right\" aria-hidden=\"true\"></span></a>";
-};
+var slideout = exports.slideout = function slideout() {
+    var openMenuButton = document.querySelector('#open-menu');
+    var closeMenuButton = document.querySelector('#close-menu');
+    var menu = document.querySelector('#main-menu');
+    var bg = document.querySelector('#bg-screen');
 
-var AddNewGraphicalMenuItem = function AddNewGraphicalMenuItem() {
-    return "<a class=\"menuitem-vertical-img openMenuItemModal\" id=\"addnew\" title=\"Add Menu Item\">Add Menu Item<span class=\"glyphicon glyphicon-plus edit-icon-right\" aria-hidden=\"true\"></span></a>";
-};
+    openMenuButton.addEventListener('click', function () {
+        menu.classList.add('slideout-right--show');
+        bg.classList.add('bg-show');
+        closeMenuButton.classList.add('menu-open');
+    });
 
-exports.GraphicalMenuItem = GraphicalMenuItem;
-exports.AddNewGraphicalMenuItem = AddNewGraphicalMenuItem;
+    [closeMenuButton, bg].forEach(function (element) {
+        element.addEventListener('click', function () {
+            menu.classList.remove('slideout-right--show');
+            bg.classList.remove('bg-show');
+            closeMenuButton.classList.remove('menu-open');
+        });
+    });
+};
 
 /***/ }),
 /* 1 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-var PageArea = function PageArea(props) {
-    var areaTitleExists = props.title && props.title !== '&nbsp;';
-    var editButton = '<button id="edit-' + props.order + '" class="edit-button">Edit</button>';
-    var areaTitle = '';
-    if (areaTitleExists) {
-        areaTitle = '<div>' + props.title + '<div>';
-    }
-    return '<div>' + editButton + areaTitle + '<div>' + props.area_text + '</div></div>';
-};
-
-var AddNewPageArea = function AddNewPageArea() {
-    return '<div><button id="add-page-area" class="add-button">Add</button>Add a page area</div>';
-};
-
-exports.PageArea = PageArea;
-exports.AddNewPageArea = AddNewPageArea;
-
-/***/ }),
-/* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -10342,20 +10325,68 @@ return jQuery;
 
 
 /***/ }),
-/* 3 */,
-/* 4 */
+/* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _graphicalMenuItem = __webpack_require__(0);
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+var GraphicalMenuItem = function GraphicalMenuItem(props) {
+    return "<a title=\"Click to edit\" class=\"menuitem-vertical-img openMenuItemModal\" data-order=\"" + props.order + "\" data-helptext=\"" + props.help_text + "\" data-title=\"" + props.title + "\" data-action=\"" + props.action + "\" data-actionid=\"" + props.action_id + "\" data-actionitem=\"" + props.action_item + "\" data-actionurl=\"" + props.action_url + "\">" + props.title + "<span class=\"glyphicon glyphicon-pencil edit-icon-right\" aria-hidden=\"true\"></span></a>";
+};
 
-var _pageAreas = __webpack_require__(1);
+var AddNewGraphicalMenuItem = function AddNewGraphicalMenuItem() {
+    return "<a class=\"menuitem-vertical-img openMenuItemModal\" id=\"addnew\" title=\"Add Menu Item\">Add Menu Item<span class=\"glyphicon glyphicon-plus edit-icon-right\" aria-hidden=\"true\"></span></a>";
+};
 
-var _menuSlideout = __webpack_require__(5);
+exports.GraphicalMenuItem = GraphicalMenuItem;
+exports.AddNewGraphicalMenuItem = AddNewGraphicalMenuItem;
 
-var _jquery = __webpack_require__(2);
+/***/ }),
+/* 3 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+var PageArea = function PageArea(props) {
+    var areaTitleExists = props.title && props.title !== '&nbsp;';
+    var editButton = '<button id="edit-' + props.order + '" class="edit-button">Edit</button>';
+    var areaTitle = '';
+    if (areaTitleExists) {
+        areaTitle = '<div>' + props.title + '<div>';
+    }
+    return '<div>' + editButton + areaTitle + '<div>' + props.area_text + '</div></div>';
+};
+
+var AddNewPageArea = function AddNewPageArea() {
+    return '<div><button id="add-page-area" class="add-button">Add</button>Add a page area</div>';
+};
+
+exports.PageArea = PageArea;
+exports.AddNewPageArea = AddNewPageArea;
+
+/***/ }),
+/* 4 */,
+/* 5 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _graphicalMenuItem = __webpack_require__(2);
+
+var _pageAreas = __webpack_require__(3);
+
+var _menuSlideout = __webpack_require__(0);
+
+var _jquery = __webpack_require__(1);
 
 var _jquery2 = _interopRequireDefault(_jquery);
 
@@ -10594,37 +10625,6 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
     //     }, false);
     // });
 });
-
-/***/ }),
-/* 5 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-var slideout = exports.slideout = function slideout() {
-    var openMenuButton = document.querySelector('#open-menu');
-    var closeMenuButton = document.querySelector('#close-menu');
-    var menu = document.querySelector('#main-menu');
-    var bg = document.querySelector('#bg-screen');
-
-    openMenuButton.addEventListener('click', function () {
-        menu.classList.add('slideout-right--show');
-        bg.classList.add('bg-show');
-        closeMenuButton.classList.add('menu-open');
-    });
-
-    [closeMenuButton, bg].forEach(function (element) {
-        element.addEventListener('click', function () {
-            menu.classList.remove('slideout-right--show');
-            bg.classList.remove('bg-show');
-            closeMenuButton.classList.remove('menu-open');
-        });
-    });
-};
 
 /***/ })
 /******/ ]);
