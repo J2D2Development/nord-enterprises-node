@@ -157,9 +157,10 @@ h1 small {
   background-color: #22A7F0;
   width: 100%;
   min-width: 100%;
-}
-.menu-row img {
-  height: 50px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 99;
 }
 .menuitem-selected {
   background-color: #3D7899;
@@ -184,12 +185,12 @@ h1 small {
 }
 
 /*shared admin styles*/
-.admin-h1 {
-  margin-top: 0;
+.admin-subnav {
+  margin: 0;
   background-color: #3D7899;
   color: #FDFDF0;
   padding: 6px 9px;
-  font-size: 18px;
+  font-size: 1.2em;
   z-index: 2;
 }
 

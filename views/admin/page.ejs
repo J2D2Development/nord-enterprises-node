@@ -1,0 +1,343 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <% include ./admin-head %>
+        <title>Admin | Pages</title>
+        <% include ../styles/style-main %>
+        <style type="text/css">
+            .page-lnf-bg {
+                background: <%= hoa_lookfeel['page_bg_color'] %>;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div id="main-menu" class="slideout-right">
+            <div class="slideout-wrapper">
+                <div class="slideout-header">
+                    <span id="close-menu" class="glyphicon glyphicon-circle-arrow-left rotatable" aria-hidden="true"></span>
+                    <span>Options</span>
+                </div>
+                <div class="slideout-main">
+                    <div class="slideout-options">
+                        <div class="slideout-options__panel">
+                            <button class="slideout-options__button" id="acc1">
+                                Upload a picture
+                            </button>
+                            <div class="slideout-options__content" id="acc1content">
+                                Picture uploading info and button
+                            </div>
+                        </div>
+                        <div class="slideout-options__panel">
+                            <button class="slideout-options__button" id="acc2">
+                                Upload a document
+                            </button>
+                            <div class="slideout-options__content" id="acc2content">
+                                Document uploading info and button
+                            </div>
+                        </div>
+                        <div class="slideout-options__panel">
+                            <button class="slideout-options__button" id="acc3">
+                                Another Task
+                            </button>
+                            <div class="slideout-options__content" id="acc3content">
+                                More Info!
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="slideout-footer">
+                    <h4>Quicklinks</h4>
+                    <div class="slideout__quicklinks">
+                        <a href="/<%=sitename%>/admin">Dashboard</a>
+                        <a href="http://help.home-owners-assoc.com" target="_blank">Help Site</a>
+                        <a href="/<%=sitename%>/admin/pages">Pages</a>
+                        <a href="/<%=sitename%>/admin/features">Features</a>
+                        <a href="/<%=sitename%>/admin/pages">Users</a>
+                        <a href="/<%=sitename%>/logout">Log Out</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container-fluid admin-flex-wrapper">
+            <% include ./admin-nav %>
+
+            <div class="row admin-main page-lnf-bg">
+                <%- include(main_page_template) %>
+            </div>
+            <div class="row admin-footer">
+                Admin Footer links here
+            </div>
+        </div>
+
+        <div class="nord-modal nord-modal-fade" tabindex="-1" role="dialog" id="menuItemModal">
+            <form id="menu-item-edit-form">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Edit Menu Item</h4>
+                </div>
+                <div class="modal-body">
+                    <p>
+                        <div class="flex-row">
+                            <div class="form-group half-width">
+                                <label>Title</label>
+                                <small><em>Text to appear as title</em></small><br />
+                                <input type="text" name="title" class="form-control" id="title" placeholder="Title" />
+                            </div>
+                            <div class="form-group half-width">
+                                <label>Help Text</label>
+                                <small><em>Will show on hover- optional</em></small><br />
+                                <input type="text" name="help_text" class="form-control" id="help_text" placeholder="Help Text" />
+                            </div>
+                        </div>
+                        <div class="flex-row">
+                            <div class="form-group full-width">
+                                <label>Action</label>
+                                <small><em>Choose type of link</em></small><br />
+                                <div class="flex-row" style="justify-content:space-around;">
+                                    <div>
+                                        Link to a feature 
+                                        <input type="radio" name="action" value="f" />
+                                    </div>
+                                    <div>
+                                        Link to a page 
+                                        <input type="radio" name="action" value="p" />
+                                    </div>
+                                    <div>
+                                        Link to an external site 
+                                        <input type="radio" name="action" value="x" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!--Shows if item links to a page-->
+                        <div class="flex-row" id="button-page">
+                            <div class="form-group full-width">
+                                <label>Current link</label>
+                                <small><em>Page this button links to</em></small><br />
+                                <select name="page_action_id" id="page_action_id" class="form-control">
+                                    <% for(var i = 0; i < pageList.length; i += 1) { %>
+                                        <option value="<%= pageList[i].page_id %>">
+                                            <%= pageList[i].title %>
+                                        </option>
+                                    <% } %>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!--Shows if item links to a feature-->
+                        <div class="flex-row" id="button-feature">
+                            <div class="form-group half-width">
+                                <label>Current link</label>
+                                <small><em>Feature this button links to</em></small><br />
+                                <select name="feature_action_id" id="feature_action_id" class="form-control">
+                                    <% for(var i = 0; i < featureList.length; i += 1) { %>
+                                        <option value="<%= featureList[i].feature_id %>">
+                                            <%= featureList[i].title %>
+                                        </option>
+                                    <% } %>
+                                </select>
+                            </div>
+                            <div class="form-group half-width">
+                                <label>Specific Item</label>
+                                <small><em>Test</em></small><br />
+                                <select name="action_item" id="action_item" class="form-control">
+                                    <option value="">Test</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!--Shows if item links to an external site-->
+                        <div class="flex-row" id="button-external">
+                            <div class="form-group full-width">
+                                <label>Current link</label>
+                                <small><em>Url this button links to</em></small><br />
+                                <input type="text" name="action_url" class="form-control" id="action_url" placeholder="Enter url" />
+                            </div>
+                        </div>
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger pull-left" id="menuitem-delete">Delete</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <input type="submit" class="btn btn-primary" value="Save Changes" />
+                </div>
+                </div>
+            </div>
+            </form>
+        </div>
+
+        <!--Slideout/modal background-->
+        <div id="bg-screen" class="bg-screen"></div>
+
+        <!--Notification system-->
+        <div id="notifyr" class="notifyr"></div>
+    </body>
+    
+    <script>
+        // $(document).ready(function() {
+        //     //track type of menu item (p, f, x)
+        //     var menuItemType = '';
+        //     //track form type (addnew or update)
+        //     var menuItemFormType = 'update';
+        //     var menuItemForm = $('#menu-item-edit-form');
+
+        //     //form submit handler
+        //     menuItemForm.on('submit', function(evt) {
+        //         evt.preventDefault();
+        //         console.log('form submit');
+
+        //         //format data
+        //         var dataArr = menuItemForm.serializeArray();
+        //         var dataObj = dataArr.map(item => {
+        //             if(menuItemType === 'p') {
+        //                 if(item.name === 'page_action_id') { item.value = +item.value }
+        //             } else if (menuItemType === 'f') {
+        //                 if(item.name === 'feature_action_id') { item.value = +item.value }
+        //             }
+                    
+        //             if(item.name === 'action_item' && item.value === '') {
+        //                 item.value = 0;
+        //             } else if(item.name === 'action_item') {
+        //                 item.value = +item.value;
+        //             }
+
+        //             return item;
+        //         })
+        //         .filter(item => {
+        //             if(menuItemType === 'p') {
+        //                 return item.name !== 'feature_action_id' && item.name !== 'action_url';
+        //             } else if (menuItemType === 'f') {
+        //                 return item.name !== 'page_action_id' && item.name !== 'action_url';
+        //             } else {
+        //                 return item.name !== 'feature_action_id' && item.name !== 'action_item' && item.name !== 'page_action_id';
+        //             }
+        //         })
+        //         .reduce(function(total, item) {
+        //             total[item.name] = item.value;
+        //             return total;
+        //         }, {});
+
+        //         //check form- set api url (for new item vs update item)
+        //         // if(menuItemFormType === 'update') {
+        //         //     updateMenuItem(dataObj, )
+        //         // }
+        //         if(menuItemFormType === 'addnew') {
+        //             addMenuItem(dataObj, window.location.pathname + '/menuitems');
+        //         }
+        //     });
+
+        //     function addMenuItem(data, url) {
+        //         console.log('add menu iltem:', data, url);
+        //         $.post(url, data)
+        //             .done(function(data) {
+        //                 console.log('returned info to client:', data);
+        //             })
+        //             .fail(function(error) {
+        //                 console.log('returned but with error:', error);
+        //             });
+        //     }
+
+        //     function updateMenuItem(data, url) {
+        //         console.log('update menu item with info:', data);
+        //         console.log('api url:', url);
+        //         //$.put(window.location.pathname + '/menuitems/' + )
+        //     }
+
+        //     var openMenuButton = document.querySelector('#open-menu');
+        //     var closeMenuButton = document.querySelector('#close-menu');
+        //     var menu = document.querySelector('#main-menu');
+        //     var bg = document.querySelector('#bg-screen');
+        //     var switchPageSelect = document.querySelector('#switch-page');
+
+        //     openMenuButton.addEventListener('click', function() {
+        //         menu.classList.add('slideout-right--show');
+        //         bg.classList.add('bg-show');
+        //         closeMenuButton.classList.add('menu-open');
+        //     });
+
+        //     [closeMenuButton, bg].forEach(function(element) {
+        //         element.addEventListener('click', function() {
+        //             menu.classList.remove('slideout-right--show');
+        //             bg.classList.remove('bg-show');
+        //             closeMenuButton.classList.remove('menu-open');
+        //         });
+        //     });
+
+        //     switchPageSelect.addEventListener('change', function(evt) {
+        //         var pathArr = window.location.pathname.split('/');
+        //         pathArr[4] = evt.target.value;
+        //         var newPath = window.location.origin + pathArr.join('/');
+        //         window.location = newPath;
+        //     });
+
+        //     //menu item edit functionality
+        //     $('body').on('click', '.openMenuItemModal', function() {
+        //         //get the data-attr info from the button element clicked to open this modal
+        //         var itemData = $(this).data();
+
+        //         //check button id- if exists, we are adding a new menu item, if not, updating existing
+        //         var addnew = $(this).prop('id');
+        //         menuItemFormType = addnew ? 'addnew' : 'update';
+
+        //         //set the form fields
+        //         $('#title').val(itemData.title);
+        //         $('#help_text').val(itemData.helptext);
+        //         $('input[name=action][value='+itemData.action+']').prop('checked', 'checked');
+        //         $('#action_url').val(itemData.actionurl);
+
+        //         //show the proper edit fields for this type (feature vs page vs external)
+        //         adjustForMenuItemType(itemData.action);
+
+        //         //open the modal
+        //         $('#menuItemModal').modal('show');
+        //     });
+
+        //     $('input[name=action]').on('change', function(evt) {
+        //         console.log('radio changed');
+        //         adjustForMenuItemType(evt.target.value);
+        //     });
+
+        //     $('#menuItemModal').on('hidden.bs.modal', function(evt) {
+        //         $('#menu-item-edit-form')[0].reset();
+        //     });
+
+        //     function adjustForMenuItemType(type) {
+        //         console.log('adjusting:', type);
+        //         if(type === 'p') {
+        //             $('#button-feature').hide();
+        //             $('#button-external').hide();
+        //             $('#button-page').show();
+        //             menuItemType = 'p';
+        //         } else if(type === 'f') {
+        //             $('#button-page').hide();
+        //             $('#button-external').hide();
+        //             $('#button-feature').show();
+        //             menuItemType = 'f';
+        //         } else {
+        //             $('#button-page').hide();
+        //             $('#button-feature').hide();
+        //             $('#button-external').show();
+        //             menuItemType = 'x';
+        //         }
+        //     }
+
+        //     var accButtons = document.querySelectorAll('.slideout-options__button');
+        //     accButtons.forEach(function(button) {
+        //         var _this = this;
+        //         button.addEventListener('click', function() {
+        //             var myContentDiv = document.querySelector('#'+this.id+'content');
+        //             var allContentDivs = document.querySelectorAll('.slideout-options__content');
+        //             console.log(myContentDiv);
+        //             console.log(allContentDivs);
+        //             //slideout-options__content - class
+
+        //         }, false);
+        //     })
+        // });
+    </script>
+    <script src="/static/js/dist/adminPage.bundle.js"></script>
+</html>

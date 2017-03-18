@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 6);
+/******/ 	return __webpack_require__(__webpack_require__.s = 7);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -10329,13 +10329,16 @@ return jQuery;
 /* 3 */,
 /* 4 */,
 /* 5 */,
-/* 6 */
+/* 6 */,
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 var _menuSlideout = __webpack_require__(0);
+
+var _menuOffset = __webpack_require__(8);
 
 var _jquery = __webpack_require__(1);
 
@@ -10345,6 +10348,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 (0, _jquery2.default)(document).ready(function () {
     (0, _menuSlideout.slideout)();
+    (0, _menuOffset.setMenuOffset)();
 
     var modalElement = (0, _jquery2.default)('#nord-modal');
     var bg2 = document.querySelector('#bg-screen');
@@ -10412,6 +10416,32 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
         console.log('adding item:', item, url);
     }
 });
+
+/***/ }),
+/* 8 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.setMenuOffset = undefined;
+
+var _jquery = __webpack_require__(1);
+
+var _jquery2 = _interopRequireDefault(_jquery);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var setMenuOffset = exports.setMenuOffset = function setMenuOffset() {
+    (0, _jquery2.default)(document).ready(function () {
+        var topMenu = document.querySelector('#top-menu');
+        var adminMain = document.querySelector('.admin-main');
+        adminMain.style.paddingTop = topMenu.clientHeight + 16 + 'px';
+    });
+};
 
 /***/ })
 /******/ ]);

@@ -81,25 +81,35 @@ app.use((req, res, next) => {
         } else {
             sitename = req.headers.host;
         }
-        get_basic_info(sitename);
+
+        if(sitename !== 'static') {
+            get_basic_info(sitename);
+        }
+        
     } else if(req.originalUrl.split('/').length > 1 && 
         req.originalUrl.split('/')[1] !== 'login-adminpost' &&
-        req.originalUrl.split('/')[1] !== 'logout') {
+        req.originalUrl.split('/')[1] !== 'logout' && 
+        req.originalUrl.split('/'[1] !== 'static')) {
         const urlArray = req.originalUrl.split('/');
         sitename = urlArray[1];
         get_basic_info(sitename);
     } else {
+        console.log('did not get basic info!');
+        console.log('but session is:', req.session);
         next();
     }
 
     function get_basic_info(sitename) {
+        console.log('fired get basic info with name:', sitename);
         basicUtils.get_hoa_main(sitename)
             .then(hoa_main => {
+                console.log('first get basic info then:', hoa_main);
                 req.session.sitename = hoa_main['hoa_id_name'];
                 req.session['hoa_main'] = hoa_main;
                 return hoa_main['hoa_id'];
             })
             .then(hoa_id => {
+                console.log('second get basic info then:', hoa_id);
                 Promise.all([basicUtils.get_hoa_main_aux(hoa_id), basicUtils.get_hoa_lookfeel(hoa_id)])
                     .then(results => {
                         req.session['hoa_main_aux'] = results[0];
@@ -283,7 +293,8 @@ app.get('/:sitename/admin', (req, res) => {
         res.render('admin/index-admin.ejs', {
             sitename: req.session['sitename'],
             user: req.user,
-            message: message
+            message: message,
+            sub_nav: './index-subnav.ejs'
         });
     } else {
         let message;

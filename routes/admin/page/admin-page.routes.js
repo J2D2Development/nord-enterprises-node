@@ -21,11 +21,12 @@ pageRouter.route('/')
                 return res.status(404).send('Not found!');
             } else {
                 const pageList = results;
-                return res.render('admin/pages-main.ejs', {
+                return res.render('admin/pages.ejs', {
                     hoa_main,
                     hoa_main_aux,
                     sitename,
-                    pageList
+                    pageList,
+                    sub_nav: './pages-subnav.ejs',
                 });
             }
         })
@@ -49,8 +50,7 @@ pageRouter.route('/:page_id')
         const hoa_lookfeel = req.session['hoa_lookfeel'];
 
         Promise.all([
-            basicUtils.getDBInfo(`SELECT * FROM hoa_pv_page WHERE hoa_id = ${hoa_main['hoa_id']} AND page_id = ${connection.escape(page_id)};`), 
-            basicUtils.getDBInfo(`SELECT * FROM hoa_pv_page_area WHERE hoa_id = ${hoa_main['hoa_id']} AND page_id = ${connection.escape(page_id)};`),
+            basicUtils.getDBInfo(`SELECT * FROM hoa_pub_page WHERE hoa_id = ${hoa_main['hoa_id']} AND page_id = ${connection.escape(page_id)};`),
             basicUtils.getDBInfo(`SELECT * FROM hoa_feature WHERE hoa_id = ${hoa_main['hoa_id']} AND feature_id != 8;`),
             basicUtils.getDBInfo(`SELECT * FROM hoa_feature_item WHERE hoa_id = ${hoa_main['hoa_id']};`),
             pageUtils.getPageList(hoa_id)
@@ -60,10 +60,9 @@ pageRouter.route('/:page_id')
                 return res.status(404).send('Not found!');
             } else {
                 const pageInfo = results[0];
-                const pageAreas = results[1];
-                const featureList = results[2];
-                const featureItemList = results[3];
-                const pageList = results[4];
+                const featureList = results[1];
+                const featureItemList = results[2];
+                const pageList = results[3];
 
                 const title = req.query['page_id'] && req.query['page_id'] !== 1 ? pageInfo['title'] : hoa_main['short_name'];
                 const template = templates[hoa_lookfeel['nav_orientation']].template;
@@ -88,13 +87,13 @@ pageRouter.route('/:page_id')
                                 height: `${button[0].file_height}px`,
                                 padding: `0 ${button[0].pad_right}px 0 ${button[0].pad_left}px`
                             };
-                            return res.render('admin/pages.ejs', {
+                            return res.render('admin/page.ejs', {
                                 main_page_template: `./${template}`,
+                                sub_nav: './page-subnav.ejs',
                                 hoa_main,
                                 hoa_main_aux,
                                 hoa_lookfeel,
                                 title,
-                                pageAreas,
                                 buttonBgInfo,
                                 sitename,
                                 pageList,
@@ -114,7 +113,6 @@ pageRouter.route('/:page_id')
                         hoa_main_aux,
                         hoa_lookfeel,
                         title,
-                        pageAreas,
                         menuItems
                     });
                 }

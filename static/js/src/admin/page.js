@@ -2,10 +2,12 @@ import { GraphicalMenuItem, AddNewGraphicalMenuItem } from './graphical-menu-ite
 import { PageArea, AddNewPageArea } from './page-areas';
 import { slideout } from './menu-slideout';
 import { notifyr } from './notifyr';
+import { setMenuOffset } from './menu-offset';
 import $ from 'jquery';
 
 $(document).ready(function() {
     slideout();
+    setMenuOffset();
     const menu = document.querySelector('#graphical-menu');
     const pageAreas = document.querySelector('#page-areas');
 

@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 5);
+/******/ 	return __webpack_require__(__webpack_require__.s = 6);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -10355,6 +10355,35 @@ exports.AddNewGraphicalMenuItem = AddNewGraphicalMenuItem;
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
+var notifyr = exports.notifyr = function notifyr(config) {
+    var wrapper = document.querySelector('#notifyr');
+    var time = config.duration || 3000;
+    var delay = 500; //from css transition timing
+
+    wrapper.innerHTML = config.msg || 'Status Message!';
+    wrapper.classList.add(config.type);
+    wrapper.classList.add('notifyr-show');
+
+    setTimeout(function () {
+        wrapper.classList.remove('notifyr-show');
+    }, time);
+
+    setTimeout(function () {
+        wrapper.classList.remove(config.type);
+        wrapper.innerHTML = '';
+    }, time + delay);
+};
+
+/***/ }),
+/* 4 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
 var PageArea = function PageArea(props) {
     var areaTitleExists = props.title && props.title !== '&nbsp;';
     var editButton = '<button id="edit-' + props.order + '" class="edit-button">Edit</button>';
@@ -10373,8 +10402,8 @@ exports.PageArea = PageArea;
 exports.AddNewPageArea = AddNewPageArea;
 
 /***/ }),
-/* 4 */,
-/* 5 */
+/* 5 */,
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10382,11 +10411,13 @@ exports.AddNewPageArea = AddNewPageArea;
 
 var _graphicalMenuItem = __webpack_require__(2);
 
-var _pageAreas = __webpack_require__(3);
+var _pageAreas = __webpack_require__(4);
 
 var _menuSlideout = __webpack_require__(0);
 
-var _notifyr = __webpack_require__(7);
+var _notifyr = __webpack_require__(3);
+
+var _menuOffset = __webpack_require__(8);
 
 var _jquery = __webpack_require__(1);
 
@@ -10396,6 +10427,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 (0, _jquery2.default)(document).ready(function () {
     (0, _menuSlideout.slideout)();
+    (0, _menuOffset.setMenuOffset)();
     var menu = document.querySelector('#graphical-menu');
     var pageAreas = document.querySelector('#page-areas');
 
@@ -10648,8 +10680,8 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 });
 
 /***/ }),
-/* 6 */,
-/* 7 */
+/* 7 */,
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10658,23 +10690,20 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-var notifyr = exports.notifyr = function notifyr(config) {
-    var wrapper = document.querySelector('#notifyr');
-    var time = config.duration || 3000;
-    var delay = 500; //from css transition timing
+exports.setMenuOffset = undefined;
 
-    wrapper.innerHTML = config.msg || 'Status Message!';
-    wrapper.classList.add(config.type);
-    wrapper.classList.add('notifyr-show');
+var _jquery = __webpack_require__(1);
 
-    setTimeout(function () {
-        wrapper.classList.remove('notifyr-show');
-    }, time);
+var _jquery2 = _interopRequireDefault(_jquery);
 
-    setTimeout(function () {
-        wrapper.classList.remove(config.type);
-        wrapper.innerHTML = '';
-    }, time + delay);
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var setMenuOffset = exports.setMenuOffset = function setMenuOffset() {
+    (0, _jquery2.default)(document).ready(function () {
+        var topMenu = document.querySelector('#top-menu');
+        var adminMain = document.querySelector('.admin-main');
+        adminMain.style.paddingTop = topMenu.clientHeight + 16 + 'px';
+    });
 };
 
 /***/ })

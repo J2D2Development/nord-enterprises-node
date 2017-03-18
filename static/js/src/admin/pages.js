@@ -1,8 +1,10 @@
 import { slideout } from './menu-slideout';
+import { setMenuOffset } from './menu-offset';
 import $ from 'jquery';
 
 $(document).ready(function() {
     slideout();
+    setMenuOffset();
 
     const modalElement = $('#nord-modal');
     const bg2 = document.querySelector('#bg-screen');

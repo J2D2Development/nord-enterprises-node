@@ -1,0 +1,14 @@
+Editing Page:
+<select id="switch-page" class="admin-select-list form-inline">
+    <% for(var i = 0; i < pageList.length; i += 1) { %>
+        <option
+            <% if(pageList[i].selected) { %>
+                selected 
+            <% } %>
+            value="<%= pageList[i].page_id %>"
+        >
+            <%= pageList[i].title %>
+        </option>
+    <% } %>
+</select>
+<small>    Choose a new page from the drop down to switch</small>
