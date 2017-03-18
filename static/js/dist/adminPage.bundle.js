@@ -10386,6 +10386,8 @@ var _pageAreas = __webpack_require__(3);
 
 var _menuSlideout = __webpack_require__(0);
 
+var _notifyr = __webpack_require__(7);
+
 var _jquery = __webpack_require__(1);
 
 var _jquery2 = _interopRequireDefault(_jquery);
@@ -10439,6 +10441,8 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
     var menuItemType = '';
     //track form type (addnew or update)
     var menuItemFormType = 'update';
+    //track order for update calls
+    var menuItemOrder = 0;
 
     var menuItemForm = (0, _jquery2.default)('#menu-item-edit-form');
 
@@ -10479,57 +10483,71 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
             return total;
         }, {});
 
-        //should have 'order' here- use as id for api call
-        console.log('should have order prop:', dataObj);
+        if (menuItemOrder !== 0) {
+            dataObj.order = menuItemOrder;
+        }
 
         //check form- set api url (for new item vs update item)
         if (menuItemFormType === 'update') {
-            updateMenuItem(dataObj, window.location.pathname + '/menuitems/' + dataObj.order);
+            updateMenuItem(window.location.pathname + '/menuitems/' + dataObj.order, dataObj);
         } else if (menuItemFormType === 'addnew') {
-            addMenuItem(dataObj, window.location.pathname + '/menuitems');
+            addMenuItem(window.location.pathname + '/menuitems', dataObj);
         } else {
             console.log('could not find update type');
         }
     });
 
-    function addMenuItem(data, url) {
+    function addMenuItem(url, data) {
         //!!!add validation (no empty title field- others?)
-        _jquery2.default.post(url, data).done(function (data) {
+        _jquery2.default.post(url, data).done(function (response) {
             //!!!show notifyr, close modal, fire 'get' call
-            console.log('returned info to client:', data);
-            closeModal();
-            getMenuItems();
+            console.log('returned info to client:', response); //success, msg, next
+            if (response.success) {
+                menuItemUpdateSuccess(response.msg);
+            } else {
+                menuItemUpdateError(response.msg);
+            }
         }).fail(function (error) {
             //!!!show notifyr error
             console.log('returned but with error:', error);
+            menuItemUpdateError(error.msg);
         });
     }
 
-    function updateMenuItem(data, url) {
-        console.log('update menu item with info:', data);
-        console.log('api url:', url);
-        //$.put(window.location.pathname + '/menuitems/' + )
+    function updateMenuItem(url, data) {
+        _jquery2.default.ajax({
+            url: url,
+            type: 'PUT',
+            dataType: 'json',
+            beforeSend: function beforeSend() {
+                console.log('before send fired');
+            },
+            data: data
+        }).done(function (response) {
+            console.log('update menu item server response');
+            if (response.success) {
+                menuItemUpdateSuccess(response.msg);
+            } else {
+                menuItemUpdateError(response.msg);
+            }
+        }).fail(function (error) {
+            console.log('returned but with error:', error);
+            menuItemUpdateError(error.msg);
+        });
     }
 
-    // const openMenuButton = document.querySelector('#open-menu');
-    // const closeMenuButton = document.querySelector('#close-menu');
-    // const sidebarMenu = document.querySelector('#main-menu');
+    function menuItemUpdateSuccess(msg) {
+        (0, _notifyr.notifyr)({ msg: msg, type: 'notifyr-success', duration: 3000 });
+        closeModal();
+        getMenuItems();
+    }
+
+    function menuItemUpdateError(msg) {
+        (0, _notifyr.notifyr)({ msg: msg, type: 'notifyr-error', duration: 3000 });
+    }
+
     var bg2 = document.querySelector('#bg-screen');
     var switchPageSelect = document.querySelector('#switch-page');
-
-    // openMenuButton.addEventListener('click', function() {
-    //     sidebarMenu.classList.add('slideout-right--show');
-    //     bg.classList.add('bg-show');
-    //     closeMenuButton.classList.add('menu-open');
-    // });
-
-    // [closeMenuButton, bg].forEach(function(element) {
-    //     element.addEventListener('click', function() {
-    //         sidebarMenu.classList.remove('slideout-right--show');
-    //         bg.classList.remove('bg-show');
-    //         closeMenuButton.classList.remove('menu-open');
-    //     });
-    // });
 
     switchPageSelect.addEventListener('change', function (evt) {
         var pathArr = window.location.pathname.split('/');
@@ -10546,7 +10564,10 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
         var itemData = (0, _jquery2.default)(this).data();
         //check button id- if exists, we are adding a new menu item, if not, updating existing
         var addnew = (0, _jquery2.default)(this).prop('id');
+
+        //couple globals to track modal type and order (for use in update);
         menuItemFormType = addnew ? 'addnew' : 'update';
+        menuItemOrder = +itemData.order || 0;
 
         //set the basic form fields
         (0, _jquery2.default)('#title').val(itemData.title);
@@ -10625,6 +10646,36 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
     //     }, false);
     // });
 });
+
+/***/ }),
+/* 6 */,
+/* 7 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+var notifyr = exports.notifyr = function notifyr(config) {
+    var wrapper = document.querySelector('#notifyr');
+    var time = config.duration || 3000;
+    var delay = 500; //from css transition timing
+
+    wrapper.innerHTML = config.msg || 'Status Message!';
+    wrapper.classList.add(config.type);
+    wrapper.classList.add('notifyr-show');
+
+    setTimeout(function () {
+        wrapper.classList.remove('notifyr-show');
+    }, time);
+
+    setTimeout(function () {
+        wrapper.classList.remove(config.type);
+        wrapper.innerHTML = '';
+    }, time + delay);
+};
 
 /***/ })
 /******/ ]);

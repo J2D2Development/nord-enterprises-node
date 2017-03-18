@@ -49,8 +49,8 @@ pageRouter.route('/:page_id')
         const hoa_lookfeel = req.session['hoa_lookfeel'];
 
         Promise.all([
-            basicUtils.getDBInfo(`SELECT * FROM hoa_pub_page WHERE hoa_id = ${hoa_main['hoa_id']} AND page_id = ${connection.escape(page_id)};`), 
-            basicUtils.getDBInfo(`SELECT * FROM hoa_pub_page_area WHERE hoa_id = ${hoa_main['hoa_id']} AND page_id = ${connection.escape(page_id)};`),
+            basicUtils.getDBInfo(`SELECT * FROM hoa_pv_page WHERE hoa_id = ${hoa_main['hoa_id']} AND page_id = ${connection.escape(page_id)};`), 
+            basicUtils.getDBInfo(`SELECT * FROM hoa_pv_page_area WHERE hoa_id = ${hoa_main['hoa_id']} AND page_id = ${connection.escape(page_id)};`),
             basicUtils.getDBInfo(`SELECT * FROM hoa_feature WHERE hoa_id = ${hoa_main['hoa_id']} AND feature_id != 8;`),
             basicUtils.getDBInfo(`SELECT * FROM hoa_feature_item WHERE hoa_id = ${hoa_main['hoa_id']};`),
             pageUtils.getPageList(hoa_id)
@@ -170,11 +170,27 @@ pageRouter.route('/:page_id/menuitems')
                 basicUtils.getDBInfo(query)
                     .then(result => {
                         console.log('query result on server:', result);
-                        res.status(200).send('query succeeded?');
+                        if(result['affectedRows']) {
+                            res.status(200).json({
+                                success: true,
+                                msg: 'Menu Item Added!',
+                                next: true
+                            })
+                        } else {
+                            res.status(503).json({
+                                success: false,
+                                msg: 'Error adding menu item',
+                                next: false
+                            });
+                        }
                     })
                     .catch(err => {
                         console.log('error:', err);
-                        res.status(200).send('error adding menu item');
+                        res.status(500).json({
+                            success: false,
+                            msg: 'Server error',
+                            next: false
+                        });
                     });
             });
     });
@@ -183,10 +199,89 @@ pageRouter.route('/:page_id/menuitems')
     pageRouter.route('/:page_id/menuitems/:menu_item_id')
         .put((req, res) => {
             //update existing menu item- no unique id field so use order
+            const hoa_id = req.session['hoa_main']['hoa_id'];
+            const page_id = +req.params['page_id'];
+            const update = req.body;
+            console.log('update:', update);
+
+            //parse the update
+            const title = update.title || '';
+            const help_text = update.help_text || '';
+            const action = update.action;
+            const action_item = update.action_item || 0;
+            const action_url = update.action_url || null;
+            const order = +req.params['menu_item_id'];
+            const updt_user = req.user || 'Unknown User';
+
+            //figure out what type of action and set id- if 'x', adding external link and id should be 0
+            let action_id = 0;
+            if(update.page_action_id) {
+                action_id = update.page_action_id;
+            } else if(update.feature_action_id) {
+                action_id = update.feature_action_id;
+            }
+
+            const query = "UPDATE hoa_pv_menuitem SET title = " + connection.escape(title) + ", help_text = " + connection.escape(help_text) + ", action = " + connection.escape(action) + ", action_id = " + action_id + ", action_item = " + action_item + ", action_url = " + connection.escape(action_url) + ", updt_user = " + connection.escape(updt_user) + " WHERE hoa_id = " + hoa_id + " AND page_id = " + page_id + " AND `order` = " + order;
             
+            basicUtils.getDBInfo(query)
+                .then(result => {
+                    console.log('query result on server:', result);
+                    if(result['affectedRows']) {
+                        res.status(200).json({
+                            success: true,
+                            msg: 'Menu Item Updated!',
+                            next: true
+                        })
+                    } else {
+                        res.status(503).json({
+                            success: false,
+                            msg: 'Error updating menu item',
+                            next: false
+                        });
+                    }
+                })
+                .catch(err => {
+                    console.log('error:', err);
+                    res.status(500).json({
+                        success: false,
+                        msg: 'Server error',
+                        next: false
+                    });
+                });
         })
         .delete((req, res) => {
             //delete existing menu item
+            const hoa_id = req.session['hoa_main']['hoa_id'];
+            const page_id = +req.params['page_id'];
+            const order = +req.params['menu_item_id'];
+
+            const query = "";
+
+            basicUtils.getDBInfo(query)
+                .then(result => {
+                    console.log('query result on server:', result);
+                    if(result['affectedRows']) {
+                        res.status(200).json({
+                            success: true,
+                            msg: 'Menu Item Deleted!',
+                            next: true
+                        })
+                    } else {
+                        res.status(503).json({
+                            success: false,
+                            msg: 'Error deleting menu item',
+                            next: false
+                        });
+                    }
+                })
+                .catch(err => {
+                    console.log('error:', err);
+                    res.status(500).json({
+                        success: false,
+                        msg: 'Server error',
+                        next: false
+                    });
+                });
         });
 
 pageRouter.route('/:page_id/pageareas')
@@ -210,7 +305,7 @@ pageRouter.route('/:page_id/pageareas')
         const hoa_id = req.session['hoa_main']['hoa_id'];
         const page_id = +req.params['page_id'];
         const update = req.body;
-        //!!!3 different kinds of menu item (p, f, x)- how to tell what to pass as update?  just pass everything?  figure that out next!
+
         res.status(200).send('post received...');
 
         //need to use backtics because 'order' is a keyword in sql and query doesn't work otherwise!

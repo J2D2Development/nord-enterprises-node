@@ -16,17 +16,17 @@ OPTIONS
 
 
 1) Node/Express as backend (node-mysql to connect to db).  EJS as templating engine.  Would need mailgun as email provider (possibly around $200-300/month). Security?  Does node handle cookies?  I think so, but if not, would need to go jwt
-    FOR 3/16/17
+    FOR 3/19/17
         -1) migrate admin styles to scss (shouldn't need any user-defined styles)
             a) move to static folder, set up scss transpiler in webpack and get going.
         -1.5) update pages/individual page header to use global.  update everything else to use sidebar, and have content of sidebar custom to each screen (include ejs file)
         0) finish form setup: if action is feature, have checkbox for 'link to specific item', if checked, have drop down with items from that feature only.
         1) when editing menu item, might switch type.  when 'submit' is clicked, before sending anything to server, check 'action' type- if 'f' or 'p' remove the action_url prop from submitted data
-        2) put route- update existing item (but how to get item to update- no id available?- use order?)
-            -have to 'attach' order to each menu item- remember that this may be updated via drag/drop
-        3) trying to move js from bottom of pages.ejs to page.js (for now- will move to more modular setup soon).  issue: not recognizing bootstrap js.  possibleanswer: remove jq from bs and just use all js (create modal on my own)
-        4) on successful submit- show success notifyr and close modal and 'get' menu items
+        2) menu item delete
+            -api endpoint
+            -frontend: need function and confirm (opacity bg screen on modal with notice about 'confirm delete' in red- button to confirm and cancel- then fire delete, or cancel)
         5) frontend validation (no blanks, correct data types)
+            -put data-required and data-error attrs on your custom elements.  use that in a generic function to check on submit- get all elements with data-required- if not filled out or incorrect entry, don't send and show div with data-error contents next to each
 
     AFTER THAT
         0) continue with moving script at bottom of pages.ejs to js bundle.  need to make the modal work with data pulled from the menu item clicked.

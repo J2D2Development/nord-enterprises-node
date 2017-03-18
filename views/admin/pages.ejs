@@ -60,28 +60,23 @@
             </div>
         </div>
         <div class="container-fluid admin-flex-wrapper">
-            <div class="row menu-row">
-                <div class="flex-row-apart">
-                    <div class="page-menu-left">
-                        Editing page:
-                        <select id="switch-page" class="admin-select-list form-inline form-group">
-                            <% for(var i = 0; i < pageList.length; i += 1) { %>
-                                <option
-                                    <% if(pageList[i].selected) { %>
-                                        selected 
-                                    <% } %>
-                                    value="<%= pageList[i].page_id %>"
-                                >
-                                    <%= pageList[i].title %>
-                                </option>
+            <% include ./admin-nav %>
+            <h1 class="admin-h1">
+                Editing Page:
+                <select id="switch-page" class="admin-select-list form-inline">
+                    <% for(var i = 0; i < pageList.length; i += 1) { %>
+                        <option
+                            <% if(pageList[i].selected) { %>
+                                selected 
                             <% } %>
-                        </select>
-                    </div>
-                    <div class="page-menu-right">
-                        <span id="open-menu" class="glyphicon glyphicon-menu-hamburger" aria-hidden="true"></span>
-                    </div>
-                </div>
-            </div>
+                            value="<%= pageList[i].page_id %>"
+                        >
+                            <%= pageList[i].title %>
+                        </option>
+                    <% } %>
+                </select>
+                <small>    Choose a new page from the drop down to switch</small>
+            </h1>
             <div class="row admin-main page-lnf-bg">
                 <%- include(main_page_template) %>
             </div>
@@ -192,6 +187,9 @@
 
         <!--Slideout/modal background-->
         <div id="bg-screen" class="bg-screen"></div>
+
+        <!--Notification system-->
+        <div id="notifyr" class="notifyr"></div>
     </body>
     
     <script>
