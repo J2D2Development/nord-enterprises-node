@@ -33,13 +33,13 @@
                                     Page desc of some kind?
                                 </div>
                                 <div class="pagelist-links">
-                                    <a id="edit-page-basics" data-pageid="<%= pageList[i].page_id %>">Edit Page Basics</a>
+                                    <a class="open-modal" data-pageid="<%= pageList[i].page_id %>">Edit Page Basics</a>
                                     <a href="pages/<%= pageList[i].page_id %>">Edit Page Content</a>
                                 </div>
                             </li>
                         <% } %>
                         <li>
-                            <a id="create-new-page">Create New Page</a>
+                            <a id="addnew">Create New Page</a>
                         </li>
                     </ul>
             </div>
@@ -48,39 +48,38 @@
             </div>
         </div>
 
+        <!--Shared modal-->
+        <div class="nord-modal nord-modal-fade" tabindex="-1" role="dialog" id="nord-modal">
+            <form id="modal-edit-form">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Edit Page Info</h4>
+                </div>
+                <div class="modal-body">
+                    <p>
+                        <div class="flex-row">
+                            <div class="form-group">
+                                <label>Title</label>
+                                <small><em>Page Title</em></small><br />
+                                <input type="text" name="title" class="form-control" id="title" placeholder="Title" />
+                            </div>
+                        </div>
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger pull-left" id="item-delete">Delete</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <input type="submit" class="btn btn-primary" value="Save Changes" />
+                </div>
+                </div>
+            </div>
+            </form>
+        </div>
+
         <!--Slideout/modal background-->
         <div id="bg-screen" class="bg-screen"></div>
     </body>
-    <% include ./scripts-admin %>
-    <script>
-        $(document).ready(function() {
-            var openMenuButton = document.querySelector('#open-menu');
-            var closeMenuButton = document.querySelector('#close-menu');
-            var menu = document.querySelector('#main-menu');
-            var bg = document.querySelector('#bg-screen');
-            // var switchPageSelect = document.querySelector('#switch-page');
-
-            // switchPageSelect.addEventListener('change', function(evt) {
-            //     var pathArr = window.location.pathname.split('/');
-            //     pathArr[4] = evt.target.value;
-            //     var newPath = window.location.origin + pathArr.join('/');
-            //     window.location = newPath;
-            // });
-
-            openMenuButton.addEventListener('click', function() {
-                console.log('open menu');
-                menu.classList.add('slideout-right--show');
-                bg.classList.add('bg-show');
-                closeMenuButton.classList.add('menu-open');
-            });
-
-            [closeMenuButton, bg].forEach(function(element) {
-                element.addEventListener('click', function() {
-                    menu.classList.remove('slideout-right--show');
-                    bg.classList.remove('bg-show');
-                    closeMenuButton.classList.remove('menu-open');
-                });
-            });
-        });
-    </script>
+    <script src="/static/js/dist/adminPages.bundle.js"></script>
 </html>

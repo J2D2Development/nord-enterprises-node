@@ -3,7 +3,8 @@
 main color (lt blue): 22A7F0
 complimentary (orange): f06b22
 complimentary (dk blue): 3D7899
-text: white
+dk bg text: #FDFDF0
+light bg: #FDFDF0
 
 */
 * {
@@ -29,6 +30,7 @@ body {
 }
 .admin-main {
   flex: 1;
+  background-color: #FDFDF0;
 }
 
 .header-flex-wrapper {
@@ -47,21 +49,23 @@ body {
     margin: 0 !important;
 }
 .modal-header, .modal-footer {
-  color: #fff;
+  color: #FDFDF0;
   background-color: #22A7F0;
 }
 .modal-header .close {
-  color: #fff;
+  color: #FDFDF0;
   opacity: 1;
 }
 .btn-primary {
   background-color: #3D7899;
+  color: #FDFDF0;
 }
 .btn-primary:hover {
   background-color: #33647F;
 }
 .btn-danger {
   background-color: #f06b22;
+  color: #FDFDF0;
 }
 .btn-danger:hover {
   background-color: #BF551B;
@@ -180,7 +184,7 @@ body {
 .admin-h1 {
   margin-top: 0;
   background-color: #3D7899;
-  color: #fff;
+  color: #FDFDF0;
   padding: 6px;
   z-index: 2;
 }
@@ -273,7 +277,7 @@ body {
 }
 .navbar-nav > li > a {
   margin-bottom: 0;
-  color: #fff !important;
+  color: #FDFDF0 !important;
   border: none;
   padding: 6px;
   border-radius: 5px;
@@ -282,7 +286,7 @@ body {
 }
 .navbar-nav > li > a:hover {
   background-color: #3D7899 !important;
-  color: #fff !important;
+  color: #FDFDF0 !important;
 }
 
 /*EDIT MODAL FORM*/

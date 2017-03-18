@@ -3,6 +3,7 @@ var path = require('path');
 module.exports = {
   entry: {
     adminPage: './static/js/src/admin/page.js',
+    adminPages: './static/js/src/admin/pages.js',
     adminDashboard: './static/js/src/admin/dashboard.js'
   },
   output: {
