@@ -63,42 +63,11 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 5);
+/******/ 	return __webpack_require__(__webpack_require__.s = 6);
 /******/ })
 /************************************************************************/
 /******/ ([
 /* 0 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-var slideout = exports.slideout = function slideout() {
-    var openMenuButton = document.querySelector('#open-menu');
-    var closeMenuButton = document.querySelector('#close-menu');
-    var menu = document.querySelector('#main-menu');
-    var bg = document.querySelector('#bg-screen');
-
-    openMenuButton.addEventListener('click', function () {
-        menu.classList.add('slideout-right--show');
-        bg.classList.add('bg-show');
-        closeMenuButton.classList.add('menu-open');
-    });
-
-    [closeMenuButton, bg].forEach(function (element) {
-        element.addEventListener('click', function () {
-            menu.classList.remove('slideout-right--show');
-            bg.classList.remove('bg-show');
-            closeMenuButton.classList.remove('menu-open');
-        });
-    });
-};
-
-/***/ }),
-/* 1 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -10325,25 +10294,90 @@ return jQuery;
 
 
 /***/ }),
-/* 2 */,
-/* 3 */,
-/* 4 */,
-/* 5 */
+/* 1 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _jquery = __webpack_require__(1);
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+var slideout = exports.slideout = function slideout() {
+    var openMenuButton = document.querySelector('#open-menu');
+    var closeMenuButton = document.querySelector('#close-menu');
+    var menu = document.querySelector('#main-menu');
+    var bg = document.querySelector('#bg-screen');
+
+    openMenuButton.addEventListener('click', function () {
+        menu.classList.add('slideout-right--show');
+        bg.classList.add('bg-show');
+        closeMenuButton.classList.add('menu-open');
+    });
+
+    [closeMenuButton, bg].forEach(function (element) {
+        element.addEventListener('click', function () {
+            menu.classList.remove('slideout-right--show');
+            bg.classList.remove('bg-show');
+            closeMenuButton.classList.remove('menu-open');
+        });
+    });
+};
+
+/***/ }),
+/* 2 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.setMenuOffset = undefined;
+
+var _jquery = __webpack_require__(0);
 
 var _jquery2 = _interopRequireDefault(_jquery);
 
-var _menuSlideout = __webpack_require__(0);
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var setMenuOffset = exports.setMenuOffset = function setMenuOffset() {
+    (0, _jquery2.default)(document).ready(function () {
+        var topMenu = document.querySelector('#top-menu');
+        var adminMain = document.querySelector('.admin-main');
+        adminMain.style.paddingTop = topMenu.clientHeight + 16 + 'px';
+
+        (0, _jquery2.default)(window).resize(function () {
+            adminMain.style.paddingTop = topMenu.clientHeight + 16 + 'px';
+        });
+    });
+};
+
+/***/ }),
+/* 3 */,
+/* 4 */,
+/* 5 */,
+/* 6 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _jquery = __webpack_require__(0);
+
+var _jquery2 = _interopRequireDefault(_jquery);
+
+var _menuSlideout = __webpack_require__(1);
+
+var _menuOffset = __webpack_require__(2);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 (0, _jquery2.default)(document).ready(function () {
+    //if you add a 'loading' animation for overall loading, hide here
     (0, _menuSlideout.slideout)();
+    (0, _menuOffset.setMenuOffset)();
 });
 
 /***/ })

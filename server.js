@@ -83,7 +83,10 @@ app.use((req, res, next) => {
         }
 
         if(sitename !== 'static') {
+            console.log('get basic info from no sitename in path:', sitename);
             get_basic_info(sitename);
+        } else {
+            next();
         }
         
     } else if(req.originalUrl.split('/').length > 1 && 
@@ -92,7 +95,12 @@ app.use((req, res, next) => {
         req.originalUrl.split('/'[1] !== 'static')) {
         const urlArray = req.originalUrl.split('/');
         sitename = urlArray[1];
-        get_basic_info(sitename);
+        if(sitename !== 'static') {
+            console.log('get basci info from siteanme in path:', sitename);
+            get_basic_info(sitename);
+        } else {
+            next();
+        }
     } else {
         console.log('did not get basic info!');
         console.log('but session is:', req.session);
@@ -103,13 +111,11 @@ app.use((req, res, next) => {
         console.log('fired get basic info with name:', sitename);
         basicUtils.get_hoa_main(sitename)
             .then(hoa_main => {
-                console.log('first get basic info then:', hoa_main);
                 req.session.sitename = hoa_main['hoa_id_name'];
                 req.session['hoa_main'] = hoa_main;
                 return hoa_main['hoa_id'];
             })
             .then(hoa_id => {
-                console.log('second get basic info then:', hoa_id);
                 Promise.all([basicUtils.get_hoa_main_aux(hoa_id), basicUtils.get_hoa_lookfeel(hoa_id)])
                     .then(results => {
                         req.session['hoa_main_aux'] = results[0];

@@ -8,7 +8,7 @@ $(document).ready(function() {
 
     const modalElement = $('#nord-modal');
     const bg2 = document.querySelector('#bg-screen');
-    const menuItemForm = $('#modal-edit-form');
+    const pageEditForm = $('#modal-edit-form');
     let formType = 'update';
 
     //menu item edit functionality
@@ -21,11 +21,11 @@ $(document).ready(function() {
         
         //set the basic form fields
         $('#title').val(itemData.title);
-        $('#help_text').val(itemData.helptext);
-        $('input[name=action][value='+itemData.action+']').prop('checked', 'checked');
+        // $('#help_text').val(itemData.helptext);
+        // $('input[name=action][value='+itemData.action+']').prop('checked', 'checked');
 
         //add delete button handler
-        $('#menuitem-delete').on('click', () => {
+        $('#page-delete').on('click', () => {
             console.log('adding handler:', itemData.order);
             console.log('deleting item:', itemData.order);
         });
@@ -44,22 +44,22 @@ $(document).ready(function() {
         modalElement.removeClass('modal-show');
         bg2.classList.remove('bg-show');
         $('#modal-edit-form')[0].reset();
-        $('#item-delete').off('click');
+        $('#page-delete').off('click');
     }
 
-    menuItemForm.on('submit', function(evt) {
+    pageEditForm.on('submit', function(evt) {
         evt.preventDefault();
 
-        const dataObj = menuItemForm.serializeArray()
+        const dataObj = pageEditForm.serializeArray()
             .reduce(function(total, item) {
                 total[item.name] = item.value;
                 return total;
             }, {});
 
         if(formType === 'update') {
-            updateItem(dataObj, `${window.location.pathname}/menuitems/${dataObj.order}`);
+            updateItem(dataObj, `${window.location.pathname}/page/${dataObj.order}`);
         } else if(formType === 'addnew') {
-            addItem(dataObj, `${window.location.pathname}/menuitems`);
+            addItem(dataObj, `${window.location.pathname}/page`);
         } else {
             console.log('could not find update type');
         }

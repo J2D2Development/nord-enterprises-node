@@ -63,42 +63,11 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 6);
+/******/ 	return __webpack_require__(__webpack_require__.s = 7);
 /******/ })
 /************************************************************************/
 /******/ ([
 /* 0 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-var slideout = exports.slideout = function slideout() {
-    var openMenuButton = document.querySelector('#open-menu');
-    var closeMenuButton = document.querySelector('#close-menu');
-    var menu = document.querySelector('#main-menu');
-    var bg = document.querySelector('#bg-screen');
-
-    openMenuButton.addEventListener('click', function () {
-        menu.classList.add('slideout-right--show');
-        bg.classList.add('bg-show');
-        closeMenuButton.classList.add('menu-open');
-    });
-
-    [closeMenuButton, bg].forEach(function (element) {
-        element.addEventListener('click', function () {
-            menu.classList.remove('slideout-right--show');
-            bg.classList.remove('bg-show');
-            closeMenuButton.classList.remove('menu-open');
-        });
-    });
-};
-
-/***/ }),
-/* 1 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -10325,7 +10294,68 @@ return jQuery;
 
 
 /***/ }),
+/* 1 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+var slideout = exports.slideout = function slideout() {
+    var openMenuButton = document.querySelector('#open-menu');
+    var closeMenuButton = document.querySelector('#close-menu');
+    var menu = document.querySelector('#main-menu');
+    var bg = document.querySelector('#bg-screen');
+
+    openMenuButton.addEventListener('click', function () {
+        menu.classList.add('slideout-right--show');
+        bg.classList.add('bg-show');
+        closeMenuButton.classList.add('menu-open');
+    });
+
+    [closeMenuButton, bg].forEach(function (element) {
+        element.addEventListener('click', function () {
+            menu.classList.remove('slideout-right--show');
+            bg.classList.remove('bg-show');
+            closeMenuButton.classList.remove('menu-open');
+        });
+    });
+};
+
+/***/ }),
 /* 2 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.setMenuOffset = undefined;
+
+var _jquery = __webpack_require__(0);
+
+var _jquery2 = _interopRequireDefault(_jquery);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var setMenuOffset = exports.setMenuOffset = function setMenuOffset() {
+    (0, _jquery2.default)(document).ready(function () {
+        var topMenu = document.querySelector('#top-menu');
+        var adminMain = document.querySelector('.admin-main');
+        adminMain.style.paddingTop = topMenu.clientHeight + 16 + 'px';
+
+        (0, _jquery2.default)(window).resize(function () {
+            adminMain.style.paddingTop = topMenu.clientHeight + 16 + 'px';
+        });
+    });
+};
+
+/***/ }),
+/* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10346,7 +10376,7 @@ exports.GraphicalMenuItem = GraphicalMenuItem;
 exports.AddNewGraphicalMenuItem = AddNewGraphicalMenuItem;
 
 /***/ }),
-/* 3 */
+/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10375,7 +10405,7 @@ var notifyr = exports.notifyr = function notifyr(config) {
 };
 
 /***/ }),
-/* 4 */
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10402,24 +10432,24 @@ exports.PageArea = PageArea;
 exports.AddNewPageArea = AddNewPageArea;
 
 /***/ }),
-/* 5 */,
-/* 6 */
+/* 6 */,
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _graphicalMenuItem = __webpack_require__(2);
+var _graphicalMenuItem = __webpack_require__(3);
 
-var _pageAreas = __webpack_require__(4);
+var _pageAreas = __webpack_require__(5);
 
-var _menuSlideout = __webpack_require__(0);
+var _menuSlideout = __webpack_require__(1);
 
-var _notifyr = __webpack_require__(3);
+var _notifyr = __webpack_require__(4);
 
-var _menuOffset = __webpack_require__(8);
+var _menuOffset = __webpack_require__(2);
 
-var _jquery = __webpack_require__(1);
+var _jquery = __webpack_require__(0);
 
 var _jquery2 = _interopRequireDefault(_jquery);
 
@@ -10430,6 +10460,13 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
     (0, _menuOffset.setMenuOffset)();
     var menu = document.querySelector('#graphical-menu');
     var pageAreas = document.querySelector('#page-areas');
+
+    //modal elements
+    var modalElement = (0, _jquery2.default)('#menuItemModal');
+    //modal delete button elements
+    var deleteButton = (0, _jquery2.default)('#confirm-delete');
+    var cancelButton = (0, _jquery2.default)('#cancel-delete');
+    var modalConfirm = document.querySelector('#modal-confirm');
 
     var getMenuItems = function getMenuItems() {
         _jquery2.default.get(window.location.pathname + '/menuitems').done(function (data) {
@@ -10444,9 +10481,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
             menu.innerHTML = existingItems.join('');
         }).fail(function (error) {
             console.log('xhr request failed:', error);
-        }).always(function () {
-            console.log('always block!');
-        });
+        }).always(function () {});
     };
     getMenuItems();
 
@@ -10463,9 +10498,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
             pageAreas.innerHTML = existingAreas.join('');
         }).fail(function (error) {
             console.log('xhr request failed:', error);
-        }).always(function () {
-            console.log('always block!');
-        });
+        }).always(function () {});
     };
     getPageAreas();
 
@@ -10556,7 +10589,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
             },
             data: data
         }).done(function (response) {
-            console.log('update menu item server response');
+            console.log('update menu item server response', response);
             if (response.success) {
                 menuItemUpdateSuccess(response.msg);
             } else {
@@ -10565,6 +10598,27 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
         }).fail(function (error) {
             console.log('returned but with error:', error);
             menuItemUpdateError(error.msg);
+        });
+    }
+
+    function deleteMenuItem(url) {
+        _jquery2.default.ajax({
+            url: url,
+            type: 'DELETE',
+            dataType: 'json',
+            beforeSend: function beforeSend() {}
+        }).done(function (response) {
+            console.log('delete menu item server response');
+            if (response.success) {
+                menuItemUpdateSuccess(response.msg);
+            } else {
+                menuItemUpdateError(response.msg);
+            }
+        }).fail(function (error) {
+            console.log('returned but with error:', error);
+            menuItemUpdateError(error.msg);
+        }).always(function () {
+            modalConfirm.classList.remove('slide-down');
         });
     }
 
@@ -10587,8 +10641,6 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
         var newPath = window.location.origin + pathArr.join('/');
         window.location = newPath;
     });
-
-    var modalElement = (0, _jquery2.default)('#menuItemModal');
 
     //menu item edit functionality
     (0, _jquery2.default)('body').on('click', '.openMenuItemModal', function () {
@@ -10619,10 +10671,23 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
         //show the proper edit fields for this type (feature vs page vs external)
         adjustForMenuItemType(itemData.action);
 
-        //add delete button handler
+        //add delete button handler- just show confirmation notice
         (0, _jquery2.default)('#menuitem-delete').on('click', function () {
             console.log('adding handler:', itemData.order);
             console.log('deleting item:', itemData.order);
+            modalConfirm.classList.add('slide-down');
+        });
+
+        //but first show confirm message
+        deleteButton.on('click', function () {
+            console.log('confirmed delete!', itemData.order);
+            deleteMenuItem(window.location.pathname + '/menuitems/' + itemData.order);
+        });
+
+        //cancel deletion- hide confirm div
+        cancelButton.on('click', function () {
+            console.log('canceled delete');
+            modalConfirm.classList.remove('slide-down');
         });
 
         //open the modal
@@ -10642,7 +10707,10 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
         modalElement.removeClass('modal-show');
         bg2.classList.remove('bg-show');
         (0, _jquery2.default)('#menu-item-edit-form')[0].reset();
-        (0, _jquery2.default)('#menuitem-delete').off('click');
+        modalConfirm.classList.remove('slide-down');
+        [(0, _jquery2.default)('#menuitem-delete'), deleteButton, cancelButton].forEach(function (ele) {
+            ele.off('click');
+        });
     }
 
     function adjustForMenuItemType(type) {
@@ -10678,33 +10746,6 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
     //     }, false);
     // });
 });
-
-/***/ }),
-/* 7 */,
-/* 8 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-exports.setMenuOffset = undefined;
-
-var _jquery = __webpack_require__(1);
-
-var _jquery2 = _interopRequireDefault(_jquery);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var setMenuOffset = exports.setMenuOffset = function setMenuOffset() {
-    (0, _jquery2.default)(document).ready(function () {
-        var topMenu = document.querySelector('#top-menu');
-        var adminMain = document.querySelector('.admin-main');
-        adminMain.style.paddingTop = topMenu.clientHeight + 16 + 'px';
-    });
-};
 
 /***/ })
 /******/ ]);

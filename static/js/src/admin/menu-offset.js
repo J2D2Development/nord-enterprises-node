@@ -5,5 +5,9 @@ export const setMenuOffset = () => {
         const topMenu = document.querySelector('#top-menu');
         const adminMain = document.querySelector('.admin-main');
         adminMain.style.paddingTop = `${topMenu.clientHeight + 16}px`;
+
+        $(window).resize(function() {
+            adminMain.style.paddingTop = `${topMenu.clientHeight + 16}px`;
+        });
     });
 };

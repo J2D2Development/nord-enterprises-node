@@ -63,42 +63,11 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 7);
+/******/ 	return __webpack_require__(__webpack_require__.s = 8);
 /******/ })
 /************************************************************************/
 /******/ ([
 /* 0 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-var slideout = exports.slideout = function slideout() {
-    var openMenuButton = document.querySelector('#open-menu');
-    var closeMenuButton = document.querySelector('#close-menu');
-    var menu = document.querySelector('#main-menu');
-    var bg = document.querySelector('#bg-screen');
-
-    openMenuButton.addEventListener('click', function () {
-        menu.classList.add('slideout-right--show');
-        bg.classList.add('bg-show');
-        closeMenuButton.classList.add('menu-open');
-    });
-
-    [closeMenuButton, bg].forEach(function (element) {
-        element.addEventListener('click', function () {
-            menu.classList.remove('slideout-right--show');
-            bg.classList.remove('bg-show');
-            closeMenuButton.classList.remove('menu-open');
-        });
-    });
-};
-
-/***/ }),
-/* 1 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -10325,22 +10294,83 @@ return jQuery;
 
 
 /***/ }),
-/* 2 */,
-/* 3 */,
-/* 4 */,
-/* 5 */,
-/* 6 */,
-/* 7 */
+/* 1 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _menuSlideout = __webpack_require__(0);
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+var slideout = exports.slideout = function slideout() {
+    var openMenuButton = document.querySelector('#open-menu');
+    var closeMenuButton = document.querySelector('#close-menu');
+    var menu = document.querySelector('#main-menu');
+    var bg = document.querySelector('#bg-screen');
 
-var _menuOffset = __webpack_require__(8);
+    openMenuButton.addEventListener('click', function () {
+        menu.classList.add('slideout-right--show');
+        bg.classList.add('bg-show');
+        closeMenuButton.classList.add('menu-open');
+    });
 
-var _jquery = __webpack_require__(1);
+    [closeMenuButton, bg].forEach(function (element) {
+        element.addEventListener('click', function () {
+            menu.classList.remove('slideout-right--show');
+            bg.classList.remove('bg-show');
+            closeMenuButton.classList.remove('menu-open');
+        });
+    });
+};
+
+/***/ }),
+/* 2 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.setMenuOffset = undefined;
+
+var _jquery = __webpack_require__(0);
+
+var _jquery2 = _interopRequireDefault(_jquery);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var setMenuOffset = exports.setMenuOffset = function setMenuOffset() {
+    (0, _jquery2.default)(document).ready(function () {
+        var topMenu = document.querySelector('#top-menu');
+        var adminMain = document.querySelector('.admin-main');
+        adminMain.style.paddingTop = topMenu.clientHeight + 16 + 'px';
+
+        (0, _jquery2.default)(window).resize(function () {
+            adminMain.style.paddingTop = topMenu.clientHeight + 16 + 'px';
+        });
+    });
+};
+
+/***/ }),
+/* 3 */,
+/* 4 */,
+/* 5 */,
+/* 6 */,
+/* 7 */,
+/* 8 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _menuSlideout = __webpack_require__(1);
+
+var _menuOffset = __webpack_require__(2);
+
+var _jquery = __webpack_require__(0);
 
 var _jquery2 = _interopRequireDefault(_jquery);
 
@@ -10352,7 +10382,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
     var modalElement = (0, _jquery2.default)('#nord-modal');
     var bg2 = document.querySelector('#bg-screen');
-    var menuItemForm = (0, _jquery2.default)('#modal-edit-form');
+    var pageEditForm = (0, _jquery2.default)('#modal-edit-form');
     var formType = 'update';
 
     //menu item edit functionality
@@ -10365,11 +10395,11 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
         //set the basic form fields
         (0, _jquery2.default)('#title').val(itemData.title);
-        (0, _jquery2.default)('#help_text').val(itemData.helptext);
-        (0, _jquery2.default)('input[name=action][value=' + itemData.action + ']').prop('checked', 'checked');
+        // $('#help_text').val(itemData.helptext);
+        // $('input[name=action][value='+itemData.action+']').prop('checked', 'checked');
 
         //add delete button handler
-        (0, _jquery2.default)('#menuitem-delete').on('click', function () {
+        (0, _jquery2.default)('#page-delete').on('click', function () {
             console.log('adding handler:', itemData.order);
             console.log('deleting item:', itemData.order);
         });
@@ -10388,21 +10418,21 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
         modalElement.removeClass('modal-show');
         bg2.classList.remove('bg-show');
         (0, _jquery2.default)('#modal-edit-form')[0].reset();
-        (0, _jquery2.default)('#item-delete').off('click');
+        (0, _jquery2.default)('#page-delete').off('click');
     }
 
-    menuItemForm.on('submit', function (evt) {
+    pageEditForm.on('submit', function (evt) {
         evt.preventDefault();
 
-        var dataObj = menuItemForm.serializeArray().reduce(function (total, item) {
+        var dataObj = pageEditForm.serializeArray().reduce(function (total, item) {
             total[item.name] = item.value;
             return total;
         }, {});
 
         if (formType === 'update') {
-            updateItem(dataObj, window.location.pathname + '/menuitems/' + dataObj.order);
+            updateItem(dataObj, window.location.pathname + '/page/' + dataObj.order);
         } else if (formType === 'addnew') {
-            addItem(dataObj, window.location.pathname + '/menuitems');
+            addItem(dataObj, window.location.pathname + '/page');
         } else {
             console.log('could not find update type');
         }
@@ -10416,32 +10446,6 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
         console.log('adding item:', item, url);
     }
 });
-
-/***/ }),
-/* 8 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-exports.setMenuOffset = undefined;
-
-var _jquery = __webpack_require__(1);
-
-var _jquery2 = _interopRequireDefault(_jquery);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var setMenuOffset = exports.setMenuOffset = function setMenuOffset() {
-    (0, _jquery2.default)(document).ready(function () {
-        var topMenu = document.querySelector('#top-menu');
-        var adminMain = document.querySelector('.admin-main');
-        adminMain.style.paddingTop = topMenu.clientHeight + 16 + 'px';
-    });
-};
 
 /***/ })
 /******/ ]);

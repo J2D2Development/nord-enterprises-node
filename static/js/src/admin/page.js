@@ -11,6 +11,13 @@ $(document).ready(function() {
     const menu = document.querySelector('#graphical-menu');
     const pageAreas = document.querySelector('#page-areas');
 
+    //modal elements
+    const modalElement = $('#menuItemModal');
+    //modal delete button elements
+    const deleteButton = $('#confirm-delete');
+    const cancelButton = $('#cancel-delete');
+    const modalConfirm = document.querySelector('#modal-confirm');
+
     const getMenuItems = () => {
         $.get(window.location.pathname + '/menuitems')
             .done(data => {
@@ -27,9 +34,7 @@ $(document).ready(function() {
             .fail(error => {
                 console.log('xhr request failed:', error);
             })
-            .always(() => {
-                console.log('always block!');
-            });
+            .always(() => {});
     };
     getMenuItems();
 
@@ -49,9 +54,7 @@ $(document).ready(function() {
             .fail(error => {
                 console.log('xhr request failed:', error);
             })
-            .always(() => {
-                console.log('always block!');
-            });
+            .always(() => {});
     };
     getPageAreas();
 
@@ -143,7 +146,7 @@ $(document).ready(function() {
             data: data
         })
         .done(response => {
-            console.log('update menu item server response');
+            console.log('update menu item server response', response);
             if(response.success) {
                 menuItemUpdateSuccess(response.msg);
             } else {
@@ -153,6 +156,31 @@ $(document).ready(function() {
         .fail(error => {
             console.log('returned but with error:', error);
             menuItemUpdateError(error.msg);
+        });
+    }
+
+    function deleteMenuItem(url) {
+        $.ajax({
+            url: url,
+            type: 'DELETE',
+            dataType: 'json',
+            beforeSend: () => {}
+        })
+        .done(response => {
+            console.log('delete menu item server response');
+            if(response.success) {
+                menuItemUpdateSuccess(response.msg);
+            } else {
+                menuItemUpdateError(response.msg);
+                
+            }
+        })
+        .fail(error => {
+            console.log('returned but with error:', error);
+            menuItemUpdateError(error.msg);
+        })
+        .always(() => {
+            modalConfirm.classList.remove('slide-down');
         });
     }
 
@@ -176,7 +204,7 @@ $(document).ready(function() {
         window.location = newPath;
     });
 
-    const modalElement = $('#menuItemModal');
+    
 
     //menu item edit functionality
     $('body').on('click', '.openMenuItemModal', function() {
@@ -207,10 +235,23 @@ $(document).ready(function() {
         //show the proper edit fields for this type (feature vs page vs external)
         adjustForMenuItemType(itemData.action);
 
-        //add delete button handler
+        //add delete button handler- just show confirmation notice
         $('#menuitem-delete').on('click', () => {
             console.log('adding handler:', itemData.order);
             console.log('deleting item:', itemData.order);
+            modalConfirm.classList.add('slide-down');
+        });
+
+        //but first show confirm message
+        deleteButton.on('click', () => {
+            console.log('confirmed delete!', itemData.order);
+            deleteMenuItem(`${window.location.pathname}/menuitems/${itemData.order}`);
+        });
+
+        //cancel deletion- hide confirm div
+        cancelButton.on('click', () => {
+            console.log('canceled delete');
+            modalConfirm.classList.remove('slide-down');
         });
 
         //open the modal
@@ -230,7 +271,11 @@ $(document).ready(function() {
         modalElement.removeClass('modal-show');
         bg2.classList.remove('bg-show');
         $('#menu-item-edit-form')[0].reset();
-        $('#menuitem-delete').off('click');
+        modalConfirm.classList.remove('slide-down');
+        [$('#menuitem-delete'), deleteButton, cancelButton].forEach(ele => {
+            ele.off('click');
+        });
+        
     }
 
     function adjustForMenuItemType(type) {

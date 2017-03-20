@@ -325,6 +325,43 @@ label {
 .modal-show {
   transform: translateY(0);
 }
+.modal-body {
+  overflow: hidden;
+}
+/*modal confirmation div (inside modal-body)*/
+.modal-confirm {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-content: center;
+  text-align: center;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  transform: translateY(-100%);
+  transition: transform 0.3s ease-in-out;
+  background-color: rgba(200,200,200,0.8);
+}
+.modal-confirm-message {
+  font-size: 1.5em;
+  padding-bottom: 8px;
+}
+.modal-confirm-buttons {
+  padding-top: 8px;
+}
+
+/*helper classes*/
+.text-warning {
+  color: #f06b22;
+}
+.scale-show {
+  transform: scale(1);
+}
+.slide-down {
+  transform: translateY(0);
+}
 
 
 /*Back to top button*/
