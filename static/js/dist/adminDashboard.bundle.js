@@ -10303,6 +10303,36 @@ return jQuery;
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
+exports.setMenuOffset = undefined;
+
+var _jquery = __webpack_require__(0);
+
+var _jquery2 = _interopRequireDefault(_jquery);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var setMenuOffset = exports.setMenuOffset = function setMenuOffset() {
+    (0, _jquery2.default)(document).ready(function () {
+        var topMenu = document.querySelector('#top-menu');
+        var adminMain = document.querySelector('.admin-main');
+        adminMain.style.paddingTop = topMenu.clientHeight + 16 + 'px';
+
+        (0, _jquery2.default)(window).resize(function () {
+            adminMain.style.paddingTop = topMenu.clientHeight + 16 + 'px';
+        });
+    });
+};
+
+/***/ }),
+/* 2 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
 var slideout = exports.slideout = function slideout() {
     var openMenuButton = document.querySelector('#open-menu');
     var closeMenuButton = document.querySelector('#close-menu');
@@ -10325,36 +10355,6 @@ var slideout = exports.slideout = function slideout() {
 };
 
 /***/ }),
-/* 2 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-exports.setMenuOffset = undefined;
-
-var _jquery = __webpack_require__(0);
-
-var _jquery2 = _interopRequireDefault(_jquery);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var setMenuOffset = exports.setMenuOffset = function setMenuOffset() {
-    (0, _jquery2.default)(document).ready(function () {
-        var topMenu = document.querySelector('#top-menu');
-        var adminMain = document.querySelector('.admin-main');
-        adminMain.style.paddingTop = topMenu.clientHeight + 16 + 'px';
-
-        (0, _jquery2.default)(window).resize(function () {
-            adminMain.style.paddingTop = topMenu.clientHeight + 16 + 'px';
-        });
-    });
-};
-
-/***/ }),
 /* 3 */,
 /* 4 */,
 /* 5 */,
@@ -10368,9 +10368,9 @@ var _jquery = __webpack_require__(0);
 
 var _jquery2 = _interopRequireDefault(_jquery);
 
-var _menuSlideout = __webpack_require__(1);
+var _menuSlideout = __webpack_require__(2);
 
-var _menuOffset = __webpack_require__(2);
+var _menuOffset = __webpack_require__(1);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 

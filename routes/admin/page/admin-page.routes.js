@@ -223,7 +223,6 @@ pageRouter.route('/:page_id/menuitems')
             
             basicUtils.getDBInfo(query)
                 .then(result => {
-                    console.log('query result on server:', result);
                     if(result['affectedRows']) {
                         res.status(200).json({
                             success: true,
@@ -242,7 +241,7 @@ pageRouter.route('/:page_id/menuitems')
                     console.log('error:', err);
                     res.status(500).json({
                         success: false,
-                        msg: 'Server error',
+                        msg: err,
                         next: false
                     });
                 });
@@ -253,28 +252,39 @@ pageRouter.route('/:page_id/menuitems')
             const page_id = +req.params['page_id'];
             const order = +req.params['menu_item_id'];
 
-            const query = "";
+            const queryCheck = "SELECT * FROM hoa_pv_menuitem WHERE hoa_id = " + hoa_id + " AND page_id = " + connection.escape(page_id) + " AND `order` = " + order;
 
-            basicUtils.getDBInfo(query)
+            const queryDelete = "DELETE FROM hoa_pv_menuitem WHERE hoa_id = " + hoa_id + " AND page_id = " + connection.escape(page_id) + " AND `order` = " + order;
+
+            basicUtils.getDBInfo(queryCheck)
                 .then(result => {
-                    console.log('query result on server:', result);
-                    if(result['affectedRows']) {
-                        res.status(200).json({
-                            success: true,
-                            msg: 'Menu Item Deleted!',
-                            next: true
-                        })
+                    return result.length;
+                })
+                .then(rows => {
+                    if(rows === 1) {
+                        basicUtils.deleteDBInfo(queryDelete)
+                            .then(result => {
+                                if(result['affectedRows']) {
+                                    return res.status(200).json({
+                                        success: true,
+                                        msg: 'Menu Item Deleted!',
+                                        next: true
+                                    });
+                                } else {
+                                    return res.status(503).json({
+                                        success: false,
+                                        msg: 'Error deleting menu item',
+                                        next: false
+                                    });
+                                }
+                            });
                     } else {
-                        res.status(503).json({
-                            success: false,
-                            msg: 'Error deleting menu item',
-                            next: false
-                        });
-                    }
+                        throw new Error('Check got result, but error');
+                    }   
                 })
                 .catch(err => {
                     console.log('error:', err);
-                    res.status(500).json({
+                    return res.status(500).json({
                         success: false,
                         msg: 'Server error',
                         next: false
