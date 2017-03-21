@@ -82,7 +82,8 @@ h1 small {
   justify-content: center;
   align-items: center;
   background-color: #333;
-  background: radial-gradient(circle, #ffffff, #cccccc, #a9a9a9, #999999, #666666);
+  /*background: radial-gradient(circle, #ffffff, #cccccc, #a9a9a9, #999999, #666666);*/
+  background: radial-gradient(circle, #f3dcfb, #679fe4);
 }
 .login-form--inner {
   width: 30%;

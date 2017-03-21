@@ -144,6 +144,7 @@ pageRouter.route('/:page_id/menuitems')
     .post((req, res) => {
         //add new menu item
         console.log('user:', req.user);
+        console.log('passport:', req.session.user);
         
         const hoa_id = req.session['hoa_main']['hoa_id'];
         const page_id = +req.params['page_id'];
@@ -155,7 +156,10 @@ pageRouter.route('/:page_id/menuitems')
         const action = update.action;
         const action_item = update.action_item || 0;
         const action_url = update.action_url || null;
-        const updt_user = req.user || 'Unknown User';
+        let updt_user = 'Unknown User';
+            if(req.session && req.session.passport && req.session.passport.user) { 
+                updt_user = req.session.passport.user.username; 
+            }
 
         //figure out what type of action and set id- if 'x', adding external link and id should be 0
         let action_id = 0;
@@ -215,7 +219,8 @@ pageRouter.route('/:page_id/menuitems')
             const action_item = update.action_item || 0;
             const action_url = update.action_url || null;
             const order = +req.params['menu_item_id'];
-            const updt_user = req.user || 'Unknown User';
+            let updt_user = 'Unknown User';
+            if(req.user && req.user.username) { updt_user = req.user.username ; }
 
             //figure out what type of action and set id- if 'x', adding external link and id should be 0
             let action_id = 0;

@@ -55,7 +55,7 @@ app.use(session({
     resave: true, 
     saveUninitialized: true, 
     secret: 'SOMERANDOMSECRETHERE', 
-    cookie: { maxAge: 60000 }
+    cookie: { maxAge: 600000 }
 }));
 app.use(passport.initialize());
 app.use(passport.session());
@@ -73,6 +73,7 @@ app.use((req, res, next) => {
     // });
 
     //all went well
+    console.log('session on first load:', req.session);
     let sitename = '';
 
     if(req.originalUrl === '/') {
@@ -153,7 +154,16 @@ passport.use(new LocalStrategy(
             } else if(!mysql_old_password_decode(password, results[0].password)) {
                 return done(null, false, { message: 'Invalid Password' });
             } else {
-                return done(null, results[0], { message: `Welcome back, ${results[0]['first_name']}`});
+                const user = {
+                    username: results[0].username,
+                    hoa_id: results[0].hoa_id,
+                    first_name: results[0].first_name,
+                    last_name: results[0].last_name,
+                    site_admin: results[0].site_admin,
+                    email: results[0].email
+                };
+                console.log('user on setup:', user);
+                return done(null, user, { message: `Welcome back, ${user.first_name}`});
             }
         });
 
@@ -185,10 +195,8 @@ app.get('/', (req, res) => {
 app.get('/:sitename/logout', (req, res) => {
     const sitename = req.session['sitename'];
     req.logout();
-    console.log('session after logout:', req.session);
     req.session.destroy(err => {
         if(err) console.log('session destroy error:', err);
-        console.log('session after destroy:', req.session);
         res.redirect(`/${sitename}/page`);
     });
 });
@@ -290,6 +298,7 @@ app.get('/:sitename/page', (req, res) => {
 //move this to own file with adminRouter instance- on that, use .all to always check login session before allowing any access
 app.get('/:sitename/admin', (req, res) => {
     if(req.user) {
+        console.log('user logged in:', req.user);
         let message;
         if(req.session['flash'] && req.session['flash']['success']) {
             message = req.session['flash']['success'][0];

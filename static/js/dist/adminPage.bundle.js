@@ -10355,7 +10355,27 @@ var slideout = exports.slideout = function slideout() {
 };
 
 /***/ }),
-/* 3 */,
+/* 3 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+var VerticalMenuItem = function VerticalMenuItem(props) {
+    return "<a title=\"Click to edit\" class=\"" + props.menu_style + " openMenuItemModal\" data-order=\"" + props.order + "\" data-helptext=\"" + props.help_text + "\" data-title=\"" + props.title + "\" data-action=\"" + props.action + "\" data-actionid=\"" + props.action_id + "\" data-actionitem=\"" + props.action_item + "\" data-actionurl=\"" + props.action_url + "\">" + props.title + "<span class=\"glyphicon glyphicon-pencil edit-icon-right\" aria-hidden=\"true\"></span></a>";
+};
+
+var AddNewVerticalMenuItem = function AddNewVerticalMenuItem(style) {
+    return "<a class=\"" + style + " openMenuItemModal\" id=\"addnew\" title=\"Add Menu Item\">Add Menu Item<span class=\"glyphicon glyphicon-plus edit-icon-right\" aria-hidden=\"true\"></span></a>";
+};
+
+exports.VerticalMenuItem = VerticalMenuItem;
+exports.AddNewVerticalMenuItem = AddNewVerticalMenuItem;
+
+/***/ }),
 /* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -10419,7 +10439,7 @@ exports.AddNewPageArea = AddNewPageArea;
 "use strict";
 
 
-var _menuItems = __webpack_require__(9);
+var _menuItems = __webpack_require__(3);
 
 var _pageAreas = __webpack_require__(5);
 
@@ -10734,28 +10754,6 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
     //     }, false);
     // });
 });
-
-/***/ }),
-/* 8 */,
-/* 9 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-var VerticalMenuItem = function VerticalMenuItem(props) {
-    return "<a title=\"Click to edit\" class=\"" + props.menu_style + " openMenuItemModal\" data-order=\"" + props.order + "\" data-helptext=\"" + props.help_text + "\" data-title=\"" + props.title + "\" data-action=\"" + props.action + "\" data-actionid=\"" + props.action_id + "\" data-actionitem=\"" + props.action_item + "\" data-actionurl=\"" + props.action_url + "\">" + props.title + "<span class=\"glyphicon glyphicon-pencil edit-icon-right\" aria-hidden=\"true\"></span></a>";
-};
-
-var AddNewVerticalMenuItem = function AddNewVerticalMenuItem(style) {
-    return "<a class=\"" + style + " openMenuItemModal\" id=\"addnew\" title=\"Add Menu Item\">Add Menu Item<span class=\"glyphicon glyphicon-plus edit-icon-right\" aria-hidden=\"true\"></span></a>";
-};
-
-exports.VerticalMenuItem = VerticalMenuItem;
-exports.AddNewVerticalMenuItem = AddNewVerticalMenuItem;
 
 /***/ })
 /******/ ]);
