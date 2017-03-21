@@ -124,10 +124,16 @@ pageRouter.route('/:page_id/menuitems')
     .get((req, res) => {
         const hoa_id = req.session['hoa_main']['hoa_id'];
         const page_id = +req.params['page_id'];
+        const menu_style = req.session['hoa_lookfeel']['menu_button_type'];
 
         basicUtils.getDBInfo(`SELECT * FROM hoa_pv_menuitem WHERE hoa_id = ${hoa_id} AND page_id = ${connection.escape(page_id)};`)
             .then(result => {
-                res.json(result);
+                if(result.length) {
+                    for(let i = 0; i < result.length; i += 1) {
+                        result[i].menu_style = menu_style;
+                    }
+                    res.json(result);
+                }
             })
             .catch(err => {
                 console.log(err);
@@ -256,6 +262,14 @@ pageRouter.route('/:page_id/menuitems')
 
             const queryDelete = "DELETE FROM hoa_pv_menuitem WHERE hoa_id = " + hoa_id + " AND page_id = " + connection.escape(page_id) + " AND `order` = " + order;
 
+            const queryUpdateOrder = "UPDATE hoa_pv_menuitem SET `order` = (`order` - 1) WHERE hoa_id = " + hoa_id + " AND page_id = " + page_id + " AND `order` > " + order;
+            
+        // "update hoa_pv_menuitem set " .
+		// "`order` = (`order` - 1), " .
+		// "updt_user = '${valid_user}', " .
+		// "updt_dttm = now() " .
+		// "where hoa_id = ${hoa_main["hoa_id"]} and page_id = ${Ipage_id} and `order` > ${Iorder}";
+
             basicUtils.getDBInfo(queryCheck)
                 .then(result => {
                     return result.length;
@@ -265,11 +279,19 @@ pageRouter.route('/:page_id/menuitems')
                         basicUtils.deleteDBInfo(queryDelete)
                             .then(result => {
                                 if(result['affectedRows']) {
-                                    return res.status(200).json({
-                                        success: true,
-                                        msg: 'Menu Item Deleted!',
-                                        next: true
-                                    });
+                                    basicUtils.getDBInfo(queryUpdateOrder)
+                                        .then(finalResult => {
+                                            console.log('final del result:', finalResult);
+                                            return res.status(200).json({
+                                                success: true,
+                                                msg: 'Menu Item Deleted!',
+                                                next: true
+                                            });
+                                        })
+                                        .catch(error => {
+                                            console.log('order update failed (in inner catch block):', error);
+                                            throw new Error('Remaining Order Update Failed', error);
+                                        });
                                 } else {
                                     return res.status(503).json({
                                         success: false,
@@ -277,16 +299,20 @@ pageRouter.route('/:page_id/menuitems')
                                         next: false
                                     });
                                 }
-                            });
+                            })
+                            .catch(error => {
+                                console.log('passsing along order update failure');
+                                throw new Error('Remaining Order Update Failed:', error);
+                            })
                     } else {
                         throw new Error('Check got result, but error');
                     }   
                 })
                 .catch(err => {
-                    console.log('error:', err);
+                    console.log('error:', err.code);
                     return res.status(500).json({
                         success: false,
-                        msg: 'Server error',
+                        msg: `Server error- please try again`,
                         next: false
                     });
                 });

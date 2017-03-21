@@ -13,8 +13,8 @@
         </div>
 
         <div class="content-main-flex row">
-            <% if(hoa_lookfeel["menu_button_type"] === 'bg_image') { %>
-                <div id="graphical-menu" class="vertical-menu-wrapper graphical">
+            <% if(hoa_lookfeel["menu_button_type"] === 'bg_image' || hoa_lookfeel["menu_button_type"] === 'color_tile') { %>
+                <div id="menu-wrapper" class="vertical-menu-wrapper">
                     
                         <div class="loading-wrapper">
                             <div class="spinner">
@@ -26,8 +26,6 @@
                         </div>
                     
                 </div>
-            <% } else { %>
-                <div id="menu-items" class="vertical-menu-wrapper defined-tiles"></div>
             <% } %>
             <div class="content-main">
                 <div class="content" id="page-areas">

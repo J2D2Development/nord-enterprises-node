@@ -10355,27 +10355,7 @@ var slideout = exports.slideout = function slideout() {
 };
 
 /***/ }),
-/* 3 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-var GraphicalMenuItem = function GraphicalMenuItem(props) {
-    return "<a title=\"Click to edit\" class=\"menuitem-vertical-img openMenuItemModal\" data-order=\"" + props.order + "\" data-helptext=\"" + props.help_text + "\" data-title=\"" + props.title + "\" data-action=\"" + props.action + "\" data-actionid=\"" + props.action_id + "\" data-actionitem=\"" + props.action_item + "\" data-actionurl=\"" + props.action_url + "\">" + props.title + "<span class=\"glyphicon glyphicon-pencil edit-icon-right\" aria-hidden=\"true\"></span></a>";
-};
-
-var AddNewGraphicalMenuItem = function AddNewGraphicalMenuItem() {
-    return "<a class=\"menuitem-vertical-img openMenuItemModal\" id=\"addnew\" title=\"Add Menu Item\">Add Menu Item<span class=\"glyphicon glyphicon-plus edit-icon-right\" aria-hidden=\"true\"></span></a>";
-};
-
-exports.GraphicalMenuItem = GraphicalMenuItem;
-exports.AddNewGraphicalMenuItem = AddNewGraphicalMenuItem;
-
-/***/ }),
+/* 3 */,
 /* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -10439,7 +10419,7 @@ exports.AddNewPageArea = AddNewPageArea;
 "use strict";
 
 
-var _graphicalMenuItem = __webpack_require__(3);
+var _menuItems = __webpack_require__(9);
 
 var _pageAreas = __webpack_require__(5);
 
@@ -10458,7 +10438,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 (0, _jquery2.default)(document).ready(function () {
     (0, _menuSlideout.slideout)();
     (0, _menuOffset.setMenuOffset)();
-    var menu = document.querySelector('#graphical-menu');
+    var menu = document.querySelector('#menu-wrapper');
     var pageAreas = document.querySelector('#page-areas');
 
     //modal elements
@@ -10473,10 +10453,11 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
             if (data.errorMsg) {
                 return 'Error getting menu items: ' + data.err;
             }
+
             var existingItems = data.map(function (item) {
-                return (0, _graphicalMenuItem.GraphicalMenuItem)(item);
+                return (0, _menuItems.VerticalMenuItem)(item);
             });
-            existingItems.push((0, _graphicalMenuItem.AddNewGraphicalMenuItem)());
+            existingItems.push((0, _menuItems.AddNewVerticalMenuItem)(data[0]['menu_style']));
 
             menu.innerHTML = existingItems.join('');
         }).fail(function (error) {
@@ -10653,6 +10634,14 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
         menuItemFormType = addnew ? 'addnew' : 'update';
         menuItemOrder = +itemData.order || 0;
 
+        if (menuItemFormType === 'addnew') {
+            (0, _jquery2.default)('#modal-title').html('Add Menu Item');
+            (0, _jquery2.default)('#menuitem-delete').hide();
+        } else {
+            (0, _jquery2.default)('#modal-title').html('Edit Menu Item');
+            (0, _jquery2.default)('#menuitem-delete').show();
+        }
+
         //set the basic form fields
         (0, _jquery2.default)('#title').val(itemData.title);
         (0, _jquery2.default)('#help_text').val(itemData.helptext);
@@ -10673,22 +10662,21 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
         //add delete button handler- just show confirmation notice
         (0, _jquery2.default)('#menuitem-delete').on('click', function () {
-            console.log('adding handler:', itemData.order);
-            console.log('deleting item:', itemData.order);
             modalConfirm.classList.add('slide-down');
         });
 
         //but first show confirm message
         deleteButton.on('click', function () {
-            console.log('confirmed delete!', itemData.order);
             deleteMenuItem(window.location.pathname + '/menuitems/' + itemData.order);
         });
 
         //cancel deletion- hide confirm div
         cancelButton.on('click', function () {
-            console.log('canceled delete');
             modalConfirm.classList.remove('slide-down');
         });
+
+        //if this is 'add new' instead of 'edit'
+
 
         //open the modal
         modalElement.addClass('modal-show');
@@ -10746,6 +10734,28 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
     //     }, false);
     // });
 });
+
+/***/ }),
+/* 8 */,
+/* 9 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+var VerticalMenuItem = function VerticalMenuItem(props) {
+    return "<a title=\"Click to edit\" class=\"" + props.menu_style + " openMenuItemModal\" data-order=\"" + props.order + "\" data-helptext=\"" + props.help_text + "\" data-title=\"" + props.title + "\" data-action=\"" + props.action + "\" data-actionid=\"" + props.action_id + "\" data-actionitem=\"" + props.action_item + "\" data-actionurl=\"" + props.action_url + "\">" + props.title + "<span class=\"glyphicon glyphicon-pencil edit-icon-right\" aria-hidden=\"true\"></span></a>";
+};
+
+var AddNewVerticalMenuItem = function AddNewVerticalMenuItem(style) {
+    return "<a class=\"" + style + " openMenuItemModal\" id=\"addnew\" title=\"Add Menu Item\">Add Menu Item<span class=\"glyphicon glyphicon-plus edit-icon-right\" aria-hidden=\"true\"></span></a>";
+};
+
+exports.VerticalMenuItem = VerticalMenuItem;
+exports.AddNewVerticalMenuItem = AddNewVerticalMenuItem;
 
 /***/ })
 /******/ ]);

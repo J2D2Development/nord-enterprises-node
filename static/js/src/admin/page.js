@@ -1,4 +1,4 @@
-import { GraphicalMenuItem, AddNewGraphicalMenuItem } from './graphical-menu-item';
+import { VerticalMenuItem, AddNewVerticalMenuItem } from './menu-items';
 import { PageArea, AddNewPageArea } from './page-areas';
 import { slideout } from './menu-slideout';
 import { notifyr } from './notifyr';
@@ -8,7 +8,7 @@ import $ from 'jquery';
 $(document).ready(function() {
     slideout();
     setMenuOffset();
-    const menu = document.querySelector('#graphical-menu');
+    const menu = document.querySelector('#menu-wrapper');
     const pageAreas = document.querySelector('#page-areas');
 
     //modal elements
@@ -24,10 +24,11 @@ $(document).ready(function() {
                 if(data.errorMsg) {
                     return `Error getting menu items: ${data.err}`;
                 }
+                
                 const existingItems = data.map(item => {
-                    return GraphicalMenuItem(item);
+                    return VerticalMenuItem(item);
                 })
-                existingItems.push(AddNewGraphicalMenuItem())
+                existingItems.push(AddNewVerticalMenuItem(data[0]['menu_style']));
                 
                 menu.innerHTML = existingItems.join('');
             })
@@ -216,6 +217,14 @@ $(document).ready(function() {
         //couple globals to track modal type and order (for use in update);
         menuItemFormType = addnew ? 'addnew' : 'update';
         menuItemOrder = +itemData.order || 0;
+
+        if(menuItemFormType === 'addnew') {
+            $('#modal-title').html('Add Menu Item');
+            $('#menuitem-delete').hide();
+        } else {
+            $('#modal-title').html('Edit Menu Item');
+            $('#menuitem-delete').show();
+        }
         
         //set the basic form fields
         $('#title').val(itemData.title);
@@ -237,22 +246,21 @@ $(document).ready(function() {
 
         //add delete button handler- just show confirmation notice
         $('#menuitem-delete').on('click', () => {
-            console.log('adding handler:', itemData.order);
-            console.log('deleting item:', itemData.order);
             modalConfirm.classList.add('slide-down');
         });
 
         //but first show confirm message
         deleteButton.on('click', () => {
-            console.log('confirmed delete!', itemData.order);
             deleteMenuItem(`${window.location.pathname}/menuitems/${itemData.order}`);
         });
 
         //cancel deletion- hide confirm div
         cancelButton.on('click', () => {
-            console.log('canceled delete');
             modalConfirm.classList.remove('slide-down');
         });
+
+        //if this is 'add new' instead of 'edit'
+
 
         //open the modal
         modalElement.addClass('modal-show');
