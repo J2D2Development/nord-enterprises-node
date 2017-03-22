@@ -72,110 +72,119 @@
 
         <div class="nord-modal nord-modal-fade" tabindex="-1" role="dialog" id="menuItemModal">
             <form id="menu-item-edit-form">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title" id="modal-title">Edit Menu Item</h4>
-                </div>
-                <div class="modal-body">
-                    <p>
-                        <div class="flex-row">
-                            <div class="form-group half-width">
-                                <label>Title</label>
-                                <small><em>Text to appear as title</em></small><br />
-                                <input type="text" name="title" class="form-control" id="title" placeholder="Title" />
-                            </div>
-                            <div class="form-group half-width">
-                                <label>Help Text</label>
-                                <small><em>Will show on hover- optional</em></small><br />
-                                <input type="text" name="help_text" class="form-control" id="help_text" placeholder="Help Text" />
-                            </div>
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title" id="modal-title">Edit Menu Item</h4>
                         </div>
-                        <div class="flex-row">
-                            <div class="form-group full-width">
-                                <label>Action</label>
-                                <small><em>Choose type of link</em></small><br />
-                                <div class="flex-row" style="justify-content:space-around;">
-                                    <div>
-                                        Link to a feature 
-                                        <input type="radio" name="action" value="f" />
+                        <div class="modal-body">
+                            <p>
+                                <div class="flex-row">
+                                    <div class="form-group half-width">
+                                        <label>Title</label>
+                                        <small><em>Text to appear as title</em></small><br />
+                                        <input type="text" name="title" class="form-control" id="title" placeholder="Title" />
                                     </div>
-                                    <div>
-                                        Link to a page 
-                                        <input type="radio" name="action" value="p" />
-                                    </div>
-                                    <div>
-                                        Link to an external site 
-                                        <input type="radio" name="action" value="x" />
+                                    <div class="form-group half-width">
+                                        <label>Help Text</label>
+                                        <small><em>Will show on hover- optional</em></small><br />
+                                        <input type="text" name="help_text" class="form-control" id="help_text" placeholder="Help Text" />
                                     </div>
                                 </div>
-                            </div>
-                        </div>
+                                <div class="flex-row">
+                                    <div class="form-group full-width">
+                                        <label>Action</label>
+                                        <small><em>Choose type of link</em></small><br />
+                                        <div class="flex-row" style="justify-content:space-around;">
+                                            <div>
+                                                Link to a feature 
+                                                <input type="radio" name="action" value="f" />
+                                            </div>
+                                            <div>
+                                                Link to a page 
+                                                <input type="radio" name="action" value="p" />
+                                            </div>
+                                            <div>
+                                                Link to an external site 
+                                                <input type="radio" name="action" value="x" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
 
-                        <!--Shows if item links to a page-->
-                        <div class="flex-row" id="button-page">
-                            <div class="form-group full-width">
-                                <label>Current link</label>
-                                <small><em>Page this button links to</em></small><br />
-                                <select name="page_action_id" id="page_action_id" class="form-control">
-                                    <% for(var i = 0; i < pageList.length; i += 1) { %>
-                                        <option value="<%= pageList[i].page_id %>">
-                                            <%= pageList[i].title %>
-                                        </option>
-                                    <% } %>
-                                </select>
-                            </div>
-                        </div>
+                                <!--Shows if item links to a page-->
+                                <div class="flex-row" id="button-page">
+                                    <div class="form-group full-width">
+                                        <label>Current link</label>
+                                        <small><em>Page this button links to</em></small><br />
+                                        <select name="page_action_id" id="page_action_id" class="form-control">
+                                            <% for(var i = 0; i < pageList.length; i += 1) { %>
+                                                <option value="<%= pageList[i].page_id %>">
+                                                    <%= pageList[i].title %>
+                                                </option>
+                                            <% } %>
+                                        </select>
+                                    </div>
+                                </div>
 
-                        <!--Shows if item links to a feature-->
-                        <div class="flex-row" id="button-feature">
-                            <div class="form-group half-width">
-                                <label>Current link</label>
-                                <small><em>Feature this button links to</em></small><br />
-                                <select name="feature_action_id" id="feature_action_id" class="form-control">
-                                    <% for(var i = 0; i < featureList.length; i += 1) { %>
-                                        <option value="<%= featureList[i].feature_id %>">
-                                            <%= featureList[i].title %>
-                                        </option>
-                                    <% } %>
-                                </select>
-                            </div>
-                            <div class="form-group half-width">
-                                <label>Specific Item</label>
-                                <small><em>Test</em></small><br />
-                                <select name="action_item" id="action_item" class="form-control">
-                                    <option value="">Test</option>
-                                </select>
-                            </div>
-                        </div>
+                                <!--Shows if item links to a feature-->
+                                <div class="flex-row" id="button-feature">
+                                    <div class="form-group half-width">
+                                        <label>Current link</label>
+                                        <small><em>Feature this button links to</em></small><br />
+                                        <select name="feature_action_id" id="feature_action_id" class="form-control">
+                                            <% for(var i = 0; i < featureList.length; i += 1) { %>
+                                                <option value="<%= featureList[i].feature_id %>">
+                                                    <%= featureList[i].title %>
+                                                </option>
+                                            <% } %>
+                                        </select>
+                                        <div>
+                                            Go directly to a specific feature item 
+                                            <input type="checkbox" name="choose_feature_item" id="choose_feature_item" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group half-width opacity-none opacity-transition" id="select_feature_item">
+                                        <label>Specific Item</label>
+                                        <small><em>Choose Individual Item</em></small><br />
+                                        <select name="action_item" id="action_item" class="form-control">
+                                            <% for(var i = 0; i < featureItemList.length; i += 1) { %>
+                                                <option value="<%= featureItemList[i].item_id %>"
+                                                    data-parentfeature="<%= featureItemList[i].feature_id %>">
+                                                    <%= featureItemList[i].title %>
+                                                </option>
+                                            <% } %>
+                                        </select>
+                                    </div>
+                                </div>
 
-                        <!--Shows if item links to an external site-->
-                        <div class="flex-row" id="button-external">
-                            <div class="form-group full-width">
-                                <label>Current link</label>
-                                <small><em>Url this button links to</em></small><br />
-                                <input type="text" name="action_url" class="form-control" id="action_url" placeholder="Enter url" />
+                                <!--Shows if item links to an external site-->
+                                <div class="flex-row" id="button-external">
+                                    <div class="form-group full-width">
+                                        <label>Current link</label>
+                                        <small><em>Url this button links to</em></small><br />
+                                        <input type="text" name="action_url" class="form-control" id="action_url" placeholder="Enter url" />
+                                    </div>
+                                </div>
+                            </p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-danger pull-left" id="menuitem-delete">Delete</button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                            <input type="submit" class="btn btn-primary" value="Save Changes" />
+                        </div>
+                        <div class="modal-confirm" id="modal-confirm">
+                            <div class="modal-confirm-message text-warning">
+                                Are you sure you want to delete this menu item?
                             </div>
-                        </div>
-                    </p>
-                    <div class="modal-confirm" id="modal-confirm">
-                        <div class="modal-confirm-message text-warning">
-                            Are you sure you want to delete this menu item?
-                        </div>
-                        <div class="modal-confirm-buttons">
-                            <button type="button" class="btn btn-danger" id="confirm-delete">Yes - Delete</button>
-                            <button type="button" class="btn btn-primary" id="cancel-delete">No - Cancel</button>
+                            <div class="modal-confirm-buttons">
+                                <button type="button" class="btn btn-danger" id="confirm-delete">Yes - Delete</button>
+                                <button type="button" class="btn btn-primary" id="cancel-delete">No - Cancel</button>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-danger pull-left" id="menuitem-delete">Delete</button>
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                    <input type="submit" class="btn btn-primary" value="Save Changes" />
-                </div>
-                </div>
-            </div>
             </form>
         </div>
 

@@ -326,7 +326,7 @@ label {
 .modal-show {
   transform: translateY(0);
 }
-.modal-body {
+.modal-content {
   overflow: hidden;
 }
 /*modal confirmation div (inside modal-body)*/
@@ -363,6 +363,16 @@ label {
 .slide-down {
   transform: translateY(0);
 }
+.opacity-transition {
+  transition: opacity 0.3s ease-in-out;
+}
+.opacity-none {
+  opacity: 0;
+}
+.opacity-full {
+  opacity: 1;
+}
+
 
 
 /*Back to top button*/

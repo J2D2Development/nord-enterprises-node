@@ -10643,6 +10643,28 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
         window.location = newPath;
     });
 
+    //store full list so we can reset
+    // const specificItemList = document.querySelector('#action_item');
+    // const fullFeatureItemOptions = specificItemList.options; 
+    // console.log('on load, full specific feature item list:', fullFeatureItemOptions);
+    var originalSpecificItemList = (0, _jquery2.default)('#action_item option');
+    function filterSpecificFeatureList(featureId) {
+        //check if specific feature item
+        console.log('search for id:', featureId);
+        (0, _jquery2.default)('#action_item').html(_jquery2.default.map((0, _jquery2.default)('#action_item option'), function (option) {
+            if ((0, _jquery2.default)(option).data().parentfeature === featureId) {
+                console.log('found match:', option);
+                return option;
+            }
+        }));
+    }
+    function resetSpecificFeatureList() {
+        console.log('reset all to:', originalSpecificItemList);
+        (0, _jquery2.default)('#action_item').html(_jquery2.default.map(originalSpecificItemList, function (option) {
+            return option;
+        }));
+    }
+
     //menu item edit functionality
     (0, _jquery2.default)('body').on('click', '.openMenuItemModal', function () {
         //get the data-attr info from the button element clicked to open this modal
@@ -10672,10 +10694,35 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
             (0, _jquery2.default)('#page_action_id').val(itemData.actionid);
         } else if (itemData.action === 'f') {
             (0, _jquery2.default)('#feature_action_id').val(itemData.actionid);
-            //add set for specific item id
+            //add set for specific item id- if enabled
+            if (itemData.actionitem) {
+                //filter the item list- only show items for the parent feature
+                filterSpecificFeatureList(+(0, _jquery2.default)('#feature_action_id').val());
+                //check the 'specific item' box
+                (0, _jquery2.default)('input[name=choose_feature_item]').prop('checked', 'checked');
+                //set the drop down to correct feature item
+                (0, _jquery2.default)('#action_item').val(itemData.actionitem);
+                //show 2nd drop down
+                (0, _jquery2.default)('#select_feature_item').addClass('opacity-full');
+            }
         } else {
             (0, _jquery2.default)('#action_url').val(itemData.actionurl);
         }
+
+        (0, _jquery2.default)('#choose_feature_item').on('change', function () {
+            if ((0, _jquery2.default)("#choose_feature_item").is(':checked')) {
+                console.log((0, _jquery2.default)('#feature_action_id').val());
+                filterSpecificFeatureList(+(0, _jquery2.default)('#feature_action_id').val());
+                (0, _jquery2.default)('#select_feature_item').addClass('opacity-full');
+            } else {
+                (0, _jquery2.default)('#select_feature_item').removeClass('opacity-full');
+                resetSpecificFeatureList();
+            }
+        });
+
+        (0, _jquery2.default)('#feature_action_id').on('change', function (evt) {
+            filterSpecificFeatureList(+evt.target.value);
+        });
 
         //show the proper edit fields for this type (feature vs page vs external)
         adjustForMenuItemType(itemData.action);
@@ -10695,9 +10742,6 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
             modalConfirm.classList.remove('slide-down');
         });
 
-        //if this is 'add new' instead of 'edit'
-
-
         //open the modal
         modalElement.addClass('modal-show');
         bg2.classList.add('bg-show');
@@ -10715,10 +10759,14 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
         modalElement.removeClass('modal-show');
         bg2.classList.remove('bg-show');
         (0, _jquery2.default)('#menu-item-edit-form')[0].reset();
+        resetSpecificFeatureList();
+        (0, _jquery2.default)('#select_feature_item').removeClass('opacity-full');
         modalConfirm.classList.remove('slide-down');
         [(0, _jquery2.default)('#menuitem-delete'), deleteButton, cancelButton].forEach(function (ele) {
             ele.off('click');
         });
+        (0, _jquery2.default)('#choose_feature_item').off('change');
+        (0, _jquery2.default)('#feature_action_id').off('change');
     }
 
     function adjustForMenuItemType(type) {

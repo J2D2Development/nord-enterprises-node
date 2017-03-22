@@ -205,6 +205,30 @@ $(document).ready(function() {
         window.location = newPath;
     });
 
+
+    
+    //store full list so we can reset
+    // const specificItemList = document.querySelector('#action_item');
+    // const fullFeatureItemOptions = specificItemList.options; 
+    // console.log('on load, full specific feature item list:', fullFeatureItemOptions);
+    const originalSpecificItemList = $('#action_item option');
+    function filterSpecificFeatureList(featureId) {
+        //check if specific feature item
+        console.log('search for id:', featureId);
+        $('#action_item').html($.map($('#action_item option'), option => {
+            if($(option).data().parentfeature === featureId) {
+                console.log('found match:', option);
+                return option;
+            }
+        }));
+    }
+    function resetSpecificFeatureList() {
+        console.log('reset all to:', originalSpecificItemList);
+        $('#action_item').html($.map(originalSpecificItemList, option => {
+            return option;
+        }));
+    }
+
     
 
     //menu item edit functionality
@@ -230,16 +254,43 @@ $(document).ready(function() {
         $('#title').val(itemData.title);
         $('#help_text').val(itemData.helptext);
         $('input[name=action][value='+itemData.action+']').prop('checked', 'checked');
+
+
         
         //check item type- set appropriate fields
         if(itemData.action === 'p') {
             $('#page_action_id').val(itemData.actionid);
         } else if(itemData.action === 'f') {
             $('#feature_action_id').val(itemData.actionid);
-            //add set for specific item id
+            //add set for specific item id- if enabled
+            if(itemData.actionitem) {
+                //filter the item list- only show items for the parent feature
+                filterSpecificFeatureList(+$('#feature_action_id').val());
+                //check the 'specific item' box
+                $('input[name=choose_feature_item]').prop('checked', 'checked');
+                //set the drop down to correct feature item
+                $('#action_item').val(itemData.actionitem);
+                //show 2nd drop down
+                $('#select_feature_item').addClass('opacity-full');
+            }
         } else {
             $('#action_url').val(itemData.actionurl);
         }
+
+        $('#choose_feature_item').on('change', () => {
+            if($("#choose_feature_item").is(':checked')) {
+                console.log($('#feature_action_id').val());
+                filterSpecificFeatureList(+$('#feature_action_id').val());
+                $('#select_feature_item').addClass('opacity-full');
+            } else {
+                $('#select_feature_item').removeClass('opacity-full');
+                resetSpecificFeatureList();
+            }
+        });
+
+        $('#feature_action_id').on('change', evt => {
+            filterSpecificFeatureList(+evt.target.value);
+        });
 
         //show the proper edit fields for this type (feature vs page vs external)
         adjustForMenuItemType(itemData.action);
@@ -259,9 +310,6 @@ $(document).ready(function() {
             modalConfirm.classList.remove('slide-down');
         });
 
-        //if this is 'add new' instead of 'edit'
-
-
         //open the modal
         modalElement.addClass('modal-show');
         bg2.classList.add('bg-show');
@@ -279,11 +327,14 @@ $(document).ready(function() {
         modalElement.removeClass('modal-show');
         bg2.classList.remove('bg-show');
         $('#menu-item-edit-form')[0].reset();
+        resetSpecificFeatureList();
+        $('#select_feature_item').removeClass('opacity-full');
         modalConfirm.classList.remove('slide-down');
         [$('#menuitem-delete'), deleteButton, cancelButton].forEach(ele => {
             ele.off('click');
         });
-        
+        $('#choose_feature_item').off('change');
+        $('#feature_action_id').off('change');
     }
 
     function adjustForMenuItemType(type) {

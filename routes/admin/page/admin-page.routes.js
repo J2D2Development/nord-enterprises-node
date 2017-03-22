@@ -142,10 +142,7 @@ pageRouter.route('/:page_id/menuitems')
             });
     })
     .post((req, res) => {
-        //add new menu item
-        console.log('user:', req.user);
-        console.log('passport:', req.session.user);
-        
+        //add new menu item        
         const hoa_id = req.session['hoa_main']['hoa_id'];
         const page_id = +req.params['page_id'];
         const update = req.body;
@@ -156,10 +153,7 @@ pageRouter.route('/:page_id/menuitems')
         const action = update.action;
         const action_item = update.action_item || 0;
         const action_url = update.action_url || null;
-        let updt_user = 'Unknown User';
-            if(req.session && req.session.passport && req.session.passport.user) { 
-                updt_user = req.session.passport.user.username; 
-            }
+        const updt_user = req.user || 'Unknown User';
 
         //figure out what type of action and set id- if 'x', adding external link and id should be 0
         let action_id = 0;
@@ -177,7 +171,6 @@ pageRouter.route('/:page_id/menuitems')
 
                 basicUtils.getDBInfo(query)
                     .then(result => {
-                        console.log('query result on server:', result);
                         if(result['affectedRows']) {
                             res.status(200).json({
                                 success: true,
@@ -193,10 +186,9 @@ pageRouter.route('/:page_id/menuitems')
                         }
                     })
                     .catch(err => {
-                        console.log('error:', err);
                         res.status(500).json({
                             success: false,
-                            msg: 'Server error',
+                            msg: `Server Error: ${err}`,
                             next: false
                         });
                     });
@@ -210,7 +202,6 @@ pageRouter.route('/:page_id/menuitems')
             const hoa_id = req.session['hoa_main']['hoa_id'];
             const page_id = +req.params['page_id'];
             const update = req.body;
-            console.log('update:', update);
 
             //parse the update
             const title = update.title || '';
@@ -219,8 +210,7 @@ pageRouter.route('/:page_id/menuitems')
             const action_item = update.action_item || 0;
             const action_url = update.action_url || null;
             const order = +req.params['menu_item_id'];
-            let updt_user = 'Unknown User';
-            if(req.user && req.user.username) { updt_user = req.user.username ; }
+            const updt_user = req.user || 'Unknown User';
 
             //figure out what type of action and set id- if 'x', adding external link and id should be 0
             let action_id = 0;
@@ -249,10 +239,9 @@ pageRouter.route('/:page_id/menuitems')
                     }
                 })
                 .catch(err => {
-                    console.log('error:', err);
                     res.status(500).json({
                         success: false,
-                        msg: err,
+                        msg: `Server Error: ${err}`,
                         next: false
                     });
                 });
@@ -268,12 +257,6 @@ pageRouter.route('/:page_id/menuitems')
             const queryDelete = "DELETE FROM hoa_pv_menuitem WHERE hoa_id = " + hoa_id + " AND page_id = " + connection.escape(page_id) + " AND `order` = " + order;
 
             const queryUpdateOrder = "UPDATE hoa_pv_menuitem SET `order` = (`order` - 1) WHERE hoa_id = " + hoa_id + " AND page_id = " + page_id + " AND `order` > " + order;
-            
-        // "update hoa_pv_menuitem set " .
-		// "`order` = (`order` - 1), " .
-		// "updt_user = '${valid_user}', " .
-		// "updt_dttm = now() " .
-		// "where hoa_id = ${hoa_main["hoa_id"]} and page_id = ${Ipage_id} and `order` > ${Iorder}";
 
             basicUtils.getDBInfo(queryCheck)
                 .then(result => {
@@ -286,7 +269,6 @@ pageRouter.route('/:page_id/menuitems')
                                 if(result['affectedRows']) {
                                     basicUtils.getDBInfo(queryUpdateOrder)
                                         .then(finalResult => {
-                                            console.log('final del result:', finalResult);
                                             return res.status(200).json({
                                                 success: true,
                                                 msg: 'Menu Item Deleted!',
@@ -294,7 +276,6 @@ pageRouter.route('/:page_id/menuitems')
                                             });
                                         })
                                         .catch(error => {
-                                            console.log('order update failed (in inner catch block):', error);
                                             throw new Error('Remaining Order Update Failed', error);
                                         });
                                 } else {
@@ -306,7 +287,6 @@ pageRouter.route('/:page_id/menuitems')
                                 }
                             })
                             .catch(error => {
-                                console.log('passsing along order update failure');
                                 throw new Error('Remaining Order Update Failed:', error);
                             })
                     } else {
@@ -314,10 +294,9 @@ pageRouter.route('/:page_id/menuitems')
                     }   
                 })
                 .catch(err => {
-                    console.log('error:', err.code);
                     return res.status(500).json({
                         success: false,
-                        msg: `Server error- please try again`,
+                        msg: `Server error: ${err}`,
                         next: false
                     });
                 });

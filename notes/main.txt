@@ -23,6 +23,8 @@ OPTIONS
             a) move to static folder, set up scss transpiler in webpack and get going.
         -1.5) update pages/individual page header to use global.  update everything else to use sidebar, and have content of sidebar custom to each screen (include ejs file)
         0) finish form setup: if action is feature, have checkbox for 'link to specific item', if checked, have drop down with items from that feature only.
+            !!!NEXT: checkbox works, but on check add:
+                a) filter feature_item list to match feature_id of each feature item.
         1) menu item/page area change order idea:
             -get drag/drop working (rxjs).  when item dragged and dropped in legit zone, run function to;
                 a) show loading screen to block further updates
@@ -30,7 +32,6 @@ OPTIONS
                 b) querySelectorAll (menu item or page area) - use .forEach() to set the data-order value on each.
                 c) fire db call to update all menu items/page areas (depending on which was updated) with their new order (the updated data order).  query will be similar to the delete menu item function, but won't need to do the -1 math (each menu item/page area will have a unique data-order because it will simply be the order it appears in the dom).
                 d) on success, hide loader, notifyr green msg.  on fail, see a.1- if we have the previous data-order for each, revert, hide loader, notifyr red msg.
-        2) menu item style- pass as prop to GraphicalMenuItem (rename to verticalmenuitem)
         5) frontend validation (no blanks, correct data types)
             -put data-required and data-error attrs on your custom elements.  use that in a generic function to check on submit- get all elements with data-required- if not filled out or incorrect entry, don't send and show div with data-error contents next to each
 

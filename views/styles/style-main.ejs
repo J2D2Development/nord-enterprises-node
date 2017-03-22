@@ -114,6 +114,7 @@ html, body {
     font-size: <%= hoa_lookfeel['menu_font_size'] %>pt;
     min-width: 140px;
 }
+/*GRAPHICAL*/
 .bg_image {
     position: relative;
     display: flex;
@@ -133,18 +134,32 @@ html, body {
     text-decoration: none;
     background-image: url(<%= buttonBgInfo['buttonHoverImg'] %>);
 }
+/*TILES*/
 .color_tile {
     display: flex;
     align-items: center;
+    font-family: "<%= hoa_lookfeel["menu_font"] %>",Arial,san-serif;
+	font-size: <%= hoa_lookfeel["menu_font_size"] %>pt;
     text-align: <%= hoa_lookfeel['menu_horiz_pos'] %>;
     text-decoration: none;
-    color: <%= hoa_lookfeel['menu_font_color'] %>;
+    font-weight: 400;
+    background-color: <%= hoa_lookfeel["button_bg_color"] %>;
+	border: 1px solid <%= hoa_lookfeel["button_bg_color"] %>;
+    color: <%= hoa_lookfeel['button_font_color'] %>;
     padding: 4px;
     margin: 4px;
+    width: 142px;
+	min-width: 142px;
+	max-width: 142px;
+    word-wrap: break-word;
 }
 .color_tile:hover {
-    color: inherit;
+    background-color: <%= hoa_lookfeel["menu_rollover_bg_color"] %>;
+	color: <%= hoa_lookfeel["menu_rollover_font_color"] %>;
     text-decoration: none;
+}
+.color_tile_rounded {
+    border-radius: 20px;
 }
 
 /*Back to top button*/
