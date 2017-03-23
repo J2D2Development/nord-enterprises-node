@@ -66,8 +66,9 @@
 /******/ 	return __webpack_require__(__webpack_require__.s = 6);
 /******/ })
 /************************************************************************/
-/******/ ([
-/* 0 */
+/******/ ({
+
+/***/ 0:
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -10294,7 +10295,34 @@ return jQuery;
 
 
 /***/ }),
-/* 1 */
+
+/***/ 6:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _jquery = __webpack_require__(0);
+
+var _jquery2 = _interopRequireDefault(_jquery);
+
+var _utilities = __webpack_require__(9);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+(0, _jquery2.default)(document).ready(function () {
+    //init slideout menu
+    _utilities.utilities.slideout();
+    //init static menu offset (move content down height of top menu)
+    _utilities.utilities.setMenuOffset();
+
+    //everything initialized, hide loader
+    _utilities.utilities.hideLoader();
+});
+
+/***/ }),
+
+/***/ 9:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10303,7 +10331,7 @@ return jQuery;
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-exports.setMenuOffset = undefined;
+exports.utilities = undefined;
 
 var _jquery = __webpack_require__(0);
 
@@ -10311,8 +10339,12 @@ var _jquery2 = _interopRequireDefault(_jquery);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var setMenuOffset = exports.setMenuOffset = function setMenuOffset() {
-    (0, _jquery2.default)(document).ready(function () {
+var utilities = exports.utilities = {
+    hideLoader: function hideLoader() {
+        var fullscreenLoader = document.querySelector('#fullscreen-loader');
+        fullscreenLoader.classList.add('slide-up-out');
+    },
+    setMenuOffset: function setMenuOffset() {
         var topMenu = document.querySelector('#top-menu');
         var adminMain = document.querySelector('.admin-main');
         adminMain.style.paddingTop = topMenu.clientHeight + 16 + 'px';
@@ -10320,65 +10352,30 @@ var setMenuOffset = exports.setMenuOffset = function setMenuOffset() {
         (0, _jquery2.default)(window).resize(function () {
             adminMain.style.paddingTop = topMenu.clientHeight + 16 + 'px';
         });
-    });
-};
+    },
 
-/***/ }),
-/* 2 */
-/***/ (function(module, exports, __webpack_require__) {
+    slideout: function slideout() {
+        var openMenuButton = document.querySelector('#open-menu');
+        var closeMenuButton = document.querySelector('#close-menu');
+        var menu = document.querySelector('#main-menu');
+        var bg = document.querySelector('#bg-screen');
 
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-var slideout = exports.slideout = function slideout() {
-    var openMenuButton = document.querySelector('#open-menu');
-    var closeMenuButton = document.querySelector('#close-menu');
-    var menu = document.querySelector('#main-menu');
-    var bg = document.querySelector('#bg-screen');
-
-    openMenuButton.addEventListener('click', function () {
-        menu.classList.add('slideout-right--show');
-        bg.classList.add('bg-show');
-        closeMenuButton.classList.add('menu-open');
-    });
-
-    [closeMenuButton, bg].forEach(function (element) {
-        element.addEventListener('click', function () {
-            menu.classList.remove('slideout-right--show');
-            bg.classList.remove('bg-show');
-            closeMenuButton.classList.remove('menu-open');
+        openMenuButton.addEventListener('click', function () {
+            menu.classList.add('slideout-right--show');
+            bg.classList.add('bg-show');
+            closeMenuButton.classList.add('menu-open');
         });
-    });
+
+        [closeMenuButton, bg].forEach(function (element) {
+            element.addEventListener('click', function () {
+                menu.classList.remove('slideout-right--show');
+                bg.classList.remove('bg-show');
+                closeMenuButton.classList.remove('menu-open');
+            });
+        });
+    }
 };
-
-/***/ }),
-/* 3 */,
-/* 4 */,
-/* 5 */,
-/* 6 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var _jquery = __webpack_require__(0);
-
-var _jquery2 = _interopRequireDefault(_jquery);
-
-var _menuSlideout = __webpack_require__(2);
-
-var _menuOffset = __webpack_require__(1);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-(0, _jquery2.default)(document).ready(function () {
-    //if you add a 'loading' animation for overall loading, hide here
-    (0, _menuSlideout.slideout)();
-    (0, _menuOffset.setMenuOffset)();
-});
 
 /***/ })
-/******/ ]);
+
+/******/ });

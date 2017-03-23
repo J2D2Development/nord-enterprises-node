@@ -1,9 +1,12 @@
 import $ from 'jquery';
-import { slideout } from './menu-slideout';
-import { setMenuOffset } from './menu-offset';
+import { utilities } from './utilities';
 
 $(document).ready(function() {
-    //if you add a 'loading' animation for overall loading, hide here
-    slideout();
-    setMenuOffset();
+    //init slideout menu
+    utilities.slideout();
+    //init static menu offset (move content down height of top menu)
+    utilities.setMenuOffset();
+
+    //everything initialized, hide loader
+    utilities.hideLoader();
 });

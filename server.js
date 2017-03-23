@@ -3,8 +3,6 @@
 const path = require('path');
 const express = require('express');
 const Promise = require('bluebird');
-//app.use(cookieParser('secretString'));
-//app.use(session({cookie: { maxAge: 60000 }}));
 const flash = require('connect-flash');
 const bodyParser = require('body-parser');
 const favicon = require('serve-favicon');
@@ -21,6 +19,7 @@ const basicUtils = require('./utilities/utilities-basic');
 
 //import routes files
 const adminPageRoutes = require('./routes/admin/page/admin-page.routes');
+const adminUsersRoutes = require('./routes/admin/users/admin-users.routes');
 
 //import globals
 const templates = require('./templates.js');
@@ -328,6 +327,7 @@ app.get('/:sitename/admin', (req, res) => {
 //admin 'pages' editing routes
 //do we move this to the adminRouter file and make them subroutes?  that way, the session checking is only done once
 app.use('/:sitename/admin/pages', adminPageRoutes);
+app.use('/:sitename/admin/users', adminUsersRoutes);
 
 app.get('/unavailable', (req, res) => {
     req.session.destroy(err => {

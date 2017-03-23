@@ -1,10 +1,12 @@
-import { slideout } from './menu-slideout';
-import { setMenuOffset } from './menu-offset';
+import { utilities } from './utilities';
 import $ from 'jquery';
 
 $(document).ready(function() {
-    slideout();
-    setMenuOffset();
+    utilities.slideout();
+    utilities.setMenuOffset();
+
+    //after everything is loaded, hide loader screen
+    utilities.hideLoader();
 
     const modalElement = $('#nord-modal');
     const bg2 = document.querySelector('#bg-screen');

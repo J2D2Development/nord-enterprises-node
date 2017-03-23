@@ -74,6 +74,8 @@ h1 small {
   color: inherit;
 }
 
+
+
 /*ADMIN LOGIN FORM*/
 .login-form--wrapper {
   display: flex;
@@ -83,7 +85,7 @@ h1 small {
   align-items: center;
   background-color: #333;
   /*background: radial-gradient(circle, #ffffff, #cccccc, #a9a9a9, #999999, #666666);*/
-  background: radial-gradient(circle, #f3dcfb, #679fe4);
+  background: radial-gradient(circle, #f3dcfb, #22A7F0);
 }
 .login-form--inner {
   width: 30%;
@@ -360,8 +362,14 @@ label {
 .scale-show {
   transform: scale(1);
 }
+.scale-hide {
+  transform: scale(0);
+}
 .slide-down {
   transform: translateY(0);
+}
+.slide-up-out {
+  transform: translateY(-100%);
 }
 .opacity-transition {
   transition: opacity 0.3s ease-in-out;
@@ -560,13 +568,30 @@ label {
 }
 
 
-/*LOADING ANIMATION*/
+/*LOADING ANIMATIONS*/
+
+/*FULLSCREEN*/
+.fullscreen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 9999;
+  height: 100%;
+  background-color: #f5f5f5;
+  transition: transform 0.6s ease-out;
+}
+
+/*MINI LOADING ANIMATION*/
 .loading-wrapper {
   width: 100%;
-  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 .spinner {
-  margin: 100px auto 0;
+  margin: 0 auto;
   width: 70px;
   text-align: center;
 }

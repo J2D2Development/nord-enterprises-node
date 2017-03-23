@@ -1,15 +1,29 @@
 import { VerticalMenuItem, AddNewVerticalMenuItem } from './menu-items';
 import { PageArea, AddNewPageArea } from './page-areas';
-import { slideout } from './menu-slideout';
+import { utilities } from './utilities';
 import { notifyr } from './notifyr';
-import { setMenuOffset } from './menu-offset';
 import $ from 'jquery';
 
-$(document).ready(function() {
-    slideout();
-    setMenuOffset();
+//$(document).ready(function() {
+window.addEventListener('DOMContentLoaded', function() {
+    console.log('dom content loaded');
+    //run initializations
+    utilities.slideout(); //slideout menu
+    utilities.setMenuOffset(); //get top menu height, move content down (for static header)
+
+    //page jump drop down list
+    const bg2 = document.querySelector('#bg-screen');
+    const switchPageSelect = document.querySelector('#switch-page');
+    switchPageSelect.addEventListener('change', function(evt) {
+        var pathArr = window.location.pathname.split('/');
+        pathArr[4] = evt.target.value;
+        var newPath = window.location.origin + pathArr.join('/');
+        window.location = newPath;
+    });
+
     const menu = document.querySelector('#menu-wrapper');
     const pageAreas = document.querySelector('#page-areas');
+    
 
     //modal elements
     const modalElement = $('#menuItemModal');
@@ -24,7 +38,6 @@ $(document).ready(function() {
                 if(data.errorMsg) {
                     return `Error getting menu items: ${data.err}`;
                 }
-                
                 const existingItems = data.map(item => {
                     return VerticalMenuItem(item);
                 })
@@ -58,6 +71,9 @@ $(document).ready(function() {
             .always(() => {});
     };
     getPageAreas();
+
+    //everything initialized, hide loader
+    utilities.hideLoader();
 
     //track type of menu item (p, f, x)
     let menuItemType = '';
@@ -168,7 +184,6 @@ $(document).ready(function() {
             beforeSend: () => {}
         })
         .done(response => {
-            console.log('delete menu item server response');
             if(response.success) {
                 menuItemUpdateSuccess(response.msg);
             } else {
@@ -177,7 +192,6 @@ $(document).ready(function() {
             }
         })
         .fail(error => {
-            console.log('returned but with error:', error);
             menuItemUpdateError(error.msg);
         })
         .always(() => {
@@ -195,15 +209,7 @@ $(document).ready(function() {
         notifyr({ msg, type: 'notifyr-error', duration: 3000 });
     }
 
-    const bg2 = document.querySelector('#bg-screen');
-    const switchPageSelect = document.querySelector('#switch-page');
 
-    switchPageSelect.addEventListener('change', function(evt) {
-        var pathArr = window.location.pathname.split('/');
-        pathArr[4] = evt.target.value;
-        var newPath = window.location.origin + pathArr.join('/');
-        window.location = newPath;
-    });
 
 
     
@@ -355,18 +361,4 @@ $(document).ready(function() {
             menuItemType = 'x';
         }
     }
-
-    //sidebar accordion?
-    // var accButtons = document.querySelectorAll('.slideout-options__button');
-    // accButtons.forEach(function(button) {
-    //     var _this = this;
-    //     button.addEventListener('click', function() {
-    //         var myContentDiv = document.querySelector('#'+this.id+'content');
-    //         var allContentDivs = document.querySelectorAll('.slideout-options__content');
-    //         console.log(myContentDiv);
-    //         console.log(allContentDivs);
-    //         //slideout-options__content - class
-
-    //     }, false);
-    // });
 });
