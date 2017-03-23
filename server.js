@@ -20,6 +20,9 @@ const basicUtils = require('./utilities/utilities-basic');
 //import routes files
 const adminPageRoutes = require('./routes/admin/page/admin-page.routes');
 const adminUsersRoutes = require('./routes/admin/users/admin-users.routes');
+const adminFeaturesRoutes = require('./routes/admin/features/admin-features.routes');
+const adminGeneralRoutes = require('./routes/admin/general/admin-general.routes');
+const adminPublishRoutes = require('./routes/admin/publish/admin-publish.routes');
 
 //import globals
 const templates = require('./templates.js');
@@ -328,6 +331,9 @@ app.get('/:sitename/admin', (req, res) => {
 //do we move this to the adminRouter file and make them subroutes?  that way, the session checking is only done once
 app.use('/:sitename/admin/pages', adminPageRoutes);
 app.use('/:sitename/admin/users', adminUsersRoutes);
+app.use('/:sitename/admin/features', adminFeaturesRoutes);
+app.use('/:sitename/admin/general', adminGeneralRoutes);
+app.use('/:sitename/admin/publish', adminPublishRoutes);
 
 app.get('/unavailable', (req, res) => {
     req.session.destroy(err => {

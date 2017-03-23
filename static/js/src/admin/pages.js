@@ -1,7 +1,7 @@
 import { utilities } from './utilities';
 import $ from 'jquery';
 
-$(document).ready(function() {
+window.addEventListener('DOMContentLoaded', function() {
     utilities.slideout();
     utilities.setMenuOffset();
 

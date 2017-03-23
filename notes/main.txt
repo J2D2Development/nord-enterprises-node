@@ -19,6 +19,7 @@ OPTIONS
     FOR 3/20/17
         SESSIONS
             -max age is currently 1hr.  seems to be working- user is at req.user.  need to add auth to all admin routes with this.  also need to update the updt_user call to use req.user.  also need to find out how to only put specific info into that object (currentlypulling all rows from db- including password hash)
+        -2) if no menu items on admin, menu div never loads- fix this so that just the 'add menu item' option appears
         -1) migrate admin styles to scss (shouldn't need any user-defined styles)
             a) move to static folder, set up scss transpiler in webpack and get going.
         -1.5) update pages/individual page header to use global.  update everything else to use sidebar, and have content of sidebar custom to each screen (include ejs file)

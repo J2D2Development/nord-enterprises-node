@@ -63,12 +63,11 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 6);
+/******/ 	return __webpack_require__(__webpack_require__.s = 5);
 /******/ })
 /************************************************************************/
-/******/ ({
-
-/***/ 0:
+/******/ ([
+/* 0 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -10295,34 +10294,7 @@ return jQuery;
 
 
 /***/ }),
-
-/***/ 6:
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var _jquery = __webpack_require__(0);
-
-var _jquery2 = _interopRequireDefault(_jquery);
-
-var _utilities = __webpack_require__(9);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-(0, _jquery2.default)(document).ready(function () {
-    //init slideout menu
-    _utilities.utilities.slideout();
-    //init static menu offset (move content down height of top menu)
-    _utilities.utilities.setMenuOffset();
-
-    //everything initialized, hide loader
-    _utilities.utilities.hideLoader();
-});
-
-/***/ }),
-
-/***/ 9:
+/* 1 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10376,6 +10348,33 @@ var utilities = exports.utilities = {
     }
 };
 
-/***/ })
+/***/ }),
+/* 2 */,
+/* 3 */,
+/* 4 */,
+/* 5 */
+/***/ (function(module, exports, __webpack_require__) {
 
-/******/ });
+"use strict";
+
+
+var _jquery = __webpack_require__(0);
+
+var _jquery2 = _interopRequireDefault(_jquery);
+
+var _utilities = __webpack_require__(1);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+(0, _jquery2.default)(document).ready(function () {
+    //init slideout menu
+    _utilities.utilities.slideout();
+    //init static menu offset (move content down height of top menu)
+    _utilities.utilities.setMenuOffset();
+
+    //everything initialized, hide loader
+    _utilities.utilities.hideLoader();
+});
+
+/***/ })
+/******/ ]);
