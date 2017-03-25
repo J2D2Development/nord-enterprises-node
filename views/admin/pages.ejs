@@ -24,20 +24,7 @@
                         Your available pages are below.  Click the edit icon to edit the basic info about the page (title, password protection, etc).  Click the arrow icon to view the page contents and edit text, pictures, layout, and the menu.
                     </div>
                     <div class="row">
-                        <% for(var i = 0; i < pageList.length; i += 1) { %>
-                            <div class="col-md-4 col-sm-6 col-xs-12">
-                                <div class="pagelist-inner">
-                                    <h3><%= pageList[i].title %></h3>
-                                    <div class="pagelist-main">
-                                        Page desc of some kind?
-                                    </div>
-                                    <div class="pagelist-links">
-                                        <a class="open-modal" data-page="<%= pageList[i] %>" data-pageid="<%= pageList[i].page_id %>">Edit Page Basics</a>
-                                        <a href="pages/<%= pageList[i].page_id %>">Edit Page Content</a>
-                                    </div>
-                                </div>
-                            </div>
-                        <% } %>
+                        <div id="pages-list">Loading pages info</div>
                         <div class="col-md-4 col-sm-6 col-xs-12">
                             <div class="pagelist-inner">
                                 <h3>Create New Page</h3>

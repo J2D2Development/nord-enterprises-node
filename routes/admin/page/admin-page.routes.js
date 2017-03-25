@@ -8,6 +8,7 @@ const basicUtils = require('../../../utilities/utilities-basic');
 const pageUtils = require('./admin-page.utilities');
 const templates = require('../../../templates');
 
+//admin page list wrapper
 pageRouter.route('/')
     .get((req, res) => {
         const hoa_id = req.session['hoa_main']['hoa_id'];
@@ -34,7 +35,24 @@ pageRouter.route('/')
             console.log('Error getting button bg image:', error);
         });
     });
-    //.post and so on... - this .post would be to add new page?
+
+//return json of pages data (basic)
+pageRouter.route('/pages-list')
+    .get((req, res) => {
+        const hoa_id = req.session['hoa_main']['hoa_id'];
+
+        pageUtils.getPageList(hoa_id)
+        .then(results => {
+            if(results.length === 0) {
+                return res.status(404).send('Not found!');
+            } else {
+                return res.status(200).json(results);
+            }
+        })
+        .catch(error => {
+            console.log('Error getting pages list json:', error);
+        });
+    });
 
 pageRouter.route('/:page_id')
     .all((req, res, next) => {
