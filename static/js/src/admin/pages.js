@@ -2,7 +2,7 @@ import React from 'react';
 import { render } from 'react-dom';
 import { utilities } from './utilities';
 import { modal } from './modal';
-import { PageListCard } from './page-list-card';
+import PageList from './page-list';
 import $ from 'jquery';
 
 window.addEventListener('DOMContentLoaded', function() {
@@ -10,24 +10,20 @@ window.addEventListener('DOMContentLoaded', function() {
     utilities.setMenuOffset();
     modal({ title: 'Edit basic page info', targetType: 'page' });
 
-
-    //testing react- get pages list, then populate 'cards'
     $.get(window.location.pathname + '/pages-list')
         .done(data => {
-            console.log('got pages list?', data);
             if(data.errorMsg) {
                 return `Error getting menu items: ${data.err}`;
             }
-            render(<h1>List goes here</h1>, document.getElementById('pages-list'));
+            render(<PageList pages = {data} />, document.getElementById('page-list'));
         })
         .fail(error => {
             console.log('xhr request failed:', error);
         })
         .always(() => {});
 
-    function openModal(props) {
-        console.log('open that modal:', props);
-    }
+
+    
 
     //after everything is loaded, hide loader screen
     utilities.hideLoader();

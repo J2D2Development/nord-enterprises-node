@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 185);
+/******/ 	return __webpack_require__(__webpack_require__.s = 186);
 /******/ })
 /************************************************************************/
 /******/ ({
@@ -10351,19 +10351,19 @@ var utilities = exports.utilities = {
 
 /***/ }),
 
-/***/ 185:
+/***/ 186:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _menuItems = __webpack_require__(81);
+var _menuItems = __webpack_require__(82);
 
-var _pageAreas = __webpack_require__(84);
+var _pageAreas = __webpack_require__(85);
 
 var _utilities = __webpack_require__(15);
 
-var _notifyr = __webpack_require__(83);
+var _notifyr = __webpack_require__(84);
 
 var _jquery = __webpack_require__(10);
 
@@ -10714,7 +10714,7 @@ window.addEventListener('DOMContentLoaded', function () {
 
 /***/ }),
 
-/***/ 81:
+/***/ 82:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10736,7 +10736,7 @@ exports.AddNewVerticalMenuItem = AddNewVerticalMenuItem;
 
 /***/ }),
 
-/***/ 83:
+/***/ 84:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10766,7 +10766,7 @@ var notifyr = exports.notifyr = function notifyr(config) {
 
 /***/ }),
 
-/***/ 84:
+/***/ 85:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
