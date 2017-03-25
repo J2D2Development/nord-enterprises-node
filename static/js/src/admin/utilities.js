@@ -14,7 +14,6 @@ export const utilities = {
             adminMain.style.paddingTop = `${topMenu.clientHeight + 16}px`;
         });
     },
-
     slideout: () => {
         const openMenuButton = document.querySelector('#open-menu');
         const closeMenuButton = document.querySelector('#close-menu');

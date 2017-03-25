@@ -32,7 +32,7 @@
                                         Page desc of some kind?
                                     </div>
                                     <div class="pagelist-links">
-                                        <a class="open-modal" data-pageid="<%= pageList[i].page_id %>">Edit Page Basics</a>
+                                        <a class="open-modal" data-page="<%= pageList[i] %>" data-pageid="<%= pageList[i].page_id %>">Edit Page Basics</a>
                                         <a href="pages/<%= pageList[i].page_id %>">Edit Page Content</a>
                                     </div>
                                 </div>
@@ -56,7 +56,7 @@
             </div>
         </div>
 
-        <!--Shared modal-->
+        <!--Shared modal
         <div class="nord-modal nord-modal-fade" tabindex="-1" role="dialog" id="nord-modal">
             <form id="modal-edit-form">
             <div class="modal-dialog" role="document">
@@ -84,7 +84,7 @@
                 </div>
             </div>
             </form>
-        </div>
+        </div>-->
 
         <% include ./admin-includes %>
     </body>

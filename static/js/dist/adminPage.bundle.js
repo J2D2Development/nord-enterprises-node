@@ -10325,7 +10325,6 @@ var utilities = exports.utilities = {
             adminMain.style.paddingTop = topMenu.clientHeight + 16 + 'px';
         });
     },
-
     slideout: function slideout() {
         var openMenuButton = document.querySelector('#open-menu');
         var closeMenuButton = document.querySelector('#close-menu');
@@ -10453,6 +10452,8 @@ window.addEventListener('DOMContentLoaded', function () {
     //run initializations
     _utilities.utilities.slideout(); //slideout menu
     _utilities.utilities.setMenuOffset(); //get top menu height, move content down (for static header)
+
+    //modal({title: 'Edit this page'});
 
     //page jump drop down list
     var bg2 = document.querySelector('#bg-screen');
@@ -10784,6 +10785,7 @@ window.addEventListener('DOMContentLoaded', function () {
         }
     }
 });
+//import { modal } from './modal';
 
 /***/ })
 /******/ ]);

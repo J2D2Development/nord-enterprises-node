@@ -15,8 +15,19 @@ Security
 OPTIONS
 
 
+as test of observables: switch 'to top' display from onscroll event to rxjs 'fromEvent' operator
+    -will require installing rxjs on fe (use webpack or cdn? - maybe cdn on frontend for now)
+    -research cdn usage with webpack- how would i import { fromEvent } from 'rxjs/fromevent' if I'm using a cdn?
+
+follow: https://hackernoon.com/naive-infinite-scroll-in-reactive-programming-using-rxjs-observables-4a605d3146e8#.rpn1525c8
+
+-note their use of pairwise rx operator- is this for better perf than just checking 'onscroll'
+
+
+
 1) Node/Express as backend (node-mysql to connect to db).  EJS as templating engine.  Would need mailgun as email provider (possibly around $200-300/month). Security?  Does node handle cookies?  I think so, but if not, would need to go jwt
     FOR 3/20/17
+        DATA ATTR: assign object to data-page in page.ejs?  how to retreive on js side?  currently working, but only getting [object Object] when retreiving!!!
         SESSIONS
             -max age is currently 1hr.  seems to be working- user is at req.user.  need to add auth to all admin routes with this.  also need to update the updt_user call to use req.user.  also need to find out how to only put specific info into that object (currentlypulling all rows from db- including password hash)
         -2) if no menu items on admin, menu div never loads- fix this so that just the 'add menu item' option appears

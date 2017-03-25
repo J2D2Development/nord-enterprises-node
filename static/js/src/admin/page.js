@@ -2,6 +2,7 @@ import { VerticalMenuItem, AddNewVerticalMenuItem } from './menu-items';
 import { PageArea, AddNewPageArea } from './page-areas';
 import { utilities } from './utilities';
 import { notifyr } from './notifyr';
+//import { modal } from './modal';
 import $ from 'jquery';
 
 //$(document).ready(function() {
@@ -10,6 +11,8 @@ window.addEventListener('DOMContentLoaded', function() {
     //run initializations
     utilities.slideout(); //slideout menu
     utilities.setMenuOffset(); //get top menu height, move content down (for static header)
+    
+    //modal({title: 'Edit this page'});
 
     //page jump drop down list
     const bg2 = document.querySelector('#bg-screen');

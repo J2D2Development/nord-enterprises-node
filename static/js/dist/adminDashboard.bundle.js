@@ -10325,7 +10325,6 @@ var utilities = exports.utilities = {
             adminMain.style.paddingTop = topMenu.clientHeight + 16 + 'px';
         });
     },
-
     slideout: function slideout() {
         var openMenuButton = document.querySelector('#open-menu');
         var closeMenuButton = document.querySelector('#close-menu');

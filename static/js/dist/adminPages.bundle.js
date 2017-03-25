@@ -10325,7 +10325,6 @@ var utilities = exports.utilities = {
             adminMain.style.paddingTop = topMenu.clientHeight + 16 + 'px';
         });
     },
-
     slideout: function slideout() {
         var openMenuButton = document.querySelector('#open-menu');
         var closeMenuButton = document.querySelector('#close-menu');
@@ -10362,6 +10361,8 @@ var utilities = exports.utilities = {
 
 var _utilities = __webpack_require__(1);
 
+var _modal = __webpack_require__(8);
+
 var _jquery = __webpack_require__(0);
 
 var _jquery2 = _interopRequireDefault(_jquery);
@@ -10371,12 +10372,19 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 window.addEventListener('DOMContentLoaded', function () {
     _utilities.utilities.slideout();
     _utilities.utilities.setMenuOffset();
+    (0, _modal.modal)({ title: 'Edit basic page info', targetType: 'page' });
 
     //after everything is loaded, hide loader screen
     _utilities.utilities.hideLoader();
 
     var modalElement = (0, _jquery2.default)('#nord-modal');
     var bg2 = document.querySelector('#bg-screen');
+
+    //modal delete button elements
+    var deleteButton = (0, _jquery2.default)('#confirm-delete');
+    var cancelButton = (0, _jquery2.default)('#cancel-delete');
+    var modalConfirm = document.querySelector('#modal-confirm');
+
     var pageEditForm = (0, _jquery2.default)('#modal-edit-form');
     var formType = 'update';
 
@@ -10384,25 +10392,43 @@ window.addEventListener('DOMContentLoaded', function () {
     (0, _jquery2.default)('body').on('click', '.open-modal', function () {
         //get the data-attr info from the button element clicked to open this modal
         var itemData = (0, _jquery2.default)(this).data();
+        console.log('open modal, title:', itemData);
         //check button id- if exists, we are adding a new menu item, if not, updating existing
         var addnew = (0, _jquery2.default)(this).prop('id');
         formType = addnew ? 'addnew' : 'update';
 
         //set the basic form fields
-        (0, _jquery2.default)('#title').val(itemData.title);
+        //$('#title').val(itemData.title);
         // $('#help_text').val(itemData.helptext);
         // $('input[name=action][value='+itemData.action+']').prop('checked', 'checked');
 
         //add delete button handler
-        (0, _jquery2.default)('#page-delete').on('click', function () {
+        (0, _jquery2.default)('#confirm-delete').on('click', function () {
             console.log('adding handler:', itemData.order);
             console.log('deleting item:', itemData.order);
+        });
+
+        (0, _jquery2.default)('#item-delete').on('click', function () {
+            modalConfirm.classList.add('slide-down');
+        });
+
+        deleteButton.on('click', function () {
+            deleteItem(window.location.pathname + '/pages/' + itemData.order);
+        });
+
+        //cancel deletion- hide confirm div
+        cancelButton.on('click', function () {
+            modalConfirm.classList.remove('slide-down');
         });
 
         //open the modal
         modalElement.addClass('modal-show');
         bg2.classList.add('bg-show');
     });
+
+    function deleteItem(url) {
+        console.log('sending for delete:', url);
+    }
 
     var closeModalButtons = document.querySelectorAll("[data-dismiss='modal']");
     closeModalButtons.forEach(function (button) {
@@ -10413,7 +10439,11 @@ window.addEventListener('DOMContentLoaded', function () {
         modalElement.removeClass('modal-show');
         bg2.classList.remove('bg-show');
         (0, _jquery2.default)('#modal-edit-form')[0].reset();
-        (0, _jquery2.default)('#page-delete').off('click');
+        modalConfirm.classList.remove('slide-down');
+        [(0, _jquery2.default)('#item-delete'), deleteButton, cancelButton].forEach(function (ele) {
+            ele.off('click');
+        });
+        //$('#page-delete').off('click');
     }
 
     pageEditForm.on('submit', function (evt) {
@@ -10441,6 +10471,25 @@ window.addEventListener('DOMContentLoaded', function () {
         console.log('adding item:', item, url);
     }
 });
+
+/***/ }),
+/* 8 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+var modal = exports.modal = function modal(props) {
+    console.log('modal method called, props:', props);
+    var template = '<div class="nord-modal nord-modal-fade" tabindex="-1" role="dialog" id="nord-modal">\n        <form id="modal-edit-form">\n            <div class="modal-dialog" role="document">\n                <div class="modal-content">\n                    <div class="modal-header">\n                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>\n                        <h4 class="modal-title">' + props.title + '</h4>\n                    </div>\n                    <div class="modal-body">\n                        <p>\n                            <div class="flex-row">\n                                <div class="form-group">\n                                    <label>Title</label>\n                                    <small><em>Page Title</em></small><br />\n                                    <input type="text" name="title" class="form-control" id="title" placeholder="Title" />\n                                </div>\n                            </div>\n                        </p>\n                    </div>\n                    <div class="modal-footer">\n                        <button type="button" class="btn btn-danger pull-left" id="item-delete">Delete</button>\n                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>\n                        <input type="submit" class="btn btn-primary" value="Save Changes" />\n                    </div>\n                    <div class="modal-confirm" id="modal-confirm">\n                        <div class="modal-confirm-message text-warning">\n                            Are you sure you want to delete this ' + props.targetType + '?\n                        </div>\n                        <div class="modal-confirm-buttons">\n                            <button type="button" class="btn btn-danger" id="confirm-delete">Yes - Delete</button>\n                            <button type="button" class="btn btn-primary" id="cancel-delete">No - Cancel</button>\n                        </div>\n                    </div>\n                </div>\n            </div>\n        </form>\n    </div>';
+
+    var modalDiv = document.createElement('div');
+    modalDiv.innerHTML = template;
+    document.body.appendChild(modalDiv);
+};
 
 /***/ })
 /******/ ]);
