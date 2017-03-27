@@ -26,8 +26,11 @@ follow: https://hackernoon.com/naive-infinite-scroll-in-reactive-programming-usi
 
 
 1) Node/Express as backend (node-mysql to connect to db).  EJS as templating engine.  Would need mailgun as email provider (possibly around $200-300/month). Security?  Does node handle cookies?  I think so, but if not, would need to go jwt
-    FOR 3/20/17
-        DATA ATTR: assign object to data-page in page.ejs?  how to retreive on js side?  currently working, but only getting [object Object] when retreiving!!!
+    FOR 3/27/17
+        SWITCHING TO REACT FORMS
+            -pages.ejs, pages.js are close.  Need to add rest of fields to pages modal and populate.  need to add save/update form submissin (check menu items for good sql).  then need to update menu items/page areas on page.js and page.ejs to use the new system.
+            -error regarding switching from uncontrolled to controlled- find fix
+            -add validation (might need different handleChange functions for each type- required, email, etc)
         SESSIONS
             -max age is currently 1hr.  seems to be working- user is at req.user.  need to add auth to all admin routes with this.  also need to update the updt_user call to use req.user.  also need to find out how to only put specific info into that object (currentlypulling all rows from db- including password hash)
         -2) if no menu items on admin, menu div never loads- fix this so that just the 'add menu item' option appears

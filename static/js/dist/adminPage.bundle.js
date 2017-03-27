@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 186);
+/******/ 	return __webpack_require__(__webpack_require__.s = 187);
 /******/ })
 /************************************************************************/
 /******/ ({
@@ -10351,13 +10351,13 @@ var utilities = exports.utilities = {
 
 /***/ }),
 
-/***/ 186:
+/***/ 187:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _menuItems = __webpack_require__(82);
+var _menuItems = __webpack_require__(83);
 
 var _pageAreas = __webpack_require__(85);
 
@@ -10714,7 +10714,7 @@ window.addEventListener('DOMContentLoaded', function () {
 
 /***/ }),
 
-/***/ 82:
+/***/ 83:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
