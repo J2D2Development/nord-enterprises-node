@@ -24,13 +24,12 @@ follow: https://hackernoon.com/naive-infinite-scroll-in-reactive-programming-usi
 -note their use of pairwise rx operator- is this for better perf than just checking 'onscroll'
 
 
-
-1) Node/Express as backend (node-mysql to connect to db).  EJS as templating engine.  Would need mailgun as email provider (possibly around $200-300/month). Security?  Does node handle cookies?  I think so, but if not, would need to go jwt
     FOR 3/27/17
         SWITCHING TO REACT FORMS
             -pages.ejs, pages.js are close.  Need to add rest of fields to pages modal and populate.  need to add save/update form submissin (check menu items for good sql).  then need to update menu items/page areas on page.js and page.ejs to use the new system.
             -error regarding switching from uncontrolled to controlled- find fix
             -add validation (might need different handleChange functions for each type- required, email, etc)
+            -add classnames package? https://github.com/JedWatson/classnames
         SESSIONS
             -max age is currently 1hr.  seems to be working- user is at req.user.  need to add auth to all admin routes with this.  also need to update the updt_user call to use req.user.  also need to find out how to only put specific info into that object (currentlypulling all rows from db- including password hash)
         -2) if no menu items on admin, menu div never loads- fix this so that just the 'add menu item' option appears
@@ -51,7 +50,6 @@ follow: https://hackernoon.com/naive-infinite-scroll-in-reactive-programming-usi
             -put data-required and data-error attrs on your custom elements.  use that in a generic function to check on submit- get all elements with data-required- if not filled out or incorrect entry, don't send and show div with data-error contents next to each
 
     AFTER THAT
-        0) continue with moving script at bottom of pages.ejs to js bundle.  need to make the modal work with data pulled from the menu item clicked.
         1) page areas: combine into one?  how to handle sites with multiple already?  and pictures using old insert method?
         
         
@@ -97,68 +95,9 @@ follow: https://hackernoon.com/naive-infinite-scroll-in-reactive-programming-usi
 
 
 
-
-2) Python/Django as backend.  Includes templating, password (would it work with existing db?) and mail functions (could integrate with more 'real' option like mailgun later).
-    -Next steps for this version (no folder yet)
-        a) create folder
-        b) set up latest version of Django (may have to update desktop and laptop)
-        c) start dev server and try to set up homepage routing (use urls.py for regex routes)
-
-
 TO READ FROM 2/17
 https://scotch.io/tutorials/building-a-morphing-hamburger-menu-with-css?utm_source=frontendfocus&utm_medium=email
 
 https://www.sitepoint.com/beginners-guide-to-webpack-2-and-module-bundling/?utm_source=frontendfocus&utm_medium=email
 
 https://appendto.com/2017/01/react-events-101/?utm_source=reactnl&utm_medium=email
-
-
-NOTES FROM 2/17
-
-REMOVED FROM INDEX (should no longer be necessary)
-<!--This file is necessary for graphic menu items to work!-->
-<script src="../static/js/overlib_mini.js"></script>
-<!--Not sure on this one <script src="scripts/<?php print $pageutils ?>"></script>-->
-<script src="../static/js/jquery.bgiframe.js"></script>
-<script src="../static/js/jquery.dimensions.js"></script>
-
-php function to conver old mysql323 password hash
-function mysql_old_password_hash($input, $hex = true)
-{
-  $nr = 1345345333; $add = 7; $nr2 = 0x12345671; $tmp = null;
-  $inlen = strlen($input);
-  for ($i = 0; $i < $inlen; $i++) {
-    $byte = substr($input, $i, 1);
-    if ($byte == ' ' || $byte == "\t") continue;
-    $tmp = ord($byte);
-    $nr ^= ((($nr & 63) + $add) * $tmp) + (($nr << 8) & 0xFFFFFFFF);
-    $nr2 += (($nr2 << 8) & 0xFFFFFFFF) ^ $nr;
-    $add += $tmp;
-  }
-  $out_a = $nr & ((1 << 31) - 1);
-  $out_b = $nr2 & ((1 << 31) - 1);
-  $output = sprintf("%08x%08x", $out_a, $out_b);
-  if ($hex) return $output;
-  return hex_hash_to_bin($output);
-}
-
-var sprintfJs = require("sprintf-js").sprintf;
-
-function mysql_old_password_decode(password, hash) {
-    let nr = 1345345333, add = 7, nr2 = 0x12345671, tmp = null;
-    const inlen = password.length;
-    for (let i = 0; i < inlen; i += 1) {
-        let byte = password.substring(i, i+1);
-        if (byte === ' ' || byte === "\t") continue;
-        tmp = byte.charCodeAt(0);
-        nr ^= (((nr & 63) + add) * tmp) + ((nr << 8) & 0xFFFFFFFF);
-        nr2 += ((nr2 << 8) & 0xFFFFFFFF) ^ nr;
-        add += tmp;
-    }
-    const out_a = nr & ((1 << 31) - 1);
-    const out_b = nr2 & ((1 << 31) - 1);
-    const output = sprintfJs("%08x%08x", out_a, out_b);
-    return output === hash;
-}
-
-mysql_old_password_decode('654321a', '0ba03e4f53f18469');

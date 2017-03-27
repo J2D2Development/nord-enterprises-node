@@ -224,6 +224,18 @@ h1 small {
   padding: 6px;
   flex: 1;
 }
+.pagelist-main_row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px 0 6px 0;
+}
+.pagelist-main_row .fa-check {
+  color: green;
+}
+.pagelist-main_row .fa-ban {
+  color: red;
+}
 .pagelist-links {
   background-color: #ccc;
   color: #333;
