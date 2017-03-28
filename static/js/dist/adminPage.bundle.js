@@ -63,12 +63,12 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 187);
+/******/ 	return __webpack_require__(__webpack_require__.s = 298);
 /******/ })
 /************************************************************************/
 /******/ ({
 
-/***/ 10:
+/***/ 11:
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -10296,7 +10296,7 @@ return jQuery;
 
 /***/ }),
 
-/***/ 15:
+/***/ 16:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10307,7 +10307,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.utilities = undefined;
 
-var _jquery = __webpack_require__(10);
+var _jquery = __webpack_require__(11);
 
 var _jquery2 = _interopRequireDefault(_jquery);
 
@@ -10351,21 +10351,101 @@ var utilities = exports.utilities = {
 
 /***/ }),
 
-/***/ 187:
+/***/ 192:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _menuItems = __webpack_require__(83);
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+var VerticalMenuItem = function VerticalMenuItem(props) {
+    return "\n        <a title=\"Click to edit\" class=\"" + props.menu_style + " openMenuItemModal\" \n            data-order=\"" + props.order + "\" data-helptext=\"" + props.help_text + "\" \n            data-title=\"" + props.title + "\" data-action=\"" + props.action + "\" \n            data-actionid=\"" + props.action_id + "\" data-actionitem=\"" + props.action_item + "\" \n            data-actionurl=\"" + props.action_url + "\">" + props.title + "\n            <span class=\"glyphicon glyphicon-pencil edit-icon-right\" aria-hidden=\"true\"></span>\n        </a>";
+};
 
-var _pageAreas = __webpack_require__(85);
+var AddNewVerticalMenuItem = function AddNewVerticalMenuItem(style) {
+    return "<a class=\"" + style + " openMenuItemModal\" id=\"addnew\" title=\"Add Menu Item\">Add Menu Item<span class=\"glyphicon glyphicon-plus edit-icon-right\" aria-hidden=\"true\"></span></a>";
+};
 
-var _utilities = __webpack_require__(15);
+exports.VerticalMenuItem = VerticalMenuItem;
+exports.AddNewVerticalMenuItem = AddNewVerticalMenuItem;
 
-var _notifyr = __webpack_require__(84);
+/***/ }),
 
-var _jquery = __webpack_require__(10);
+/***/ 193:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+var notifyr = exports.notifyr = function notifyr(config) {
+    var wrapper = document.querySelector('#notifyr');
+    var time = config.duration || 3000;
+    var delay = 500; //from css transition timing
+
+    wrapper.innerHTML = config.msg || 'Status Message!';
+    wrapper.classList.add(config.type);
+    wrapper.classList.add('notifyr-show');
+
+    setTimeout(function () {
+        wrapper.classList.remove('notifyr-show');
+    }, time);
+
+    setTimeout(function () {
+        wrapper.classList.remove(config.type);
+        wrapper.innerHTML = '';
+    }, time + delay);
+};
+
+/***/ }),
+
+/***/ 194:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+var PageArea = function PageArea(props) {
+    var areaTitleExists = props.title && props.title !== '&nbsp;';
+    var editButton = '<button id="edit-' + props.order + '" class="edit-button">Edit</button>';
+    var areaTitle = '';
+    if (areaTitleExists) {
+        areaTitle = '<div>' + props.title + '<div>';
+    }
+    return '<div>' + editButton + areaTitle + '<div>' + props.area_text + '</div></div>';
+};
+
+var AddNewPageArea = function AddNewPageArea() {
+    return '<div><button id="add-page-area" class="add-button">Add</button>Add a page area</div>';
+};
+
+exports.PageArea = PageArea;
+exports.AddNewPageArea = AddNewPageArea;
+
+/***/ }),
+
+/***/ 298:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _menuItems = __webpack_require__(192);
+
+var _pageAreas = __webpack_require__(194);
+
+var _utilities = __webpack_require__(16);
+
+var _notifyr = __webpack_require__(193);
+
+var _jquery = __webpack_require__(11);
 
 var _jquery2 = _interopRequireDefault(_jquery);
 
@@ -10711,86 +10791,6 @@ window.addEventListener('DOMContentLoaded', function () {
     }
 });
 //import { modal } from './modal';
-
-/***/ }),
-
-/***/ 83:
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-var VerticalMenuItem = function VerticalMenuItem(props) {
-    return "\n        <a title=\"Click to edit\" class=\"" + props.menu_style + " openMenuItemModal\" \n            data-order=\"" + props.order + "\" data-helptext=\"" + props.help_text + "\" \n            data-title=\"" + props.title + "\" data-action=\"" + props.action + "\" \n            data-actionid=\"" + props.action_id + "\" data-actionitem=\"" + props.action_item + "\" \n            data-actionurl=\"" + props.action_url + "\">" + props.title + "\n            <span class=\"glyphicon glyphicon-pencil edit-icon-right\" aria-hidden=\"true\"></span>\n        </a>";
-};
-
-var AddNewVerticalMenuItem = function AddNewVerticalMenuItem(style) {
-    return "<a class=\"" + style + " openMenuItemModal\" id=\"addnew\" title=\"Add Menu Item\">Add Menu Item<span class=\"glyphicon glyphicon-plus edit-icon-right\" aria-hidden=\"true\"></span></a>";
-};
-
-exports.VerticalMenuItem = VerticalMenuItem;
-exports.AddNewVerticalMenuItem = AddNewVerticalMenuItem;
-
-/***/ }),
-
-/***/ 84:
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-var notifyr = exports.notifyr = function notifyr(config) {
-    var wrapper = document.querySelector('#notifyr');
-    var time = config.duration || 3000;
-    var delay = 500; //from css transition timing
-
-    wrapper.innerHTML = config.msg || 'Status Message!';
-    wrapper.classList.add(config.type);
-    wrapper.classList.add('notifyr-show');
-
-    setTimeout(function () {
-        wrapper.classList.remove('notifyr-show');
-    }, time);
-
-    setTimeout(function () {
-        wrapper.classList.remove(config.type);
-        wrapper.innerHTML = '';
-    }, time + delay);
-};
-
-/***/ }),
-
-/***/ 85:
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-var PageArea = function PageArea(props) {
-    var areaTitleExists = props.title && props.title !== '&nbsp;';
-    var editButton = '<button id="edit-' + props.order + '" class="edit-button">Edit</button>';
-    var areaTitle = '';
-    if (areaTitleExists) {
-        areaTitle = '<div>' + props.title + '<div>';
-    }
-    return '<div>' + editButton + areaTitle + '<div>' + props.area_text + '</div></div>';
-};
-
-var AddNewPageArea = function AddNewPageArea() {
-    return '<div><button id="add-page-area" class="add-button">Add</button>Add a page area</div>';
-};
-
-exports.PageArea = PageArea;
-exports.AddNewPageArea = AddNewPageArea;
 
 /***/ })
 

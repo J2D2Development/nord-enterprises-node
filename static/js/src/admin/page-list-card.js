@@ -1,7 +1,7 @@
 import React from 'react';
 import moment from 'moment';
 
-const PageListCard = (props) => {    
+const PageListCard = (props) => {
     return (
         <div className="col-md-4 col-sm-6 col-xs-12">
             <div className="pagelist-inner">
@@ -40,8 +40,12 @@ const PageListCard = (props) => {
                     </div>
                 </div>
                 <div className="pagelist-links">
-                    <a onClick={() => props.openModal(props.data)}>Edit Page Basics</a>
-                    <a href={"pages/" + props.data.page_id}>Edit Page Content</a>
+                    <a className="btn btn-primary btn-sm" onClick={() => props.openModal(props.data)}>
+                        Edit Basics
+                    </a>
+                    <a className="btn btn-primary btn-sm" href={"pages/" + props.data.page_id}>
+                        Edit Content
+                    </a>
                 </div>
             </div>
         </div>

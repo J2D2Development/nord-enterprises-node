@@ -209,16 +209,20 @@ h1 small {
   display: flex;
   flex-direction: column;
   min-height: 200px;
-  border: 1px solid #ccc;
+  border: 1px solid #22A7F0;
   margin-bottom: 12px;
 }
 .pagelist-inner h3 {
   font-weight: 100;
-  font-size: 1.25em;
+  font-size: 1.35em;
   margin: 0;
   padding: 6px;
-  background-color: #ccc;
-  color: #333;
+  background-color: #22A7F0;
+  color: #FDFDF0;
+}
+.pagelist-inner small {
+  color: inherit !important;
+  float: right;
 }
 .pagelist-main {
   padding: 6px;
@@ -228,7 +232,9 @@ h1 small {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 6px 0 6px 0;
+  margin: 6px 0 6px 0;
+  padding: 3px;
+  background-color: #ccc;
 }
 .pagelist-main_row .fa-check {
   color: green;
@@ -237,14 +243,12 @@ h1 small {
   color: red;
 }
 .pagelist-links {
-  background-color: #ccc;
-  color: #333;
-  text-align: right;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px;
 }
-.pagelist-links a {
-  color: inherit;
-  text-decoration: none;
-}
+
 
 /*admin bootstrap overrides*/
 .navbar {
@@ -311,10 +315,23 @@ h1 small {
   justify-content: space-between;
   margin-bottom: 16px;
 }
-label {
+.modal-dialog {
+  margin: 0px auto;
+}
+.modal-body {
+  max-height: 400px;
+  overflow-y: auto;
+}
+.modal-content label {
   font-size: 1.2em;
   font-weight: normal;
-  margin-bottom: 2px;
+  padding: 3px;
+  display: block;
+  background-color: #3D7899;
+  color: #FDFDF0;
+}
+.modal-content .form-group {
+  margin-bottom: 32px;
 }
 .half-width {
   width: 48%;
@@ -324,6 +341,10 @@ label {
 }
 
 /*Custom modal*/
+.modal-dialog {
+  width: 80%;
+  min-width: 400px;
+}
 .nord-modal {
   position: fixed;
   top: 0;
@@ -372,7 +393,7 @@ label {
   color: #f06b22;
 }
 .scale-show {
-  transform: scale(1);
+  transform: scale(1) !important;
 }
 .scale-hide {
   transform: scale(0);
@@ -382,6 +403,9 @@ label {
 }
 .slide-up-out {
   transform: translateY(-100%);
+}
+.transform-transition {
+  transition: transform 0.3s ease-in-out;
 }
 .opacity-transition {
   transition: opacity 0.3s ease-in-out;

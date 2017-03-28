@@ -41,12 +41,18 @@ pageRouter.route('/pages-list')
     .get((req, res) => {
         const hoa_id = req.session['hoa_main']['hoa_id'];
 
-        pageUtils.getPageList(hoa_id)
+        Promise.all([
+            pageUtils.getPageList(hoa_id),
+            basicUtils.getDBInfo(`SELECT * FROM hoa_user WHERE hoa_id = ${hoa_id} AND page_admin = 'y';`)
+        ])
         .then(results => {
-            if(results.length === 0) {
+            if(results[0].length === 0) {
                 return res.status(404).send('Not found!');
             } else {
-                return res.status(200).json(results);
+                return res.status(200).json({
+                    pageList: results[0], 
+                    pageAdmins: results[1]
+                });
             }
         })
         .catch(error => {

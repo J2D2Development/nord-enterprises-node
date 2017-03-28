@@ -25,6 +25,11 @@ follow: https://hackernoon.com/naive-infinite-scroll-in-reactive-programming-usi
 
 
     FOR 3/27/17
+        PAGES LISTING
+            -backend: on pages-list endpoint, need to also return:
+                a) list of all users with 'y' for page admin
+                b) if(site type is extended) list of all user groups
+                c) check existing code to see how page-user group linkage is handled, implement that as well.
         SWITCHING TO REACT FORMS
             -pages.ejs, pages.js are close.  Need to add rest of fields to pages modal and populate.  need to add save/update form submissin (check menu items for good sql).  then need to update menu items/page areas on page.js and page.ejs to use the new system.
             -error regarding switching from uncontrolled to controlled- find fix

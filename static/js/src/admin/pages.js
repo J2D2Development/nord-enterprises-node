@@ -11,10 +11,11 @@ window.addEventListener('DOMContentLoaded', function() {
     $.get(window.location.pathname + '/pages-list')
         .done(data => {
             if(data.errorMsg) {
-                return `Error getting menu items: ${data.err}`;
+                return `Error getting page list: ${data.err}`;
             }
+            console.log(data);
             //add 'new item' blank obj to data array
-            data.push({
+            data.pageList.push({
                 title: 'Add New Page',
                 require_auth: 'n',
                 require_group_auth: 'n',
@@ -22,7 +23,7 @@ window.addEventListener('DOMContentLoaded', function() {
                 admin_user: '',
                 page_id: 0
             });
-            render(<PageList pages = {data} />, document.getElementById('page-list'));
+            render(<PageList pages={data.pageList} pageAdmins={data.pageAdmins} userGroups={['admins', 'board', 'normies']} />, document.getElementById('page-list'));
         })
         .fail(error => {
             console.log('xhr request failed:', error);
