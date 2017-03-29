@@ -10,10 +10,11 @@ window.addEventListener('DOMContentLoaded', function() {
 
     $.get(window.location.pathname + '/pages-list')
         .done(data => {
+            console.log('from server:', data);
             if(data.errorMsg) {
-                return `Error getting page list: ${data.err}`;
+                return `Error getting page list: ${data.errorMsg}`;
             }
-            render(<PageList pages={data.pageList} pageAdmins={data.pageAdmins} userGroups={['admins', 'board', 'normies']} />, document.getElementById('page-list'));
+            render(<PageList pages={data.pageList} pageAdmins={data.pageAdmins} userGroups={data.userGroups} />, document.getElementById('page-list'));
         })
         .fail(error => {
             console.log('xhr request failed:', error);

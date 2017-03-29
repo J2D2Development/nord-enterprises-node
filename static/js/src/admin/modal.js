@@ -2,6 +2,7 @@ import React from 'react';
 
 const Modal = (props) => {
     console.log('modal props:', props);
+    console.log('modal type:', props.type);
     const pageAdminOptions = props.pageAdmins.map(user => {
         return(
             <option key={user.username} 
@@ -13,12 +14,12 @@ const Modal = (props) => {
     });
     const availableUserGroups = props.userGroups.map(group => {
         return(
-            <option key={group} value={group}>{group}</option>
+            <option key={group.group_id} value={group.group_id}>{group.group_title}</option>
         );
     });
     const currentUserGroups = props.userGroups.map(group => {
         return(
-            <li key={group}>{group}</li>
+            <li key={group.group_id}>{group.group_title}</li>
         );
     });
 
@@ -29,7 +30,9 @@ const Modal = (props) => {
                     <div className="modal-content">
                         <div className="modal-header">
                             <button type="button" className="close" onClick={() => props.closeModal()} aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                            <h3 className="modal-title">Edit Page: {props.data.title}</h3>
+                            <h3 className="modal-title">
+                                { props.type === 'create' ? 'Create Page' : 'Edit Page: ' + props.data.title }
+                            </h3>
                         </div>
                         <div className="modal-body">
                             <div className="row">
@@ -114,13 +117,14 @@ const Modal = (props) => {
                             </div>
                         </div>
                         <div className="modal-footer">
-                            <button type="button" className="btn btn-danger pull-left" 
+                            <button type="button"
+                                className={ props.type === 'create' ? "hidden" : "btn btn-danger pull-left" } 
                                 onClick={() => props.showDeleteConfirm()}>
                                 <i className="fa fa-trash-o fa-lg"></i> Delete
                             </button>
                             <button type="button" className="btn btn-default" 
                                 onClick={() => props.closeModal()}>
-                                <i className="fa fa-ban fa-lg"></i> Close
+                                <i className="fa fa-ban fa-lg"></i> Cancel
                             </button>
                             <button type="submit" className="btn btn-primary">
                                 <i className="fa fa-check fa-lg"></i> Save

@@ -40,7 +40,7 @@ const PageListCard = (props) => {
                     </div>
                 </div>
                 <div className="pagelist-links">
-                    <a className="btn btn-primary btn-sm" onClick={() => props.openModal(props.data)}>
+                    <a className="btn btn-primary btn-sm" onClick={() => props.openModal('edit', props.data)}>
                         Edit Basics
                     </a>
                     <a className="btn btn-primary btn-sm" href={"pages/" + props.data.page_id}>

@@ -416,6 +416,9 @@ h1 small {
 .opacity-full {
   opacity: 1;
 }
+.hidden {
+  display: none !important;
+}
 
 
 

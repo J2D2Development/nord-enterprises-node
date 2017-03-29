@@ -24,11 +24,11 @@ follow: https://hackernoon.com/naive-infinite-scroll-in-reactive-programming-usi
 -note their use of pairwise rx operator- is this for better perf than just checking 'onscroll'
 
 
-    FOR 3/27/17
+    FOR 3/29/17
         PAGES LISTING
             -backend: on pages-list endpoint, need to also return:
-                a) list of all users with 'y' for page admin
                 b) if(site type is extended) list of all user groups
+                    -returning groups, edit to check for site type extended first
                 c) check existing code to see how page-user group linkage is handled, implement that as well.
         SWITCHING TO REACT FORMS
             -pages.ejs, pages.js are close.  Need to add rest of fields to pages modal and populate.  need to add save/update form submissin (check menu items for good sql).  then need to update menu items/page areas on page.js and page.ejs to use the new system.
@@ -63,9 +63,6 @@ follow: https://hackernoon.com/naive-infinite-scroll-in-reactive-programming-usi
         0.2) security: on all routes, add check: if req.params.sitename !== session['sitename'], nuke session and redirect to login (someone trying to jump from one hoa to another)
         0.3) ditch captcha on forms- use bot honeypot (hidden form input field that normal user can't find, but bot would automatically fill out- test with this)
         a) basic page structure
-            -get hoa_main- save proper vars in session (get from old codebase)
-            -get hoa_lookfeel- apply
-            -set up html structure using ejs templates and includes
             -CURRENTLY: 
                 -style header and all permutations
                 -move style_main.inc to style-main.ejs and switch out php

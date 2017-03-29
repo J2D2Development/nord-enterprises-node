@@ -7,6 +7,7 @@ import Modal from './modal';
 export default class PageList extends Component {
     constructor(props) {
         super(props);
+        this.type = 'update';
         this.pages = props.pages;
         this.pageAdmins = props.pageAdmins
         this.userGroups = props.userGroups;
@@ -15,14 +16,14 @@ export default class PageList extends Component {
         this.submitForm = this.submitForm.bind(this);
         this.filterPages = this.filterPages.bind(this);
         this.newPage = {
-            title: 'Add New Page',
+            title: '',
             require_auth: 'n',
             require_group_auth: 'n',
             home_page: 'n',
             admin_user: '',
             page_id: 0
         };
-        
+
         this.state = {
             pages: this.pages,
             pageInfo: {},
@@ -31,8 +32,9 @@ export default class PageList extends Component {
         };
     }
 
-    openModal(props) {
+    openModal(type, props) {
         console.log('open modal props:', props);
+        this.type = type;
         this.setState({
             pageInfo: props
         });
@@ -121,15 +123,15 @@ export default class PageList extends Component {
                         <Search filterPages={this.filterPages} placeholder="Search for a page" />
                     </div>
                     <div className="col-xs-6" style={{marginBottom: 16 + 'px'}}>
-                        <button type="button" className="btn btn-primary" onClick={() => this.openModal(this.newPage)}>
-                            Create New Page
+                        <button type="button" className="btn btn-primary" onClick={() => this.openModal('create', this.newPage)}>
+                            <i className="fa fa-plus fa-lg"></i> Create New Page
                         </button>
                     </div>
                 </div>
                 {this.state.pages.map(page => {
                     return <PageListCard key={page.page_id} openModal={this.openModal} data={page} />;
                 })}
-                <Modal data = {this.state.pageInfo} closeModal={this.closeModal} showDeleteConfirm={this.showDeleteConfirm} hideDeleteConfirm={this.hideDeleteConfirm} handleChange={this.handleChange} submitForm={this.submitForm} addItem={this.addItem} updateItem={this.updateItem} deleteItem={this.deleteItem} pageAdmins={this.pageAdmins} userGroups={this.userGroups}  />
+                <Modal type={this.type} data={this.state.pageInfo} closeModal={this.closeModal} showDeleteConfirm={this.showDeleteConfirm} hideDeleteConfirm={this.hideDeleteConfirm} handleChange={this.handleChange} submitForm={this.submitForm} addItem={this.addItem} updateItem={this.updateItem} deleteItem={this.deleteItem} pageAdmins={this.pageAdmins} userGroups={this.userGroups}  />
             </div>
         );
     }

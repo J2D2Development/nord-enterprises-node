@@ -43,20 +43,30 @@ pageRouter.route('/pages-list')
 
         Promise.all([
             pageUtils.getPageList(hoa_id),
-            basicUtils.getDBInfo(`SELECT * FROM hoa_user WHERE hoa_id = ${hoa_id} AND page_admin = 'y';`)
+            basicUtils.getDBInfo(`SELECT * FROM hoa_user WHERE hoa_id = ${hoa_id} AND page_admin = 'y';`),
+            basicUtils.getDBInfo(`SELECT * FROM hoa_user_groups WHERE hoa_id = ${hoa_id}`),
+            basicUtils.getDBInfo(`SELECT * FROM hoa_ug_pages WHERE hoa_id = ${hoa_id}`)
         ])
         .then(results => {
             if(results[0].length === 0) {
-                return res.status(404).send('Not found!');
+                return res.status(404).json({
+                    success: false,
+                    errorMsg: 'Error Getting Page Info'
+                });
             } else {
                 return res.status(200).json({
                     pageList: results[0], 
-                    pageAdmins: results[1]
+                    pageAdmins: results[1],
+                    userGroups: results[2],
+                    userGroupsAssigned: results[3]
                 });
             }
         })
         .catch(error => {
-            console.log('Error getting pages list json:', error);
+            return res.status(500).json({
+                success: false,
+                errorMsg: 'Server Error: ' + error
+            });
         });
     });
 
