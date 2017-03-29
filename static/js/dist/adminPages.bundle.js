@@ -34406,11 +34406,17 @@ var _pageListCard = __webpack_require__(197);
 
 var _pageListCard2 = _interopRequireDefault(_pageListCard);
 
+var _search = __webpack_require__(300);
+
+var _search2 = _interopRequireDefault(_search);
+
 var _modal = __webpack_require__(196);
 
 var _modal2 = _interopRequireDefault(_modal);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -34432,7 +34438,18 @@ var PageList = function (_Component) {
         _this.openModal = _this.openModal.bind(_this);
         _this.handleChange = _this.handleChange.bind(_this);
         _this.submitForm = _this.submitForm.bind(_this);
+        _this.filterPages = _this.filterPages.bind(_this);
+        _this.newPage = {
+            title: 'Add New Page',
+            require_auth: 'n',
+            require_group_auth: 'n',
+            home_page: 'n',
+            admin_user: '',
+            page_id: 0
+        };
+
         _this.state = {
+            pages: _this.pages,
             pageInfo: {},
             userGroups: props.userGroups,
             formType: 'update'
@@ -34511,6 +34528,27 @@ var PageList = function (_Component) {
             this.closeModal();
         }
     }, {
+        key: 'filterPages',
+        value: function filterPages(evt) {
+            console.log('typing in filter:', evt.target.value);
+            console.log(this.state.pages);
+            var pageInfoFiltered = [].concat(_toConsumableArray(this.pages)).filter(function (page) {
+                return page.title.toLowerCase().indexOf(evt.target.value.toLowerCase()) !== -1;
+            });
+
+            console.log('filtered array:', pageInfoFiltered.length);
+
+            if (evt.target.value) {
+                this.setState({
+                    pages: pageInfoFiltered
+                });
+            } else {
+                this.setState({
+                    pages: this.pages
+                });
+            }
+        }
+    }, {
         key: 'render',
         value: function render() {
             var _this2 = this;
@@ -34518,7 +34556,27 @@ var PageList = function (_Component) {
             return _react2.default.createElement(
                 'div',
                 null,
-                this.pages.map(function (page) {
+                _react2.default.createElement(
+                    'div',
+                    { className: 'row' },
+                    _react2.default.createElement(
+                        'div',
+                        { className: 'col-xs-6', style: { marginBottom: 16 + 'px' } },
+                        _react2.default.createElement(_search2.default, { filterPages: this.filterPages, placeholder: 'Search for a page' })
+                    ),
+                    _react2.default.createElement(
+                        'div',
+                        { className: 'col-xs-6', style: { marginBottom: 16 + 'px' } },
+                        _react2.default.createElement(
+                            'button',
+                            { type: 'button', className: 'btn btn-primary', onClick: function onClick() {
+                                    return _this2.openModal(_this2.newPage);
+                                } },
+                            'Create New Page'
+                        )
+                    )
+                ),
+                this.state.pages.map(function (page) {
                     return _react2.default.createElement(_pageListCard2.default, { key: page.page_id, openModal: _this2.openModal, data: page });
                 }),
                 _react2.default.createElement(_modal2.default, { data: this.state.pageInfo, closeModal: this.closeModal, showDeleteConfirm: this.showDeleteConfirm, hideDeleteConfirm: this.hideDeleteConfirm, handleChange: this.handleChange, submitForm: this.submitForm, addItem: this.addItem, updateItem: this.updateItem, deleteItem: this.deleteItem, pageAdmins: this.pageAdmins, userGroups: this.userGroups })
@@ -47518,16 +47576,6 @@ window.addEventListener('DOMContentLoaded', function () {
         if (data.errorMsg) {
             return 'Error getting page list: ' + data.err;
         }
-        console.log(data);
-        //add 'new item' blank obj to data array
-        data.pageList.push({
-            title: 'Add New Page',
-            require_auth: 'n',
-            require_group_auth: 'n',
-            home_page: 'n',
-            admin_user: '',
-            page_id: 0
-        });
         (0, _reactDom.render)(_react2.default.createElement(_pageList2.default, { pages: data.pageList, pageAdmins: data.pageAdmins, userGroups: ['admins', 'board', 'normies'] }), document.getElementById('page-list'));
     }).fail(function (error) {
         console.log('xhr request failed:', error);
@@ -47536,6 +47584,33 @@ window.addEventListener('DOMContentLoaded', function () {
     //after everything is loaded, hide loader screen
     _utilities.utilities.hideLoader();
 });
+
+/***/ }),
+/* 300 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _react = __webpack_require__(28);
+
+var _react2 = _interopRequireDefault(_react);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var Search = function Search(props) {
+    return _react2.default.createElement(
+        "div",
+        null,
+        _react2.default.createElement("input", { className: "form-control", type: "text", placeholder: props.placeholder, onChange: props.filterPages })
+    );
+};
+
+exports.default = Search;
 
 /***/ })
 /******/ ]);

@@ -13,16 +13,6 @@ window.addEventListener('DOMContentLoaded', function() {
             if(data.errorMsg) {
                 return `Error getting page list: ${data.err}`;
             }
-            console.log(data);
-            //add 'new item' blank obj to data array
-            data.pageList.push({
-                title: 'Add New Page',
-                require_auth: 'n',
-                require_group_auth: 'n',
-                home_page: 'n',
-                admin_user: '',
-                page_id: 0
-            });
             render(<PageList pages={data.pageList} pageAdmins={data.pageAdmins} userGroups={['admins', 'board', 'normies']} />, document.getElementById('page-list'));
         })
         .fail(error => {
