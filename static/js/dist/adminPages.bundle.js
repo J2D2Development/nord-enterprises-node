@@ -34402,6 +34402,10 @@ var _react2 = _interopRequireDefault(_react);
 
 var _reactDom = __webpack_require__(56);
 
+var _jquery = __webpack_require__(11);
+
+var _jquery2 = _interopRequireDefault(_jquery);
+
 var _pageListCard = __webpack_require__(197);
 
 var _pageListCard2 = _interopRequireDefault(_pageListCard);
@@ -34439,6 +34443,7 @@ var PageList = function (_Component) {
         _this.openModal = _this.openModal.bind(_this);
         _this.handleChange = _this.handleChange.bind(_this);
         _this.submitForm = _this.submitForm.bind(_this);
+        _this.deleteItem = _this.deleteItem.bind(_this);
         _this.filterPages = _this.filterPages.bind(_this);
         _this.newPage = {
             title: '',
@@ -34446,7 +34451,8 @@ var PageList = function (_Component) {
             require_group_auth: 'n',
             home_page: 'n',
             admin_user: '',
-            page_id: 0
+            page_id: 0,
+            result_desc: ''
         };
 
         _this.state = {
@@ -34461,10 +34467,10 @@ var PageList = function (_Component) {
     _createClass(PageList, [{
         key: 'openModal',
         value: function openModal(type, props) {
-            console.log('open modal props:', props);
             this.type = type;
             this.setState({
-                pageInfo: props
+                pageInfo: props,
+                formType: type
             });
             document.querySelector('#bg-screen').classList.add('bg-show');
             document.querySelector('#nord-modal').classList.add('modal-show');
@@ -34506,39 +34512,92 @@ var PageList = function (_Component) {
         key: 'submitForm',
         value: function submitForm(evt) {
             evt.preventDefault();
-            if (this.state.formType === 'update') {
+            if (this.state.formType === 'edit') {
                 this.updateItem(this.state.pageInfo);
             } else {
                 this.addItem(this.state.pageInfo);
             }
         }
     }, {
+        key: 'refreshPageList',
+        value: function refreshPageList() {
+            var _this2 = this;
+
+            _jquery2.default.get(window.location.pathname + '/pages-list').then(function (response) {
+                console.log('refreshed page list:', response);
+                _this2.pages = response.pageList;
+                _this2.setState({
+                    pages: _this2.pages
+                });
+            });
+        }
+    }, {
         key: 'updateItem',
-        value: function updateItem(item, url) {
-            console.log('updating existing:', item, url);
+        value: function updateItem(item) {
+            var url = window.location.pathname + '/pages-list/' + item['page_id'];
+            _jquery2.default.ajax({
+                url: url,
+                type: 'PUT',
+                dataType: 'json',
+                data: item
+            }).done(function (response) {
+                console.log('update page basics server response', response);
+                // if(response.success) {
+                //     this.closeModal()
+                // } else {
+                //     console.log('error:', response);
+                // }
+            }).fail(function (error) {
+                console.log('returned but with error:', error);
+                menuItemUpdateError(error.msg);
+            });
         }
     }, {
         key: 'addItem',
-        value: function addItem(item, url) {
-            console.log('adding item:', item, url);
+        value: function addItem(item) {
+            var _this3 = this;
+
+            _jquery2.default.post(window.location.pathname + '/pages-list', item).done(function (data) {
+                console.log('from server on post route:', data);
+                _this3.refreshPageList();
+                _this3.closeModal();
+            }).fail(function (error) {
+                console.log('xhr request failed:', error);
+            }).always(function () {});
         }
     }, {
         key: 'deleteItem',
-        value: function deleteItem(url) {
-            console.log('deleting: ', url);
-            this.hideDeleteConfirm();
-            this.closeModal();
+        value: function deleteItem(id) {
+            var _this4 = this;
+
+            var url = window.location.pathname + '/pages-list/' + id;
+            console.log('deleting url:', url);
+            _jquery2.default.ajax({
+                url: url,
+                type: 'DELETE',
+                dataType: 'json'
+            }).done(function (response) {
+                console.log('delete server response', response);
+                // if(response.success) {
+                //     menuItemUpdateSuccess(response.msg);
+                // } else {
+                //     menuItemUpdateError(response.msg);
+                // }
+                _this4.closeModal();
+            }).fail(function (error) {
+                console.log('returned but with error:', error);
+                menuItemUpdateError(error.msg);
+            }).always(function () {
+                return _this4.hideDeleteConfirm();
+            });
         }
     }, {
         key: 'filterPages',
         value: function filterPages(evt) {
-            console.log('typing in filter:', evt.target.value);
             console.log(this.state.pages);
             var pageInfoFiltered = [].concat(_toConsumableArray(this.pages)).filter(function (page) {
                 return page.title.toLowerCase().indexOf(evt.target.value.toLowerCase()) !== -1;
             });
-
-            console.log('filtered array:', pageInfoFiltered.length);
 
             if (evt.target.value) {
                 this.setState({
@@ -34553,7 +34612,7 @@ var PageList = function (_Component) {
     }, {
         key: 'render',
         value: function render() {
-            var _this2 = this;
+            var _this5 = this;
 
             return _react2.default.createElement(
                 'div',
@@ -34572,7 +34631,7 @@ var PageList = function (_Component) {
                         _react2.default.createElement(
                             'button',
                             { type: 'button', className: 'btn btn-primary', onClick: function onClick() {
-                                    return _this2.openModal('create', _this2.newPage);
+                                    return _this5.openModal('create', _this5.newPage);
                                 } },
                             _react2.default.createElement('i', { className: 'fa fa-plus fa-lg' }),
                             ' Create New Page'
@@ -34580,7 +34639,7 @@ var PageList = function (_Component) {
                     )
                 ),
                 this.state.pages.map(function (page) {
-                    return _react2.default.createElement(_pageListCard2.default, { key: page.page_id, openModal: _this2.openModal, data: page });
+                    return _react2.default.createElement(_pageListCard2.default, { key: page.page_id, openModal: _this5.openModal, data: page });
                 }),
                 _react2.default.createElement(_modal2.default, { type: this.type, data: this.state.pageInfo, closeModal: this.closeModal, showDeleteConfirm: this.showDeleteConfirm, hideDeleteConfirm: this.hideDeleteConfirm, handleChange: this.handleChange, submitForm: this.submitForm, addItem: this.addItem, updateItem: this.updateItem, deleteItem: this.deleteItem, pageAdmins: this.pageAdmins, userGroups: this.userGroups })
             );
@@ -34591,6 +34650,20 @@ var PageList = function (_Component) {
 }(_react.Component);
 
 exports.default = PageList;
+
+
+PageList.propTypes = {
+    pages: _react2.default.PropTypes.array.isRequired,
+    pageAdmins: _react2.default.PropTypes.array.isRequired,
+    userGroups: _react2.default.PropTypes.array
+};
+
+// PageList.defaultProps = {
+//     model: {
+//         id: 0
+//     },
+//     title: 'Your Name'
+// }
 
 /***/ }),
 /* 196 */
@@ -34610,8 +34683,6 @@ var _react2 = _interopRequireDefault(_react);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var Modal = function Modal(props) {
-    console.log('modal props:', props);
-    console.log('modal type:', props.type);
     var pageAdminOptions = props.pageAdmins.map(function (user) {
         return _react2.default.createElement(
             'option',
@@ -34623,20 +34694,25 @@ var Modal = function Modal(props) {
             user.last_name
         );
     });
-    var availableUserGroups = props.userGroups.map(function (group) {
-        return _react2.default.createElement(
-            'option',
-            { key: group.group_id, value: group.group_id },
-            group.group_title
-        );
-    });
-    var currentUserGroups = props.userGroups.map(function (group) {
-        return _react2.default.createElement(
-            'li',
-            { key: group.group_id },
-            group.group_title
-        );
-    });
+
+    var availableUserGroups = void 0,
+        currentUserGroups = void 0;
+    if (props.userGroups) {
+        availableUserGroups = props.userGroups.map(function (group) {
+            return _react2.default.createElement(
+                'option',
+                { key: group.group_id, value: group.group_id },
+                group.group_title
+            );
+        });
+        currentUserGroups = props.userGroups.map(function (group) {
+            return _react2.default.createElement(
+                'li',
+                { key: group.group_id },
+                group.group_title
+            );
+        });
+    }
 
     return _react2.default.createElement(
         'div',
@@ -34681,7 +34757,7 @@ var Modal = function Modal(props) {
                                 { className: 'form-group col-sm-4 col-xs-12' },
                                 _react2.default.createElement(
                                     'label',
-                                    null,
+                                    { className: 'modal-content-label' },
                                     'Title'
                                 ),
                                 _react2.default.createElement('input', { type: 'text', name: 'title', className: 'form-control', id: 'title', placeholder: 'Title', value: props.data.title, onChange: props.handleChange })
@@ -34691,7 +34767,7 @@ var Modal = function Modal(props) {
                                 { className: 'form-group col-sm-4 col-xs-12' },
                                 _react2.default.createElement(
                                     'label',
-                                    null,
+                                    { className: 'modal-content-label' },
                                     'Page Admin'
                                 ),
                                 _react2.default.createElement(
@@ -34708,25 +34784,34 @@ var Modal = function Modal(props) {
                             ),
                             _react2.default.createElement(
                                 'div',
-                                { className: 'form-group col-sm-4 col-xs-12' },
+                                { className: 'form-group col-sm-4 col-xs-12 custom-radio' },
                                 _react2.default.createElement(
                                     'label',
-                                    null,
+                                    { className: 'modal-content-label' },
                                     'Require Password'
                                 ),
                                 _react2.default.createElement('input', { type: 'radio',
-                                    name: 'require_auth', value: 'y',
+                                    name: 'require_auth', value: 'y', className: 'yes', id: 'auth_yes',
                                     checked: props.data.require_auth === 'y' ? 'checked' : '',
                                     onChange: props.handleChange }),
-                                'Yes',
+                                _react2.default.createElement(
+                                    'label',
+                                    { htmlFor: 'auth_yes' },
+                                    'Yes'
+                                ),
+                                '\xA0\xA0\xA0',
                                 _react2.default.createElement('input', { type: 'radio',
-                                    name: 'require_auth', value: 'n',
+                                    name: 'require_auth', value: 'n', className: 'no', id: 'auth_no',
                                     checked: !props.data.require_auth || props.data.require_auth === 'n' ? 'checked' : '',
                                     onChange: props.handleChange }),
-                                'No'
+                                _react2.default.createElement(
+                                    'label',
+                                    { htmlFor: 'auth_no' },
+                                    'No'
+                                )
                             )
                         ),
-                        props.data.require_auth === 'y' && _react2.default.createElement(
+                        props.data.require_auth === 'y' && props.userGroups && _react2.default.createElement(
                             'div',
                             { className: 'row' },
                             _react2.default.createElement(
@@ -34734,7 +34819,7 @@ var Modal = function Modal(props) {
                                 { className: 'form-group col-sm-4 col-xs-12' },
                                 _react2.default.createElement(
                                     'label',
-                                    null,
+                                    { className: 'modal-content-label' },
                                     'Limit Access to User Group'
                                 ),
                                 _react2.default.createElement('input', { type: 'radio',
@@ -34753,7 +34838,7 @@ var Modal = function Modal(props) {
                                 { className: 'form-group col-sm-4 col-xs-12' },
                                 _react2.default.createElement(
                                     'label',
-                                    null,
+                                    { className: 'modal-content-label' },
                                     'User Groups With Access'
                                 ),
                                 _react2.default.createElement(
@@ -34767,7 +34852,7 @@ var Modal = function Modal(props) {
                                 { className: 'form-group col-sm-4 col-xs-12' },
                                 _react2.default.createElement(
                                     'label',
-                                    null,
+                                    { className: 'modal-content-label' },
                                     'Available User Groups'
                                 ),
                                 _react2.default.createElement(
@@ -34783,29 +34868,10 @@ var Modal = function Modal(props) {
                             { className: 'row' },
                             _react2.default.createElement(
                                 'div',
-                                { className: 'form-group col-sm-4 col-xs-12' },
+                                { className: 'form-group col-xs-12' },
                                 _react2.default.createElement(
                                     'label',
-                                    null,
-                                    'Include Table of Contents'
-                                ),
-                                _react2.default.createElement('input', { type: 'radio',
-                                    name: 'incl_toc', value: 'y',
-                                    checked: props.data.incl_toc === 'y' ? 'checked' : '',
-                                    onChange: props.handleChange }),
-                                'Yes',
-                                _react2.default.createElement('input', { type: 'radio',
-                                    name: 'incl_toc', value: 'n',
-                                    checked: !props.data.incl_toc || props.data.incl_toc === 'n' ? 'checked' : '',
-                                    onChange: props.handleChange }),
-                                'No'
-                            ),
-                            _react2.default.createElement(
-                                'div',
-                                { className: 'form-group col-sm-8 col-xs-12' },
-                                _react2.default.createElement(
-                                    'label',
-                                    null,
+                                    { className: 'modal-content-label' },
                                     'Page Description'
                                 ),
                                 _react2.default.createElement('textarea', { className: 'form-control', name: 'result_desc',
@@ -34859,7 +34925,7 @@ var Modal = function Modal(props) {
                                 'button',
                                 { type: 'button', className: 'btn btn-danger',
                                     onClick: function onClick() {
-                                        return props.deleteItem(window.location.pathname + "/pages/" + props.data.page_id);
+                                        return props.deleteItem(props.data.page_id);
                                     } },
                                 'Yes - Delete'
                             ),
@@ -34877,6 +34943,10 @@ var Modal = function Modal(props) {
             )
         )
     );
+};
+
+Modal.propTypes = {
+    type: _react2.default.PropTypes.string.isRequired
 };
 
 exports.default = Modal;
@@ -35009,7 +35079,7 @@ var PageListCard = function PageListCard(props) {
                 ),
                 _react2.default.createElement(
                     'a',
-                    { className: 'btn btn-primary btn-sm', href: "pages/" + props.data.page_id },
+                    { className: 'btn btn-primary btn-sm', href: "pages/page-contents/" + props.data.page_id },
                     'Edit Content'
                 )
             )
@@ -47602,13 +47672,14 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 window.addEventListener('DOMContentLoaded', function () {
     _utilities.utilities.slideout();
     _utilities.utilities.setMenuOffset();
-
+    console.log('api endpoint:', window.location.pathname + '/pages-list');
     _jquery2.default.get(window.location.pathname + '/pages-list').done(function (data) {
         console.log('from server:', data);
+        var el = document.getElementById('page-list');
         if (data.errorMsg) {
             return 'Error getting page list: ' + data.errorMsg;
         }
-        (0, _reactDom.render)(_react2.default.createElement(_pageList2.default, { pages: data.pageList, pageAdmins: data.pageAdmins, userGroups: data.userGroups }), document.getElementById('page-list'));
+        (0, _reactDom.render)(_react2.default.createElement(_pageList2.default, { pages: data.pageList, pageAdmins: data.pageAdmins, userGroups: data.userGroups }), el);
     }).fail(function (error) {
         console.log('xhr request failed:', error);
     }).always(function () {});

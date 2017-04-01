@@ -40,13 +40,19 @@ pageRouter.route('/')
 pageRouter.route('/pages-list')
     .get((req, res) => {
         const hoa_id = req.session['hoa_main']['hoa_id'];
+        const billing_type = req.session['hoa_main']['billing_type'] > 0 ? 'extended' : 'basic';
+        console.log('BILLING TYPE', billing_type);
 
-        Promise.all([
+        let promiseArray = [
             pageUtils.getPageList(hoa_id),
-            basicUtils.getDBInfo(`SELECT * FROM hoa_user WHERE hoa_id = ${hoa_id} AND page_admin = 'y';`),
-            basicUtils.getDBInfo(`SELECT * FROM hoa_user_groups WHERE hoa_id = ${hoa_id}`),
-            basicUtils.getDBInfo(`SELECT * FROM hoa_ug_pages WHERE hoa_id = ${hoa_id}`)
-        ])
+            basicUtils.getDBInfo(`SELECT * FROM hoa_user WHERE hoa_id = ${hoa_id} AND page_admin = 'y';`)
+        ];
+        if(billing_type === 'extended') {
+            promiseArray.push(basicUtils.getDBInfo(`SELECT * FROM hoa_user_groups WHERE hoa_id = ${hoa_id}`));
+            promiseArray.push(basicUtils.getDBInfo(`SELECT * FROM hoa_ug_pages WHERE hoa_id = ${hoa_id}`));
+        }
+
+        Promise.all(promiseArray)
         .then(results => {
             if(results[0].length === 0) {
                 return res.status(404).json({
@@ -54,12 +60,15 @@ pageRouter.route('/pages-list')
                     errorMsg: 'Error Getting Page Info'
                 });
             } else {
-                return res.status(200).json({
-                    pageList: results[0], 
-                    pageAdmins: results[1],
-                    userGroups: results[2],
-                    userGroupsAssigned: results[3]
-                });
+                let returnObj = {
+                    pageList: results[0],
+                    pageAdmins: results[1]
+                };
+                if(billing_type === 'extended') {
+                    returnObj.userGroups = results[2],
+                    returnObj.userGroupsAssigned = results[3]
+                }
+                return res.status(200).json(returnObj);
             }
         })
         .catch(error => {
@@ -68,9 +77,98 @@ pageRouter.route('/pages-list')
                 errorMsg: 'Server Error: ' + error
             });
         });
+    })
+    .post((req, res) => {
+        const hoa_id = req.session['hoa_main']['hoa_id'];
+        const page_id = +req.params['page_id'];
+        const sitename = req.session['sitename'];
+        //const hoa_main = req.session['hoa_main'];
+        const submitted = req.body;
+        let updt_user = 'undefined user';
+        if(req.user && req.user.username) {
+            updt_user = req.user.username;
+        }
+
+        //validation on submission before going to db
+        //MOVE THIS TO FUNCTION
+        if(!updt_user) { 
+            return res.status(500).json({
+                    success: false,
+                    msg: 'No user logged in'
+                });
+        }
+
+        if(!submitted.title) {
+            res.status(500).json({
+                    success: false,
+                    msg: 'Please enter a title'
+                });
+        }
+
+        const require_auth = submitted.require_auth || 'n';
+        const require_group_auth = submitted.require_group_auth || 'n';
+        const admin_user = submitted.admin_user || '';
+
+        //check for max(page_id) to get the new page's id
+        basicUtils.getDBInfo(`SELECT MAX(page_id) AS next_page_id FROM hoa_pv_page WHERE hoa_id = ${hoa_id}`)
+            .then(result => {
+                const next_page_id = +result[0].next_page_id + 1;
+                console.log('next page:', next_page_id);
+                console.log('user:', updt_user);
+                console.log('admin user:', submitted.admin_user);
+                if(next_page_id) {
+                    basicUtils.getDBInfo(`INSERT INTO hoa_pv_page SET hoa_id = ${hoa_id}, page_id = ${next_page_id}, title = ${connection.escape(submitted.title)}, result_desc = ${connection.escape(submitted.result_desc)}, require_auth = ${connection.escape(require_auth)}, require_group_auth = ${connection.escape(require_group_auth)}, admin_user = ${connection.escape(admin_user)}, updt_user = ${connection.escape(updt_user)}`)
+                        .then(result => {
+                            return res.status(200).json({
+                                success: true,
+                                msg: 'New Page Added',
+                                result: result
+                            });
+                        });
+                } else {
+                    return res.status(500).json({
+                        success: false,
+                        msg: 'Error getting next page id'
+                    });
+                }
+            })
+            .catch(err => {
+                return res.status(500).json({
+                    success: false,
+                    msg: 'Error getting max page id: ' + err
+                });
+            });
     });
 
-pageRouter.route('/:page_id')
+//editing page basics (title, password, admin, etc)
+pageRouter.route('/pages-list/:page_id')
+    .put((req, res) => {
+        const hoa_id = req.session['hoa_main']['hoa_id'];
+        const page_id = +req.params['page_id'];
+        const sitename = req.session['sitename'];
+        const hoa_main = req.session['hoa_main'];
+        const submitted = req.body;
+
+        return res.status(200).json({
+            success: true,
+            msg: 'Page Basics Updated'
+        });
+    })
+    .delete((req, res) => {
+        const hoa_id = req.session['hoa_main']['hoa_id'];
+        const page_id = +req.params['page_id'];
+        const sitename = req.session['sitename'];
+        const hoa_main = req.session['hoa_main'];
+
+        return res.status(200).json({
+            hoa_id,
+            page_id,
+            sitename
+        });
+    });
+
+//editing individual page contents (menu/page areas)
+pageRouter.route('/page-contents/:page_id')
     .all((req, res, next) => {
         //do we need to check session login here?  already doing it at base level
         next();
@@ -154,7 +252,7 @@ pageRouter.route('/:page_id')
         });
     });
 
-pageRouter.route('/:page_id/menuitems')
+pageRouter.route('/page-contents/:page_id/menuitems')
     .get((req, res) => {
         const hoa_id = req.session['hoa_main']['hoa_id'];
         const page_id = +req.params['page_id'];
@@ -233,7 +331,7 @@ pageRouter.route('/:page_id/menuitems')
     });
 
     //edit/delete individual menu items
-    pageRouter.route('/:page_id/menuitems/:menu_item_id')
+    pageRouter.route('/page-contents/:page_id/menuitems/:menu_item_id')
         .put((req, res) => {
             //update existing menu item- no unique id field so use order
             const hoa_id = req.session['hoa_main']['hoa_id'];
@@ -342,7 +440,7 @@ pageRouter.route('/:page_id/menuitems')
                 });
         });
 
-pageRouter.route('/:page_id/pageareas')
+pageRouter.route('/page-contents/:page_id/pageareas')
     .get((req, res) => {
         const hoa_id = req.session['hoa_main']['hoa_id'];
         const page_id = +req.params['page_id'];

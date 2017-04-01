@@ -10481,7 +10481,7 @@ window.addEventListener('DOMContentLoaded', function () {
     var modalConfirm = document.querySelector('#modal-confirm');
 
     var getMenuItems = function getMenuItems() {
-        _jquery2.default.get(window.location.pathname + '/menuitems').done(function (data) {
+        _jquery2.default.get(window.location.pathname + '/page-contents/menuitems').done(function (data) {
             if (data.errorMsg) {
                 return 'Error getting menu items: ' + data.err;
             }
@@ -10498,7 +10498,7 @@ window.addEventListener('DOMContentLoaded', function () {
     getMenuItems();
 
     var getPageAreas = function getPageAreas() {
-        _jquery2.default.get(window.location.pathname + '/pageareas').done(function (data) {
+        _jquery2.default.get(window.location.pathname + '/page-contents/pageareas').done(function (data) {
             if (data.errorMsg) {
                 return 'Error getting page areas: ' + data.err;
             }
@@ -10569,7 +10569,7 @@ window.addEventListener('DOMContentLoaded', function () {
 
         //check form- set api url (for new item vs update item)
         if (menuItemFormType === 'update') {
-            updateMenuItem(window.location.pathname + '/menuitems/' + dataObj.order, dataObj);
+            updateMenuItem(window.location.pathname + '/page-contents/menuitems/' + dataObj.order, dataObj);
         } else if (menuItemFormType === 'addnew') {
             addMenuItem(window.location.pathname + '/menuitems', dataObj);
         } else {

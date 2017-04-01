@@ -25,6 +25,7 @@ follow: https://hackernoon.com/naive-infinite-scroll-in-reactive-programming-usi
 
 
     FOR 3/29/17
+        COOKIE NOT BEING REMOVED ON LOGOUT- THIS MEANS FUTURE LOGINSDON'T WORK PROPERLY
         PAGES LISTING
             -backend: on pages-list endpoint, need to also return:
                 b) if(site type is extended) list of all user groups

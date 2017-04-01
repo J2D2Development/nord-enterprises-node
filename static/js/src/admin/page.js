@@ -36,7 +36,7 @@ window.addEventListener('DOMContentLoaded', function() {
     const modalConfirm = document.querySelector('#modal-confirm');
 
     const getMenuItems = () => {
-        $.get(window.location.pathname + '/menuitems')
+        $.get(window.location.pathname + '/page-contents/menuitems')
             .done(data => {
                 if(data.errorMsg) {
                     return `Error getting menu items: ${data.err}`;
@@ -56,7 +56,7 @@ window.addEventListener('DOMContentLoaded', function() {
     getMenuItems();
 
     const getPageAreas = () => {
-        $.get(window.location.pathname + '/pageareas')
+        $.get(window.location.pathname + '/page-contents/pageareas')
             .done(data => {
                 if(data.errorMsg) {
                     return `Error getting page areas: ${data.err}`;
@@ -128,7 +128,7 @@ window.addEventListener('DOMContentLoaded', function() {
 
         //check form- set api url (for new item vs update item)
         if(menuItemFormType === 'update') {
-            updateMenuItem(`${window.location.pathname}/menuitems/${dataObj.order}`, dataObj);
+            updateMenuItem(`${window.location.pathname}/page-contents/menuitems/${dataObj.order}`, dataObj);
         } else if(menuItemFormType === 'addnew') {
             addMenuItem(`${window.location.pathname}/menuitems`, dataObj);
         } else {

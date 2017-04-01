@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import { render } from 'react-dom';
+import $ from 'jquery';
+
 import PageListCard from './page-list-card';
 import Search from './search';
 import Modal from './modal';
@@ -14,6 +16,7 @@ export default class PageList extends Component {
         this.openModal = this.openModal.bind(this);
         this.handleChange = this.handleChange.bind(this);
         this.submitForm = this.submitForm.bind(this);
+        this.deleteItem = this.deleteItem.bind(this);
         this.filterPages = this.filterPages.bind(this);
         this.newPage = {
             title: '',
@@ -21,7 +24,8 @@ export default class PageList extends Component {
             require_group_auth: 'n',
             home_page: 'n',
             admin_user: '',
-            page_id: 0
+            page_id: 0,
+            result_desc: ''
         };
 
         this.state = {
@@ -33,10 +37,10 @@ export default class PageList extends Component {
     }
 
     openModal(type, props) {
-        console.log('open modal props:', props);
         this.type = type;
         this.setState({
-            pageInfo: props
+            pageInfo: props,
+            formType: type
         });
         document.querySelector('#bg-screen').classList.add('bg-show');
         document.querySelector('#nord-modal').classList.add('modal-show');
@@ -73,35 +77,90 @@ export default class PageList extends Component {
 
     submitForm(evt) {
         evt.preventDefault();
-        if(this.state.formType === 'update') {
+        if(this.state.formType === 'edit') {
             this.updateItem(this.state.pageInfo);
         } else {
             this.addItem(this.state.pageInfo);
         }
     }
 
-    updateItem(item, url) {
-        console.log('updating existing:', item, url);
+    refreshPageList() {
+        $.get(window.location.pathname + '/pages-list')
+            .then(response => {
+                console.log('refreshed page list:', response);
+                this.pages = response.pageList;
+                this.setState({
+                    pages: this.pages
+                });
+            });
     }
 
-    addItem(item, url) {
-        console.log('adding item:', item, url);
+    updateItem(item) {
+        const url = `${window.location.pathname}/pages-list/${item['page_id']}`;
+        $.ajax({
+            url: url,
+            type: 'PUT',
+            dataType: 'json',
+            data: item
+        })
+        .done(response => {
+            console.log('update page basics server response', response);
+            // if(response.success) {
+            //     this.closeModal()
+            // } else {
+            //     console.log('error:', response);
+            // }
+        })
+        .fail(error => {
+            console.log('returned but with error:', error);
+            menuItemUpdateError(error.msg);
+        });
+        
     }
 
-    deleteItem(url) {
-        console.log('deleting: ', url);
-        this.hideDeleteConfirm();
-        this.closeModal();
+    addItem(item) {
+        $.post(`${window.location.pathname}/pages-list`, item)
+            .done(data => {
+                console.log('from server on post route:', data);
+                this.refreshPageList();
+                this.closeModal();
+            })
+            .fail(error => {
+                console.log('xhr request failed:', error);
+            })
+            .always(() => {
+            });
+    }
+
+    deleteItem(id) {
+        const url = `${window.location.pathname}/pages-list/${id}`;
+        console.log('deleting url:', url);
+        $.ajax({
+            url: url,
+            type: 'DELETE',
+            dataType: 'json'
+        })
+        .done(response => {
+            console.log('delete server response', response);
+            // if(response.success) {
+            //     menuItemUpdateSuccess(response.msg);
+            // } else {
+            //     menuItemUpdateError(response.msg);
+            // }
+            this.closeModal();
+        })
+        .fail(error => {
+            console.log('returned but with error:', error);
+            menuItemUpdateError(error.msg);
+        })
+        .always(() => this.hideDeleteConfirm());
     }
 
     filterPages(evt) {
-        console.log('typing in filter:', evt.target.value);
         console.log(this.state.pages);
         let pageInfoFiltered = [...this.pages].filter(page => {
             return page.title.toLowerCase().indexOf(evt.target.value.toLowerCase()) !== -1;
         });
-
-        console.log('filtered array:', pageInfoFiltered.length);
 
         if(evt.target.value) {
             this.setState({
@@ -136,3 +195,16 @@ export default class PageList extends Component {
         );
     }
 }
+
+PageList.propTypes = {
+    pages: React.PropTypes.array.isRequired,
+    pageAdmins: React.PropTypes.array.isRequired,
+    userGroups: React.PropTypes.array
+};
+ 
+// PageList.defaultProps = {
+//     model: {
+//         id: 0
+//     },
+//     title: 'Your Name'
+// }

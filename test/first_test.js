@@ -4,17 +4,17 @@ require("babel-register");
 
 import { utilities } from '../static/js/src/admin/utilities';
 
-describe('Test feature', () => {
-    describe('Test scenario', () => {
-        it('Should work', () => {
+describe('Test feature', function() {
+    describe('Test scenario', function() {
+        it('Should work', function() {
             assert(true);
         });
     });
 });
 
-describe('Utilities Tests', () => {
-    describe('Test SEtup', () => {
-        it('Should have a hideLoader function', () => {
+describe('Utilities Tests', function() {
+    describe('Test SEtup', function() {
+        it('Should have a hideLoader function', function() {
             assert.equal(typeof utilities.hideLoader, 'function');
         });
     });

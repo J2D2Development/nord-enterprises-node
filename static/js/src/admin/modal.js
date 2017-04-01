@@ -1,8 +1,6 @@
 import React from 'react';
 
 const Modal = (props) => {
-    console.log('modal props:', props);
-    console.log('modal type:', props.type);
     const pageAdminOptions = props.pageAdmins.map(user => {
         return(
             <option key={user.username} 
@@ -12,16 +10,20 @@ const Modal = (props) => {
             </option>
         );
     });
-    const availableUserGroups = props.userGroups.map(group => {
-        return(
-            <option key={group.group_id} value={group.group_id}>{group.group_title}</option>
-        );
-    });
-    const currentUserGroups = props.userGroups.map(group => {
-        return(
-            <li key={group.group_id}>{group.group_title}</li>
-        );
-    });
+
+    let availableUserGroups, currentUserGroups;
+    if(props.userGroups) {
+        availableUserGroups = props.userGroups.map(group => {
+            return(
+                <option key={group.group_id} value={group.group_id}>{group.group_title}</option>
+            );
+        });
+        currentUserGroups = props.userGroups.map(group => {
+            return(
+                <li key={group.group_id}>{group.group_title}</li>
+            );
+        });
+    }
 
     return (
         <div className="nord-modal nord-modal-fade" tabIndex="-1" role="dialog" id="nord-modal">
@@ -37,35 +39,36 @@ const Modal = (props) => {
                         <div className="modal-body">
                             <div className="row">
                                 <div className="form-group col-sm-4 col-xs-12">
-                                    <label>Title</label>
+                                    <label className="modal-content-label">Title</label>
                                     <input type="text" name="title" className="form-control" id="title" placeholder="Title" value={props.data.title} onChange={props.handleChange} />
                                 </div>
                                 <div className="form-group col-sm-4 col-xs-12">
-                                    <label>Page Admin</label>
+                                    <label className="modal-content-label">Page Admin</label>
                                     <select name="admin_user" className="form-control" 
                                         onChange={props.handleChange}>
                                         <option value="">No Admin Selected</option>
                                         {pageAdminOptions}
                                     </select>
                                 </div>
-                                <div className="form-group col-sm-4 col-xs-12">
-                                    <label>Require Password</label>
+                                <div className="form-group col-sm-4 col-xs-12 custom-radio">
+                                    <label className="modal-content-label">Require Password</label>
                                     <input type="radio" 
-                                        name="require_auth" value="y"
+                                        name="require_auth" value="y" className="yes" id="auth_yes"
                                         checked={props.data.require_auth === 'y' ? 'checked' : ''} 
                                         onChange={props.handleChange} />
-                                        Yes
+                                        <label htmlFor="auth_yes">Yes</label>
+                                    &nbsp;&nbsp;&nbsp;
                                     <input type="radio"
-                                        name="require_auth" value="n"
+                                        name="require_auth" value="n" className="no" id="auth_no"
                                         checked={(!props.data.require_auth || props.data.require_auth === 'n') ? 'checked' : ''} 
                                         onChange={props.handleChange} />
-                                        No
+                                        <label htmlFor="auth_no">No</label>
                                 </div>
                             </div>
-                            {props.data.require_auth === 'y' && 
+                            {props.data.require_auth === 'y' && props.userGroups &&
                                 <div className="row">
                                     <div className="form-group col-sm-4 col-xs-12">
-                                        <label>Limit Access to User Group</label>
+                                        <label className="modal-content-label">Limit Access to User Group</label>
                                         <input type="radio" 
                                             name="require_group_auth" value="y"
                                             checked={props.data.require_group_auth === 'y' ? 'checked' : ''} 
@@ -78,13 +81,13 @@ const Modal = (props) => {
                                             No
                                     </div>
                                     <div className="form-group col-sm-4 col-xs-12">
-                                        <label>User Groups With Access</label>
+                                        <label className="modal-content-label">User Groups With Access</label>
                                         <ul>
                                             {currentUserGroups}
                                         </ul>
                                     </div>
                                     <div className="form-group col-sm-4 col-xs-12">
-                                        <label>Available User Groups</label>
+                                        <label className="modal-content-label">Available User Groups</label>
                                         <select name="user_groups" className="form-control" multiple 
                                             onChange={props.handleChange}>
                                             {availableUserGroups}
@@ -93,21 +96,8 @@ const Modal = (props) => {
                                 </div>
                             }
                             <div className="row">
-                                <div className="form-group col-sm-4 col-xs-12">
-                                    <label>Include Table of Contents</label>
-                                    <input type="radio" 
-                                        name="incl_toc" value="y"
-                                        checked={props.data.incl_toc === 'y' ? 'checked' : ''} 
-                                        onChange={props.handleChange} />
-                                        Yes
-                                    <input type="radio"
-                                        name="incl_toc" value="n"
-                                        checked={(!props.data.incl_toc || props.data.incl_toc === 'n') ? 'checked' : ''} 
-                                        onChange={props.handleChange} />
-                                        No
-                                </div>
-                                <div className="form-group col-sm-8 col-xs-12">
-                                    <label>Page Description</label>
+                                <div className="form-group col-xs-12">
+                                    <label className="modal-content-label">Page Description</label>
                                     <textarea className="form-control" name="result_desc" 
                                         style={{width: 100 + '%'}}
                                         value={props.data.result_desc} 
@@ -136,7 +126,7 @@ const Modal = (props) => {
                             </div>
                             <div className="modal-confirm-buttons">
                                 <button type="button" className="btn btn-danger" 
-                                    onClick={() => props.deleteItem(window.location.pathname + "/pages/" + props.data.page_id)}>
+                                    onClick={() => props.deleteItem(props.data.page_id)}>
                                         Yes - Delete
                                 </button>
                                 <button type="button" className="btn btn-primary" 
@@ -151,5 +141,9 @@ const Modal = (props) => {
         </div>
     );
 }
+
+Modal.propTypes = {
+    type: React.PropTypes.string.isRequired
+};
 
 export default Modal;
