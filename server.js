@@ -18,11 +18,12 @@ const sprintfJs = require("sprintf-js").sprintf; //needed for old password hash 
 const basicUtils = require('./utilities/utilities-basic');
 
 //import routes files
-const adminPageRoutes = require('./routes/admin/page/admin-page.routes');
-const adminUsersRoutes = require('./routes/admin/users/admin-users.routes');
-const adminFeaturesRoutes = require('./routes/admin/features/admin-features.routes');
-const adminGeneralRoutes = require('./routes/admin/general/admin-general.routes');
-const adminPublishRoutes = require('./routes/admin/publish/admin-publish.routes');
+const adminRoutes = require('./routes/admin/admin.routes');
+// const adminPageRoutes = require('./routes/admin/page/admin-page.routes');
+// const adminUsersRoutes = require('./routes/admin/users/admin-users.routes');
+// const adminFeaturesRoutes = require('./routes/admin/features/admin-features.routes');
+// const adminGeneralRoutes = require('./routes/admin/general/admin-general.routes');
+// const adminPublishRoutes = require('./routes/admin/publish/admin-publish.routes');
 
 //import globals
 const templates = require('./templates.js');
@@ -296,44 +297,46 @@ app.get('/:sitename/page', (req, res) => {
     });
 });
 
-//base admin route (login or dashboard- depending on session)
-//move this to own file with adminRouter instance- on that, use .all to always check login session before allowing any access
-app.get('/:sitename/admin', (req, res) => {
-    if(req.user) {
-        console.log('user logged in:', req.user);
-        let message;
-        if(req.session['flash'] && req.session['flash']['success']) {
-            message = req.session['flash']['success'][0];
-            req.session['flash'] = {};
-        }
+// //base admin route (login or dashboard- depending on session)
+// //move this to own file with adminRouter instance- on that, use .all to always check login session before allowing any access
+// app.get('/:sitename/admin', (req, res) => {
+//     if(req.user) {
+//         console.log('user logged in:', req.user);
+//         let message;
+//         if(req.session['flash'] && req.session['flash']['success']) {
+//             message = req.session['flash']['success'][0];
+//             req.session['flash'] = {};
+//         }
 
-        res.render('admin/index-admin.ejs', {
-            sitename: req.session['sitename'],
-            user: req.user,
-            message: message,
-            sub_nav: './index-subnav.ejs'
-        });
-    } else {
-        let message;
-        if(req.session['flash'] && req.session['flash']['error']) {
-            message = req.session['flash']['error'][0];
-            req.session['flash'] = {};
-        }
+//         res.render('admin/index-admin.ejs', {
+//             sitename: req.session['sitename'],
+//             user: req.user,
+//             message: message,
+//             sub_nav: './index-subnav.ejs'
+//         });
+//     } else {
+//         let message;
+//         if(req.session['flash'] && req.session['flash']['error']) {
+//             message = req.session['flash']['error'][0];
+//             req.session['flash'] = {};
+//         }
 
-        res.render('admin/login-admin.ejs', {
-            sitename: req.session['sitename'],
-            message: message
-        });
-    }  
-});
+//         res.render('admin/login-admin.ejs', {
+//             sitename: req.session['sitename'],
+//             message: message
+//         });
+//     }  
+// });
 
-//admin 'pages' editing routes
-//do we move this to the adminRouter file and make them subroutes?  that way, the session checking is only done once
-app.use('/:sitename/admin/pages', adminPageRoutes);
-app.use('/:sitename/admin/users', adminUsersRoutes);
-app.use('/:sitename/admin/features', adminFeaturesRoutes);
-app.use('/:sitename/admin/general', adminGeneralRoutes);
-app.use('/:sitename/admin/publish', adminPublishRoutes);
+app.use('/:sitename/admin', adminRoutes);
+
+// //admin 'pages' editing routes
+// //do we move this to the adminRouter file and make them subroutes?  that way, the session checking is only done once
+// app.use('/:sitename/admin/pages', adminPageRoutes);
+// app.use('/:sitename/admin/users', adminUsersRoutes);
+// app.use('/:sitename/admin/features', adminFeaturesRoutes);
+// app.use('/:sitename/admin/general', adminGeneralRoutes);
+// app.use('/:sitename/admin/publish', adminPublishRoutes);
 
 app.get('/unavailable', (req, res) => {
     req.session.destroy(err => {

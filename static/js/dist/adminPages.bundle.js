@@ -4639,7 +4639,7 @@ module.exports = invariant;
 
 
 
-var emptyFunction = __webpack_require__(10);
+var emptyFunction = __webpack_require__(11);
 
 /**
  * Similar to invariant but only logs a warning if the condition is not met.
@@ -5450,50 +5450,6 @@ module.exports = { debugTool: debugTool };
 
 /***/ }),
 /* 10 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-/**
- * Copyright (c) 2013-present, Facebook, Inc.
- * All rights reserved.
- *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
- *
- * 
- */
-
-function makeEmptyFunction(arg) {
-  return function () {
-    return arg;
-  };
-}
-
-/**
- * This function accepts and discards inputs; it has no side effects. This is
- * primarily useful idiomatically for overridable function endpoints which
- * always need to be callable, since JS lacks a null-call idiom ala Cocoa.
- */
-var emptyFunction = function emptyFunction() {};
-
-emptyFunction.thatReturns = makeEmptyFunction;
-emptyFunction.thatReturnsFalse = makeEmptyFunction(false);
-emptyFunction.thatReturnsTrue = makeEmptyFunction(true);
-emptyFunction.thatReturnsNull = makeEmptyFunction(null);
-emptyFunction.thatReturnsThis = function () {
-  return this;
-};
-emptyFunction.thatReturnsArgument = function (arg) {
-  return arg;
-};
-
-module.exports = emptyFunction;
-
-/***/ }),
-/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -15720,6 +15676,50 @@ return jQuery;
 
 
 /***/ }),
+/* 11 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+/**
+ * Copyright (c) 2013-present, Facebook, Inc.
+ * All rights reserved.
+ *
+ * This source code is licensed under the BSD-style license found in the
+ * LICENSE file in the root directory of this source tree. An additional grant
+ * of patent rights can be found in the PATENTS file in the same directory.
+ *
+ * 
+ */
+
+function makeEmptyFunction(arg) {
+  return function () {
+    return arg;
+  };
+}
+
+/**
+ * This function accepts and discards inputs; it has no side effects. This is
+ * primarily useful idiomatically for overridable function endpoints which
+ * always need to be callable, since JS lacks a null-call idiom ala Cocoa.
+ */
+var emptyFunction = function emptyFunction() {};
+
+emptyFunction.thatReturns = makeEmptyFunction;
+emptyFunction.thatReturnsFalse = makeEmptyFunction(false);
+emptyFunction.thatReturnsTrue = makeEmptyFunction(true);
+emptyFunction.thatReturnsNull = makeEmptyFunction(null);
+emptyFunction.thatReturnsThis = function () {
+  return this;
+};
+emptyFunction.thatReturnsArgument = function (arg) {
+  return arg;
+};
+
+module.exports = emptyFunction;
+
+/***/ }),
 /* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -16033,7 +16033,7 @@ var _assign = __webpack_require__(5);
 
 var PooledClass = __webpack_require__(17);
 
-var emptyFunction = __webpack_require__(10);
+var emptyFunction = __webpack_require__(11);
 var warning = __webpack_require__(3);
 
 var didWarnForAddedNewProperty = false;
@@ -16514,7 +16514,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.utilities = undefined;
 
-var _jquery = __webpack_require__(11);
+var _jquery = __webpack_require__(10);
 
 var _jquery2 = _interopRequireDefault(_jquery);
 
@@ -20611,7 +20611,7 @@ module.exports = shouldUpdateReactComponent;
 
 var _assign = __webpack_require__(5);
 
-var emptyFunction = __webpack_require__(10);
+var emptyFunction = __webpack_require__(11);
 var warning = __webpack_require__(3);
 
 var validateDOMNesting = emptyFunction;
@@ -21350,7 +21350,7 @@ module.exports = __webpack_require__(227);
  * @typechecks
  */
 
-var emptyFunction = __webpack_require__(10);
+var emptyFunction = __webpack_require__(11);
 
 /**
  * Upstream version of event listener. Does not take into account specific
@@ -34402,7 +34402,7 @@ var _react2 = _interopRequireDefault(_react);
 
 var _reactDom = __webpack_require__(56);
 
-var _jquery = __webpack_require__(11);
+var _jquery = __webpack_require__(10);
 
 var _jquery2 = _interopRequireDefault(_jquery);
 
@@ -34524,16 +34524,19 @@ var PageList = function (_Component) {
             var _this2 = this;
 
             _jquery2.default.get(window.location.pathname + '/pages-list').then(function (response) {
-                console.log('refreshed page list:', response);
                 _this2.pages = response.pageList;
                 _this2.setState({
                     pages: _this2.pages
                 });
+            }).catch(function (error) {
+                _this2.serverError(error);
             });
         }
     }, {
         key: 'updateItem',
         value: function updateItem(item) {
+            var _this3 = this;
+
             var url = window.location.pathname + '/pages-list/' + item['page_id'];
             _jquery2.default.ajax({
                 url: url,
@@ -34542,33 +34545,30 @@ var PageList = function (_Component) {
                 data: item
             }).done(function (response) {
                 console.log('update page basics server response', response);
-                // if(response.success) {
-                //     this.closeModal()
-                // } else {
-                //     console.log('error:', response);
-                // }
+                if (response.success) {
+                    _this3.serverSuccess();
+                } else {
+                    _this3.serverError(response.msg);
+                }
             }).fail(function (error) {
-                console.log('returned but with error:', error);
-                menuItemUpdateError(error.msg);
+                _this3.serverError(error.msg);
             });
         }
     }, {
         key: 'addItem',
         value: function addItem(item) {
-            var _this3 = this;
+            var _this4 = this;
 
             _jquery2.default.post(window.location.pathname + '/pages-list', item).done(function (data) {
-                console.log('from server on post route:', data);
-                _this3.refreshPageList();
-                _this3.closeModal();
+                _this4.serverSuccess();
             }).fail(function (error) {
-                console.log('xhr request failed:', error);
+                _this4.serverError(error.msg);
             }).always(function () {});
         }
     }, {
         key: 'deleteItem',
         value: function deleteItem(id) {
-            var _this4 = this;
+            var _this5 = this;
 
             var url = window.location.pathname + '/pages-list/' + id;
             console.log('deleting url:', url);
@@ -34577,24 +34577,32 @@ var PageList = function (_Component) {
                 type: 'DELETE',
                 dataType: 'json'
             }).done(function (response) {
-                console.log('delete server response', response);
-                // if(response.success) {
-                //     menuItemUpdateSuccess(response.msg);
-                // } else {
-                //     menuItemUpdateError(response.msg);
-                // }
-                _this4.closeModal();
+                if (response.success) {
+                    _this5.serverSuccess(response.msg);
+                } else {
+                    _this5.serverError(response.msg);
+                }
             }).fail(function (error) {
-                console.log('returned but with error:', error);
-                menuItemUpdateError(error.msg);
+                _this5.serverError(error.msg);
             }).always(function () {
-                return _this4.hideDeleteConfirm();
+                return _this5.hideDeleteConfirm();
             });
+        }
+    }, {
+        key: 'serverSuccess',
+        value: function serverSuccess(msg) {
+            this.refreshPageList();
+            this.closeModal();
+        }
+    }, {
+        key: 'serverError',
+        value: function serverError(msg) {
+            console.log('server error:', msg);
+            //eventually, notifyr on both
         }
     }, {
         key: 'filterPages',
         value: function filterPages(evt) {
-            console.log(this.state.pages);
             var pageInfoFiltered = [].concat(_toConsumableArray(this.pages)).filter(function (page) {
                 return page.title.toLowerCase().indexOf(evt.target.value.toLowerCase()) !== -1;
             });
@@ -34612,7 +34620,7 @@ var PageList = function (_Component) {
     }, {
         key: 'render',
         value: function render() {
-            var _this5 = this;
+            var _this6 = this;
 
             return _react2.default.createElement(
                 'div',
@@ -34631,7 +34639,7 @@ var PageList = function (_Component) {
                         _react2.default.createElement(
                             'button',
                             { type: 'button', className: 'btn btn-primary', onClick: function onClick() {
-                                    return _this5.openModal('create', _this5.newPage);
+                                    return _this6.openModal('create', _this6.newPage);
                                 } },
                             _react2.default.createElement('i', { className: 'fa fa-plus fa-lg' }),
                             ' Create New Page'
@@ -34639,7 +34647,7 @@ var PageList = function (_Component) {
                     )
                 ),
                 this.state.pages.map(function (page) {
-                    return _react2.default.createElement(_pageListCard2.default, { key: page.page_id, openModal: _this5.openModal, data: page });
+                    return _react2.default.createElement(_pageListCard2.default, { key: page.page_id, openModal: _this6.openModal, data: page });
                 }),
                 _react2.default.createElement(_modal2.default, { type: this.type, data: this.state.pageInfo, closeModal: this.closeModal, showDeleteConfirm: this.showDeleteConfirm, hideDeleteConfirm: this.hideDeleteConfirm, handleChange: this.handleChange, submitForm: this.submitForm, addItem: this.addItem, updateItem: this.updateItem, deleteItem: this.deleteItem, pageAdmins: this.pageAdmins, userGroups: this.userGroups })
             );
@@ -37156,7 +37164,7 @@ var DOMLazyTree = __webpack_require__(20);
 var ExecutionEnvironment = __webpack_require__(7);
 
 var createNodesFromMarkup = __webpack_require__(203);
-var emptyFunction = __webpack_require__(10);
+var emptyFunction = __webpack_require__(11);
 var invariant = __webpack_require__(2);
 
 var Danger = {
@@ -38901,7 +38909,7 @@ var ReactInstrumentation = __webpack_require__(9);
 var ReactMultiChild = __webpack_require__(252);
 var ReactServerRenderingTransaction = __webpack_require__(257);
 
-var emptyFunction = __webpack_require__(10);
+var emptyFunction = __webpack_require__(11);
 var escapeTextContentForBrowser = __webpack_require__(33);
 var invariant = __webpack_require__(2);
 var isEventSupported = __webpack_require__(48);
@@ -41797,7 +41805,7 @@ var _assign = __webpack_require__(5);
 var ReactUpdates = __webpack_require__(12);
 var Transaction = __webpack_require__(32);
 
-var emptyFunction = __webpack_require__(10);
+var emptyFunction = __webpack_require__(11);
 
 var RESET_BATCHED_UPDATES = {
   initialize: emptyFunction,
@@ -42365,7 +42373,7 @@ var ReactCurrentOwner = __webpack_require__(13);
 var ReactReconciler = __webpack_require__(21);
 var ReactChildReconciler = __webpack_require__(224);
 
-var emptyFunction = __webpack_require__(10);
+var emptyFunction = __webpack_require__(11);
 var flattenChildren = __webpack_require__(277);
 var invariant = __webpack_require__(2);
 
@@ -44001,7 +44009,7 @@ var SyntheticTransitionEvent = __webpack_require__(271);
 var SyntheticUIEvent = __webpack_require__(28);
 var SyntheticWheelEvent = __webpack_require__(272);
 
-var emptyFunction = __webpack_require__(10);
+var emptyFunction = __webpack_require__(11);
 var getEventCharCode = __webpack_require__(45);
 var invariant = __webpack_require__(2);
 
@@ -45687,7 +45695,7 @@ module.exports = PooledClass;
 var PooledClass = __webpack_require__(286);
 var ReactElement = __webpack_require__(18);
 
-var emptyFunction = __webpack_require__(10);
+var emptyFunction = __webpack_require__(11);
 var traverseAllChildren = __webpack_require__(295);
 
 var twoArgumentPooler = PooledClass.twoArgumentPooler;
@@ -46783,7 +46791,7 @@ var ReactElement = __webpack_require__(18);
 var ReactPropTypeLocationNames = __webpack_require__(53);
 var ReactPropTypesSecret = __webpack_require__(191);
 
-var emptyFunction = __webpack_require__(10);
+var emptyFunction = __webpack_require__(11);
 var getIteratorFn = __webpack_require__(55);
 var warning = __webpack_require__(3);
 
@@ -47663,7 +47671,7 @@ var _pageList = __webpack_require__(195);
 
 var _pageList2 = _interopRequireDefault(_pageList);
 
-var _jquery = __webpack_require__(11);
+var _jquery = __webpack_require__(10);
 
 var _jquery2 = _interopRequireDefault(_jquery);
 

@@ -5,7 +5,7 @@ const Promise = require('bluebird');
 module.exports = {
     getPageList: function(hoa_id) {
         return new Promise((resolve, reject) => {
-            connection.query(`SELECT * FROM hoa_pv_page WHERE hoa_id = ${hoa_id}`, (error, results) => {
+            connection.query(`SELECT * FROM hoa_pv_page WHERE hoa_id = ${hoa_id} ORDER BY home_page DESC, title`, (error, results) => {
                 if(error) {
                     reject(error);
                 } else {

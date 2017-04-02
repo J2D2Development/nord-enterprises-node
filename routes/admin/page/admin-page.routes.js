@@ -8,7 +8,6 @@ const basicUtils = require('../../../utilities/utilities-basic');
 const pageUtils = require('./admin-page.utilities');
 const templates = require('../../../templates');
 
-//admin page list wrapper
 pageRouter.route('/')
     .get((req, res) => {
         const hoa_id = req.session['hoa_main']['hoa_id'];
@@ -32,7 +31,8 @@ pageRouter.route('/')
             }
         })
         .catch(error => {
-            console.log('Error getting button bg image:', error);
+            console.log('Error getting page list:', error);
+            return res.status(500).send('Server error');
         });
     });
 
@@ -41,7 +41,6 @@ pageRouter.route('/pages-list')
     .get((req, res) => {
         const hoa_id = req.session['hoa_main']['hoa_id'];
         const billing_type = req.session['hoa_main']['billing_type'] > 0 ? 'extended' : 'basic';
-        console.log('BILLING TYPE', billing_type);
 
         let promiseArray = [
             pageUtils.getPageList(hoa_id),
@@ -80,23 +79,8 @@ pageRouter.route('/pages-list')
     })
     .post((req, res) => {
         const hoa_id = req.session['hoa_main']['hoa_id'];
-        const page_id = +req.params['page_id'];
-        const sitename = req.session['sitename'];
-        //const hoa_main = req.session['hoa_main'];
         const submitted = req.body;
-        let updt_user = 'undefined user';
-        if(req.user && req.user.username) {
-            updt_user = req.user.username;
-        }
-
-        //validation on submission before going to db
-        //MOVE THIS TO FUNCTION
-        if(!updt_user) { 
-            return res.status(500).json({
-                    success: false,
-                    msg: 'No user logged in'
-                });
-        }
+        const updt_user = req.user.username;
 
         if(!submitted.title) {
             res.status(500).json({
@@ -113,29 +97,25 @@ pageRouter.route('/pages-list')
         basicUtils.getDBInfo(`SELECT MAX(page_id) AS next_page_id FROM hoa_pv_page WHERE hoa_id = ${hoa_id}`)
             .then(result => {
                 const next_page_id = +result[0].next_page_id + 1;
-                console.log('next page:', next_page_id);
-                console.log('user:', updt_user);
-                console.log('admin user:', submitted.admin_user);
-                if(next_page_id) {
-                    basicUtils.getDBInfo(`INSERT INTO hoa_pv_page SET hoa_id = ${hoa_id}, page_id = ${next_page_id}, title = ${connection.escape(submitted.title)}, result_desc = ${connection.escape(submitted.result_desc)}, require_auth = ${connection.escape(require_auth)}, require_group_auth = ${connection.escape(require_group_auth)}, admin_user = ${connection.escape(admin_user)}, updt_user = ${connection.escape(updt_user)}`)
-                        .then(result => {
-                            return res.status(200).json({
-                                success: true,
-                                msg: 'New Page Added',
-                                result: result
-                            });
-                        });
+                return basicUtils.getDBInfo(`INSERT INTO hoa_pv_page SET hoa_id = ${hoa_id}, page_id = ${next_page_id}, title = ${connection.escape(submitted.title)}, result_desc = ${connection.escape(submitted.result_desc)}, require_auth = ${connection.escape(require_auth)}, require_group_auth = ${connection.escape(require_group_auth)}, admin_user = ${connection.escape(admin_user)}, updt_user = ${connection.escape(updt_user)}`);
+            })
+            .then(result => {
+                if(result.affectedRows === 1) {
+                    return res.status(200).json({
+                        success: true,
+                        msg: 'New Page Added'
+                    });
                 } else {
                     return res.status(500).json({
                         success: false,
-                        msg: 'Error getting next page id'
+                        msg: 'Error inserting new page'
                     });
                 }
             })
             .catch(err => {
                 return res.status(500).json({
                     success: false,
-                    msg: 'Error getting max page id: ' + err
+                    msg: 'Error adding page: ' + err
                 });
             });
     });
@@ -145,26 +125,58 @@ pageRouter.route('/pages-list/:page_id')
     .put((req, res) => {
         const hoa_id = req.session['hoa_main']['hoa_id'];
         const page_id = +req.params['page_id'];
-        const sitename = req.session['sitename'];
-        const hoa_main = req.session['hoa_main'];
         const submitted = req.body;
 
-        return res.status(200).json({
-            success: true,
-            msg: 'Page Basics Updated'
-        });
+        const require_auth = submitted.require_auth || 'n';
+        const require_group_auth = submitted.require_group_auth || 'n';
+        const admin_user = submitted.admin_user || '';
+        
+        basicUtils.getDBInfo(`UPDATE hoa_pv_page SET title = ${connection.escape(submitted.title)}, result_desc = ${connection.escape(submitted.result_desc)}, require_auth = ${connection.escape(require_auth)}, require_group_auth = ${connection.escape(require_group_auth)}, admin_user = ${connection.escape(admin_user)}, updt_user = ${connection.escape(req.user.username)} WHERE hoa_id = ${hoa_id} AND page_id = ${page_id}`)
+            .then(result => {
+                return res.status(200).json({
+                    success: true,
+                    msg: 'Page Basics Updated'
+                });
+            })
+            .catch(error => {
+                return res.status(500).json({
+                    success: false,
+                    msg: 'Error updating page info: ' + error
+                });
+            });
     })
     .delete((req, res) => {
+        //!!! add util function to make sure hoa_id and page_id are set on all these endpoints  if not- return early, log out, and redirect to login screen
+
         const hoa_id = req.session['hoa_main']['hoa_id'];
         const page_id = +req.params['page_id'];
-        const sitename = req.session['sitename'];
-        const hoa_main = req.session['hoa_main'];
+        const promiseArray = [
+            basicUtils.getDBInfo(`DELETE FROM hoa_pv_page_area WHERE hoa_id = ${hoa_id} AND page_id = ${page_id}`),
+            basicUtils.getDBInfo(`DELETE FROM hoa_pv_menuitem WHERE hoa_id = ${hoa_id} AND page_id = ${page_id}`),
+            basicUtils.getDBInfo(`DELETE FROM hoa_ug_pages WHERE hoa_id = ${hoa_id} AND page_id = ${page_id}`),
+            basicUtils.getDBInfo(`DELETE FROM hoa_pv_page WHERE hoa_id = ${hoa_id} AND page_id = ${page_id}`)
+        ];
 
-        return res.status(200).json({
-            hoa_id,
-            page_id,
-            sitename
-        });
+        if(!hoa_id || !page_id) {
+            return res.status(500).json({
+                success: false,
+                msg: 'No hoa id or page id'
+            });
+        }
+
+        Promise.all(promiseArray)
+            .then(result => {
+                return res.status(200).json({
+                    success: true,
+                    msg: 'Page Deleted'
+                });
+            })
+            .catch(error => {
+                return res.status(500).json({
+                    success: false,
+                    msg: 'Error deleting page: ' + error
+                });
+            });
     });
 
 //editing individual page contents (menu/page areas)
@@ -479,6 +491,17 @@ pageRouter.route('/page-contents/:page_id/pageareas')
                 //     })
             });
     });
+
+// function checkUser(user) {
+//     console.log('checking user:', user);
+//     return new Promise((resolve, reject) => {
+//         if(!user) {
+//             reject('No user logged in');
+//         } else {
+//             resolve();
+//         }
+//     });
+// }
 
 
 module.exports = pageRouter;

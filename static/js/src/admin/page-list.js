@@ -87,11 +87,13 @@ export default class PageList extends Component {
     refreshPageList() {
         $.get(window.location.pathname + '/pages-list')
             .then(response => {
-                console.log('refreshed page list:', response);
                 this.pages = response.pageList;
                 this.setState({
                     pages: this.pages
                 });
+            })
+            .catch(error => {
+                this.serverError(error);
             });
     }
 
@@ -105,15 +107,14 @@ export default class PageList extends Component {
         })
         .done(response => {
             console.log('update page basics server response', response);
-            // if(response.success) {
-            //     this.closeModal()
-            // } else {
-            //     console.log('error:', response);
-            // }
+            if(response.success) {
+                this.serverSuccess();
+            } else {
+                this.serverError(response.msg);
+            }
         })
         .fail(error => {
-            console.log('returned but with error:', error);
-            menuItemUpdateError(error.msg);
+            this.serverError(error.msg);
         });
         
     }
@@ -121,12 +122,10 @@ export default class PageList extends Component {
     addItem(item) {
         $.post(`${window.location.pathname}/pages-list`, item)
             .done(data => {
-                console.log('from server on post route:', data);
-                this.refreshPageList();
-                this.closeModal();
+                this.serverSuccess();
             })
             .fail(error => {
-                console.log('xhr request failed:', error);
+                this.serverError(error.msg);
             })
             .always(() => {
             });
@@ -141,23 +140,28 @@ export default class PageList extends Component {
             dataType: 'json'
         })
         .done(response => {
-            console.log('delete server response', response);
-            // if(response.success) {
-            //     menuItemUpdateSuccess(response.msg);
-            // } else {
-            //     menuItemUpdateError(response.msg);
-            // }
-            this.closeModal();
+            if(response.success) {
+                this.serverSuccess(response.msg);
+            } else {
+                this.serverError(response.msg);
+            }
         })
         .fail(error => {
-            console.log('returned but with error:', error);
-            menuItemUpdateError(error.msg);
+           this.serverError(error.msg);
         })
         .always(() => this.hideDeleteConfirm());
     }
 
+    serverSuccess(msg) {
+        this.refreshPageList();
+        this.closeModal();
+    }
+    serverError(msg) {
+        console.log('server error:', msg);
+        //eventually, notifyr on both
+    }
+
     filterPages(evt) {
-        console.log(this.state.pages);
         let pageInfoFiltered = [...this.pages].filter(page => {
             return page.title.toLowerCase().indexOf(evt.target.value.toLowerCase()) !== -1;
         });
