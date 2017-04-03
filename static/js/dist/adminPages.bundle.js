@@ -35122,6 +35122,11 @@ var Search = function Search(props) {
     );
 };
 
+Search.PropTypes = {
+    placeholder: _react2.default.PropTypes.string,
+    onChange: _react2.default.PropTypes.func.isRequired
+};
+
 exports.default = Search;
 
 /***/ }),

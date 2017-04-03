@@ -8,4 +8,9 @@ const Search = (props) => {
     );
 }
 
+Search.PropTypes = {
+    placeholder: React.PropTypes.string,
+    onChange: React.PropTypes.func.isRequired
+};
+
 export default Search;

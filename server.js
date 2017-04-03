@@ -19,11 +19,6 @@ const basicUtils = require('./utilities/utilities-basic');
 
 //import routes files
 const adminRoutes = require('./routes/admin/admin.routes');
-// const adminPageRoutes = require('./routes/admin/page/admin-page.routes');
-// const adminUsersRoutes = require('./routes/admin/users/admin-users.routes');
-// const adminFeaturesRoutes = require('./routes/admin/features/admin-features.routes');
-// const adminGeneralRoutes = require('./routes/admin/general/admin-general.routes');
-// const adminPublishRoutes = require('./routes/admin/publish/admin-publish.routes');
 
 //import globals
 const templates = require('./templates.js');
@@ -100,19 +95,19 @@ app.use((req, res, next) => {
         const urlArray = req.originalUrl.split('/');
         sitename = urlArray[1];
         if(sitename !== 'static') {
-            console.log('get basci info from siteanme in path:', sitename);
+            //console.log('get basci info from siteanme in path:', sitename);
             get_basic_info(sitename);
         } else {
             next();
         }
     } else {
-        console.log('did not get basic info!');
-        console.log('but session is:', req.session);
+        //console.log('did not get basic info!');
+        //console.log('but session is:', req.session);
         next();
     }
 
     function get_basic_info(sitename) {
-        console.log('fired get basic info with name:', sitename);
+        //console.log('fired get basic info with name:', sitename);
         basicUtils.get_hoa_main(sitename)
             .then(hoa_main => {
                 req.session.sitename = hoa_main['hoa_id_name'];
@@ -120,18 +115,16 @@ app.use((req, res, next) => {
                 return hoa_main['hoa_id'];
             })
             .then(hoa_id => {
-                Promise.all([basicUtils.get_hoa_main_aux(hoa_id), basicUtils.get_hoa_lookfeel(hoa_id)])
-                    .then(results => {
-                        req.session['hoa_main_aux'] = results[0];
-                        req.session['hoa_lookfeel'] = results[1];
-                    })
-                    .then(() => next())
-                    .catch(error => {
-                        console.error('ERROR IN .ALL BLOCK:', error);
-                    });
+                return Promise.all([basicUtils.get_hoa_main_aux(hoa_id), basicUtils.get_hoa_lookfeel(hoa_id)]);
             })
+            .then(results => {
+                req.session['hoa_main_aux'] = results[0];
+                req.session['hoa_lookfeel'] = results[1];
+                next();
+            })
+            //if above doesn't work, try this: .then(() => next())
             .catch(error => {
-                console.log('in error block:', error);
+                //console.log('in error block:', error);
                 req.session.sitename = sitename;
                 res.status(404).render('templates-error/site-not-found.ejs', {
                     submittedSitename: req.session.sitename,
@@ -148,7 +141,7 @@ passport.use(new LocalStrategy(
     { passReqToCallback: true },
     (req, username, password, done) => {
         const hoa_id = req.session['hoa_main']['hoa_id'];
-        console.log('hoa id on login:', hoa_id);
+        //console.log('hoa id on login:', hoa_id);
         connection.query(`SELECT * FROM hoa_user WHERE hoa_id=${hoa_id} AND username='${username}'`, (error, results) => {
             if(error) {
                 return done(error);
@@ -165,7 +158,7 @@ passport.use(new LocalStrategy(
                     site_admin: results[0].site_admin,
                     email: results[0].email
                 };
-                console.log('user on setup:', user);
+                //console.log('user on setup:', user);
                 return done(null, user, { message: `Welcome back, ${user.first_name}`});
             }
         });
@@ -297,46 +290,8 @@ app.get('/:sitename/page', (req, res) => {
     });
 });
 
-// //base admin route (login or dashboard- depending on session)
-// //move this to own file with adminRouter instance- on that, use .all to always check login session before allowing any access
-// app.get('/:sitename/admin', (req, res) => {
-//     if(req.user) {
-//         console.log('user logged in:', req.user);
-//         let message;
-//         if(req.session['flash'] && req.session['flash']['success']) {
-//             message = req.session['flash']['success'][0];
-//             req.session['flash'] = {};
-//         }
-
-//         res.render('admin/index-admin.ejs', {
-//             sitename: req.session['sitename'],
-//             user: req.user,
-//             message: message,
-//             sub_nav: './index-subnav.ejs'
-//         });
-//     } else {
-//         let message;
-//         if(req.session['flash'] && req.session['flash']['error']) {
-//             message = req.session['flash']['error'][0];
-//             req.session['flash'] = {};
-//         }
-
-//         res.render('admin/login-admin.ejs', {
-//             sitename: req.session['sitename'],
-//             message: message
-//         });
-//     }  
-// });
-
+//admin panel routing
 app.use('/:sitename/admin', adminRoutes);
-
-// //admin 'pages' editing routes
-// //do we move this to the adminRouter file and make them subroutes?  that way, the session checking is only done once
-// app.use('/:sitename/admin/pages', adminPageRoutes);
-// app.use('/:sitename/admin/users', adminUsersRoutes);
-// app.use('/:sitename/admin/features', adminFeaturesRoutes);
-// app.use('/:sitename/admin/general', adminGeneralRoutes);
-// app.use('/:sitename/admin/publish', adminPublishRoutes);
 
 app.get('/unavailable', (req, res) => {
     req.session.destroy(err => {
