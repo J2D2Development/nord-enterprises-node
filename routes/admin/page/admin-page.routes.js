@@ -146,8 +146,6 @@ pageRouter.route('/pages-list/:page_id')
             });
     })
     .delete((req, res) => {
-        //!!! add util function to make sure hoa_id and page_id are set on all these endpoints  if not- return early, log out, and redirect to login screen
-
         const hoa_id = req.session['hoa_main']['hoa_id'];
         const page_id = +req.params['page_id'];
         const promiseArray = [
@@ -178,6 +176,8 @@ pageRouter.route('/pages-list/:page_id')
                 });
             });
     });
+
+    
 
 //editing individual page contents (menu/page areas)
 pageRouter.route('/page-contents/:page_id')
@@ -491,17 +491,5 @@ pageRouter.route('/page-contents/:page_id/pageareas')
                 //     })
             });
     });
-
-// function checkUser(user) {
-//     console.log('checking user:', user);
-//     return new Promise((resolve, reject) => {
-//         if(!user) {
-//             reject('No user logged in');
-//         } else {
-//             resolve();
-//         }
-//     });
-// }
-
 
 module.exports = pageRouter;

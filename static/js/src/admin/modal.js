@@ -11,18 +11,23 @@ const Modal = (props) => {
         );
     });
 
-    let availableUserGroups, currentUserGroups;
-    if(props.userGroups) {
-        availableUserGroups = props.userGroups.map(group => {
+    let availableUserGroups = [], currentUserGroups = [];
+    if(props.availableUserGroups.length > 0) {
+        availableUserGroups = props.availableUserGroups.map(group => {
             return(
-                <option key={group.group_id} value={group.group_id}>{group.group_title}</option>
+                <li key={group.group_id} onClick={() => props.addUserGroup(group.group_id)}>{group.group_title}</li>
+                // <option key={group.group_id} value={group.group_id}>{group.group_title}</option>
             );
         });
-        currentUserGroups = props.userGroups.map(group => {
-            return(
-                <li key={group.group_id}>{group.group_title}</li>
-            );
-        });
+    }
+
+    if(props.assignedUserGroups.length > 0) {
+        currentUserGroups = props.assignedUserGroups
+            .map(group => {
+                return(
+                    <li key={group.group_id} onClick={() => props.removeUserGroup(group.group_id)}>{group.group_title}</li>
+                );
+            });
     }
 
     return (
@@ -65,7 +70,7 @@ const Modal = (props) => {
                                         <label htmlFor="auth_no">No</label>
                                 </div>
                             </div>
-                            {props.data.require_auth === 'y' && props.userGroups &&
+                            {props.data.require_auth === 'y' && props.availableUserGroups &&
                                 <div className="row">
                                     <div className="form-group col-sm-4 col-xs-12">
                                         <label className="modal-content-label">Limit Access to User Group</label>
@@ -82,16 +87,15 @@ const Modal = (props) => {
                                     </div>
                                     <div className="form-group col-sm-4 col-xs-12">
                                         <label className="modal-content-label">User Groups With Access</label>
-                                        <ul>
+                                        <ul className="list-interactive">
                                             {currentUserGroups}
                                         </ul>
                                     </div>
                                     <div className="form-group col-sm-4 col-xs-12">
                                         <label className="modal-content-label">Available User Groups</label>
-                                        <select name="user_groups" className="form-control" multiple 
-                                            onChange={props.handleChange}>
+                                        <ul className="list-interactive"> 
                                             {availableUserGroups}
-                                        </select>
+                                        </ul>
                                     </div>
                                 </div>
                             }
@@ -100,7 +104,7 @@ const Modal = (props) => {
                                     <label className="modal-content-label">Page Description</label>
                                     <textarea className="form-control" name="result_desc" 
                                         style={{width: 100 + '%'}}
-                                        value={props.data.result_desc} 
+                                        value={props.data.result_desc || ''} 
                                         onChange={props.handleChange}>
                                     </textarea>
                                 </div>

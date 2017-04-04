@@ -2,11 +2,15 @@ import React from 'react';
 import moment from 'moment';
 
 const PageListCard = (props) => {
+    function trimTitle(title) {
+        return title.length < 25 ? title : title.slice(0, 26) + '...';
+    }
+
     return (
         <div className="col-md-4 col-sm-6 col-xs-12">
             <div className="pagelist-inner">
-                <h3>
-                    {props.data.title}
+                <h3 title={props.data.title}>
+                    {trimTitle(props.data.title)}
                     <em><small>
                         {props.data.home_page === 'y' ? '  [Homepage]' : ''}
                     </small></em>

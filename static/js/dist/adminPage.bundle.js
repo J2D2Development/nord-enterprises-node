@@ -10382,36 +10382,6 @@ exports.AddNewVerticalMenuItem = AddNewVerticalMenuItem;
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-var notifyr = exports.notifyr = function notifyr(config) {
-    var wrapper = document.querySelector('#notifyr');
-    var time = config.duration || 3000;
-    var delay = 500; //from css transition timing
-
-    wrapper.innerHTML = config.msg || 'Status Message!';
-    wrapper.classList.add(config.type);
-    wrapper.classList.add('notifyr-show');
-
-    setTimeout(function () {
-        wrapper.classList.remove('notifyr-show');
-    }, time);
-
-    setTimeout(function () {
-        wrapper.classList.remove(config.type);
-        wrapper.innerHTML = '';
-    }, time + delay);
-};
-
-/***/ }),
-
-/***/ 194:
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
 var PageArea = function PageArea(props) {
     var areaTitleExists = props.title && props.title !== '&nbsp;';
     var editButton = '<button id="edit-' + props.order + '" class="edit-button">Edit</button>';
@@ -10439,11 +10409,11 @@ exports.AddNewPageArea = AddNewPageArea;
 
 var _menuItems = __webpack_require__(192);
 
-var _pageAreas = __webpack_require__(194);
+var _pageAreas = __webpack_require__(193);
 
 var _utilities = __webpack_require__(16);
 
-var _notifyr = __webpack_require__(193);
+var _notifyr = __webpack_require__(35);
 
 var _jquery = __webpack_require__(10);
 
@@ -10791,6 +10761,36 @@ window.addEventListener('DOMContentLoaded', function () {
     }
 });
 //import { modal } from './modal';
+
+/***/ }),
+
+/***/ 35:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+var notifyr = exports.notifyr = function notifyr(config) {
+    var wrapper = document.querySelector('#notifyr');
+    var time = config.duration || 3000;
+    var delay = 500; //from css transition timing
+
+    wrapper.innerHTML = config.msg || 'Status Message!';
+    wrapper.classList.add(config.type);
+    wrapper.classList.add('notifyr-show');
+
+    setTimeout(function () {
+        wrapper.classList.remove('notifyr-show');
+    }, time);
+
+    setTimeout(function () {
+        wrapper.classList.remove(config.type);
+        wrapper.innerHTML = '';
+    }, time + delay);
+};
 
 /***/ })
 

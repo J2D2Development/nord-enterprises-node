@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { render } from 'react-dom';
+//import { render } from 'react-dom';
+import { notifyr } from './notifyr';
 import $ from 'jquery';
 
 import PageListCard from './page-list-card';
@@ -15,9 +16,13 @@ export default class PageList extends Component {
         this.userGroups = props.userGroups;
         this.openModal = this.openModal.bind(this);
         this.handleChange = this.handleChange.bind(this);
+        this.addUserGroup = this.addUserGroup.bind(this);
+        this.removeUserGroup = this.removeUserGroup.bind(this);
         this.submitForm = this.submitForm.bind(this);
         this.deleteItem = this.deleteItem.bind(this);
         this.filterPages = this.filterPages.bind(this);
+        this.serverSuccess = this.serverSuccess.bind(this);
+        this.serverError = this.serverError.bind(this);
         this.newPage = {
             title: '',
             require_auth: 'n',
@@ -32,16 +37,41 @@ export default class PageList extends Component {
             pages: this.pages,
             pageInfo: {},
             userGroups: props.userGroups,
+            assignedUserGroups: [],
             formType: 'update'
         };
     }
 
     openModal(type, props) {
         this.type = type;
+        let assignedUserGroupsUpdate = [], availableUserGroupsUpdate = [];
+        const groups = [...this.state.userGroups];
+
+        if(groups.length > 0) {
+            // assignedUserGroupsUpdate = this.state.userGroups.filter(group => {
+            //     return group.page_id === props.page_id;
+            // });
+            // availableUserGroupsUpdate = this.state.userGroups.filter(group => {
+            //     return 
+            // })
+            for(let i = 0, l = groups.length; i < l; i += 1) {
+                if(this.state.userGroups[i].page_id === props.page_id) {
+                    console.log('group assigned:', groups[i]);
+                    assignedUserGroupsUpdate.push(groups[i]);
+                } else {
+                    console.log('group available:', groups[i]);
+                    availableUserGroupsUpdate.push(groups[i]);
+                }
+            }
+        }
+
         this.setState({
             pageInfo: props,
-            formType: type
+            formType: type,
+            availableUserGroups: availableUserGroupsUpdate,
+            assignedUserGroups: assignedUserGroupsUpdate
         });
+
         document.querySelector('#bg-screen').classList.add('bg-show');
         document.querySelector('#nord-modal').classList.add('modal-show');
     }
@@ -75,6 +105,31 @@ export default class PageList extends Component {
         });
     }
 
+    addUserGroup(id) {
+        console.log('adding this group:', id);
+
+        let currentUserGroups = [...this.state.assignedUserGroups];
+        let availableUserGroups = [...this.state.userGroups];
+        const groupToAdd = availableUserGroups.find(group => group.group_id = id);
+
+        //!!! remove added group from availableUserGroups on state, update state
+        //!!! open modal not resetting user groups list- whole user group functionality currently fucked
+
+        console.log('found group:', groupToAdd);
+
+        currentUserGroups.push(groupToAdd);
+        //availableUserGroups = availableUserGroups.filter(group => group.group_id !== id);
+
+        this.setState({
+            userGroups: availableUserGroups,
+            assignedUserGroups: currentUserGroups
+        });
+    }
+
+    removeUserGroup(id) {
+
+    }
+
     submitForm(evt) {
         evt.preventDefault();
         if(this.state.formType === 'edit') {
@@ -106,9 +161,8 @@ export default class PageList extends Component {
             data: item
         })
         .done(response => {
-            console.log('update page basics server response', response);
             if(response.success) {
-                this.serverSuccess();
+                this.serverSuccess(response.success, response.msg);
             } else {
                 this.serverError(response.msg);
             }
@@ -121,8 +175,12 @@ export default class PageList extends Component {
 
     addItem(item) {
         $.post(`${window.location.pathname}/pages-list`, item)
-            .done(data => {
-                this.serverSuccess();
+            .done(response => {
+                if(response.success) {
+                    this.serverSuccess(response.success, response.msg);
+                } else {
+                    this.serverError(response.msg);
+                }
             })
             .fail(error => {
                 this.serverError(error.msg);
@@ -140,8 +198,9 @@ export default class PageList extends Component {
             dataType: 'json'
         })
         .done(response => {
+            console.log('del response');
             if(response.success) {
-                this.serverSuccess(response.msg);
+                this.serverSuccess(response.success, response.msg);
             } else {
                 this.serverError(response.msg);
             }
@@ -152,13 +211,14 @@ export default class PageList extends Component {
         .always(() => this.hideDeleteConfirm());
     }
 
-    serverSuccess(msg) {
+    serverSuccess(status, msg) {
+        const type = status ? 'notifyr-success' : 'notifyr-error';
         this.refreshPageList();
         this.closeModal();
+        notifyr({ msg: msg, type: type, duration: 3000 });
     }
     serverError(msg) {
-        console.log('server error:', msg);
-        //eventually, notifyr on both
+        notifyr({ msg: msg, type: 'notifyr-error', duration: 3000 });
     }
 
     filterPages(evt) {
@@ -194,7 +254,7 @@ export default class PageList extends Component {
                 {this.state.pages.map(page => {
                     return <PageListCard key={page.page_id} openModal={this.openModal} data={page} />;
                 })}
-                <Modal type={this.type} data={this.state.pageInfo} closeModal={this.closeModal} showDeleteConfirm={this.showDeleteConfirm} hideDeleteConfirm={this.hideDeleteConfirm} handleChange={this.handleChange} submitForm={this.submitForm} addItem={this.addItem} updateItem={this.updateItem} deleteItem={this.deleteItem} pageAdmins={this.pageAdmins} userGroups={this.userGroups}  />
+                <Modal type={this.type} data={this.state.pageInfo} closeModal={this.closeModal} showDeleteConfirm={this.showDeleteConfirm} hideDeleteConfirm={this.hideDeleteConfirm} handleChange={this.handleChange} addUserGroup={this.addUserGroup} removeUserGroup={this.removeUserGroup} submitForm={this.submitForm} addItem={this.addItem} updateItem={this.updateItem} deleteItem={this.deleteItem} pageAdmins={this.pageAdmins} availableUserGroups={this.state.userGroups} assignedUserGroups={this.state.assignedUserGroups}  />
             </div>
         );
     }

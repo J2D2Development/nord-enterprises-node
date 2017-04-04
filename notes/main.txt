@@ -25,11 +25,8 @@ follow: https://hackernoon.com/naive-infinite-scroll-in-reactive-programming-usi
 
 
     FOR 3/29/17
-        COOKIE NOT BEING REMOVED ON LOGOUT- THIS MEANS FUTURE LOGINSDON'T WORK PROPERLY
         PAGES LISTING
             -backend: on pages-list endpoint, need to also return:
-                b) if(site type is extended) list of all user groups
-                    -returning groups, edit to check for site type extended first
                 c) check existing code to see how page-user group linkage is handled, implement that as well.
         SWITCHING TO REACT FORMS
             -pages.ejs, pages.js are close.  Need to add rest of fields to pages modal and populate.  need to add save/update form submissin (check menu items for good sql).  then need to update menu items/page areas on page.js and page.ejs to use the new system.
@@ -37,7 +34,7 @@ follow: https://hackernoon.com/naive-infinite-scroll-in-reactive-programming-usi
             -add validation (might need different handleChange functions for each type- required, email, etc)
             -add classnames package? https://github.com/JedWatson/classnames
         SESSIONS
-            -max age is currently 1hr.  seems to be working- user is at req.user.  need to add auth to all admin routes with this.  also need to update the updt_user call to use req.user.  also need to find out how to only put specific info into that object (currentlypulling all rows from db- including password hash)
+            -max age is currently 1hr.  seems to be working- user is at req.user.  nneed to find out how to only put specific info into that object (currentlypulling all rows from db- including password hash)
         -2) if no menu items on admin, menu div never loads- fix this so that just the 'add menu item' option appears
         -1) migrate admin styles to scss (shouldn't need any user-defined styles)
             a) move to static folder, set up scss transpiler in webpack and get going.
@@ -82,6 +79,7 @@ follow: https://hackernoon.com/naive-infinite-scroll-in-reactive-programming-usi
             -https://expressjs.com/en/advanced/best-practice-performance.html
             -node module: forever to keep it running
             -host on aws elastic beanstalk?  (load balancing, crash mitigation, etc)
+            -csp: https://ponyfoo.com/articles/content-security-policy-in-express-apps?utm_source=nodeweekly&utm_medium=email
         f) ssl - use let's encrypt
             -https://medium.com/@yash.kulshrestha/using-lets-encrypt-with-express-e069c7abe625#.g8hyhokjf
             -but will it work with external domains feeding to my server?  test this!
