@@ -19,7 +19,7 @@ window.addEventListener('DOMContentLoaded', function() {
     const switchPageSelect = document.querySelector('#switch-page');
     switchPageSelect.addEventListener('change', function(evt) {
         var pathArr = window.location.pathname.split('/');
-        pathArr[4] = evt.target.value;
+        pathArr[pathArr.length - 1] = evt.target.value;
         var newPath = window.location.origin + pathArr.join('/');
         window.location = newPath;
     });
@@ -36,7 +36,7 @@ window.addEventListener('DOMContentLoaded', function() {
     const modalConfirm = document.querySelector('#modal-confirm');
 
     const getMenuItems = () => {
-        $.get(window.location.pathname + '/page-contents/menuitems')
+        $.get(`${window.location.pathname}/menuitems`)
             .done(data => {
                 if(data.errorMsg) {
                     return `Error getting menu items: ${data.err}`;
@@ -56,7 +56,7 @@ window.addEventListener('DOMContentLoaded', function() {
     getMenuItems();
 
     const getPageAreas = () => {
-        $.get(window.location.pathname + '/page-contents/pageareas')
+        $.get(`${window.location.pathname}/pageareas`)
             .done(data => {
                 if(data.errorMsg) {
                     return `Error getting page areas: ${data.err}`;

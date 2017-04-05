@@ -10435,7 +10435,7 @@ window.addEventListener('DOMContentLoaded', function () {
     var switchPageSelect = document.querySelector('#switch-page');
     switchPageSelect.addEventListener('change', function (evt) {
         var pathArr = window.location.pathname.split('/');
-        pathArr[4] = evt.target.value;
+        pathArr[pathArr.length - 1] = evt.target.value;
         var newPath = window.location.origin + pathArr.join('/');
         window.location = newPath;
     });
@@ -10451,7 +10451,7 @@ window.addEventListener('DOMContentLoaded', function () {
     var modalConfirm = document.querySelector('#modal-confirm');
 
     var getMenuItems = function getMenuItems() {
-        _jquery2.default.get(window.location.pathname + '/page-contents/menuitems').done(function (data) {
+        _jquery2.default.get(window.location.pathname + '/menuitems').done(function (data) {
             if (data.errorMsg) {
                 return 'Error getting menu items: ' + data.err;
             }
@@ -10468,7 +10468,7 @@ window.addEventListener('DOMContentLoaded', function () {
     getMenuItems();
 
     var getPageAreas = function getPageAreas() {
-        _jquery2.default.get(window.location.pathname + '/page-contents/pageareas').done(function (data) {
+        _jquery2.default.get(window.location.pathname + '/pageareas').done(function (data) {
             if (data.errorMsg) {
                 return 'Error getting page areas: ' + data.err;
             }

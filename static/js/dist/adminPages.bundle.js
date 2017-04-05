@@ -34484,6 +34484,7 @@ var PageList = function (_Component) {
             pageInfo: {},
             userGroups: props.userGroups,
             assignedUserGroups: [],
+            availableUserGroups: [],
             formType: 'update'
         };
         return _this;
@@ -34506,10 +34507,8 @@ var PageList = function (_Component) {
                 // })
                 for (var i = 0, l = groups.length; i < l; i += 1) {
                     if (this.state.userGroups[i].page_id === props.page_id) {
-                        console.log('group assigned:', groups[i]);
                         assignedUserGroupsUpdate.push(groups[i]);
                     } else {
-                        console.log('group available:', groups[i]);
                         availableUserGroupsUpdate.push(groups[i]);
                     }
                 }
@@ -34561,30 +34560,63 @@ var PageList = function (_Component) {
     }, {
         key: 'addUserGroup',
         value: function addUserGroup(id) {
+            var _this2 = this;
+
             console.log('adding this group:', id);
 
             var currentUserGroups = [].concat(_toConsumableArray(this.state.assignedUserGroups));
-            var availableUserGroups = [].concat(_toConsumableArray(this.state.userGroups));
-            var groupToAdd = availableUserGroups.find(function (group) {
+            var remainingUserGroups = [].concat(_toConsumableArray(this.state.availableUserGroups));
+            console.log('after click:', currentUserGroups, remainingUserGroups);
+            var groupToAdd = remainingUserGroups.find(function (group) {
                 return group.group_id = id;
             });
 
-            //!!! remove added group from availableUserGroups on state, update state
-            //!!! open modal not resetting user groups list- whole user group functionality currently fucked
+            //!!! can add 1st, then second successfully, but if click 2nd, it fucks up
 
             console.log('found group:', groupToAdd);
+            console.log('remaning groups after find:', remainingUserGroups);
 
             currentUserGroups.push(groupToAdd);
-            //availableUserGroups = availableUserGroups.filter(group => group.group_id !== id);
+            console.log('after addition, current groups:', currentUserGroups);
+            var remainingUserGroupsStep2 = remainingUserGroups.filter(function (group) {
+                console.log(group.group_id, id, group.group_id !== id);
+                return group.group_id !== id;
+            });
+            console.log('after addition, available groups:', remainingUserGroupsStep2);
 
             this.setState({
-                userGroups: availableUserGroups,
+                availableUserGroups: remainingUserGroupsStep2,
                 assignedUserGroups: currentUserGroups
+            }, function () {
+                return console.log('set state callback:', _this2.state);
             });
         }
     }, {
         key: 'removeUserGroup',
-        value: function removeUserGroup(id) {}
+        value: function removeUserGroup(id) {
+            var _this3 = this;
+
+            console.log('remivng this groupd:', id);
+            var currentUserGroups = [].concat(_toConsumableArray(this.state.assignedUserGroups));
+            var remainingUserGroups = [].concat(_toConsumableArray(this.state.availableUserGroups));
+            var groupToAdd = currentUserGroups.find(function (group) {
+                return group.group_id = id;
+            });
+            console.log('found group:', groupToAdd);
+            remainingUserGroups.push(groupToAdd);
+            console.log('after removal, available groups:', remainingUserGroups);
+            currentUserGroups = currentUserGroups.filter(function (group) {
+                return group.group_id !== id;
+            });
+            console.log('after removal, current groups:', currentUserGroups);
+
+            this.setState({
+                availableUserGroups: remainingUserGroups,
+                assignedUserGroups: currentUserGroups
+            }, function () {
+                return console.log('set state callback:', _this3.state);
+            });
+        }
     }, {
         key: 'submitForm',
         value: function submitForm(evt) {
@@ -34598,21 +34630,21 @@ var PageList = function (_Component) {
     }, {
         key: 'refreshPageList',
         value: function refreshPageList() {
-            var _this2 = this;
+            var _this4 = this;
 
             _jquery2.default.get(window.location.pathname + '/pages-list').then(function (response) {
-                _this2.pages = response.pageList;
-                _this2.setState({
-                    pages: _this2.pages
+                _this4.pages = response.pageList;
+                _this4.setState({
+                    pages: _this4.pages
                 });
             }).catch(function (error) {
-                _this2.serverError(error);
+                _this4.serverError(error);
             });
         }
     }, {
         key: 'updateItem',
         value: function updateItem(item) {
-            var _this3 = this;
+            var _this5 = this;
 
             var url = window.location.pathname + '/pages-list/' + item['page_id'];
             _jquery2.default.ajax({
@@ -34622,33 +34654,33 @@ var PageList = function (_Component) {
                 data: item
             }).done(function (response) {
                 if (response.success) {
-                    _this3.serverSuccess(response.success, response.msg);
+                    _this5.serverSuccess(response.success, response.msg);
                 } else {
-                    _this3.serverError(response.msg);
+                    _this5.serverError(response.msg);
                 }
             }).fail(function (error) {
-                _this3.serverError(error.msg);
+                _this5.serverError(error.msg);
             });
         }
     }, {
         key: 'addItem',
         value: function addItem(item) {
-            var _this4 = this;
+            var _this6 = this;
 
             _jquery2.default.post(window.location.pathname + '/pages-list', item).done(function (response) {
                 if (response.success) {
-                    _this4.serverSuccess(response.success, response.msg);
+                    _this6.serverSuccess(response.success, response.msg);
                 } else {
-                    _this4.serverError(response.msg);
+                    _this6.serverError(response.msg);
                 }
             }).fail(function (error) {
-                _this4.serverError(error.msg);
+                _this6.serverError(error.msg);
             }).always(function () {});
         }
     }, {
         key: 'deleteItem',
         value: function deleteItem(id) {
-            var _this5 = this;
+            var _this7 = this;
 
             var url = window.location.pathname + '/pages-list/' + id;
             console.log('deleting url:', url);
@@ -34659,14 +34691,14 @@ var PageList = function (_Component) {
             }).done(function (response) {
                 console.log('del response');
                 if (response.success) {
-                    _this5.serverSuccess(response.success, response.msg);
+                    _this7.serverSuccess(response.success, response.msg);
                 } else {
-                    _this5.serverError(response.msg);
+                    _this7.serverError(response.msg);
                 }
             }).fail(function (error) {
-                _this5.serverError(error.msg);
+                _this7.serverError(error.msg);
             }).always(function () {
-                return _this5.hideDeleteConfirm();
+                return _this7.hideDeleteConfirm();
             });
         }
     }, {
@@ -34702,7 +34734,7 @@ var PageList = function (_Component) {
     }, {
         key: 'render',
         value: function render() {
-            var _this6 = this;
+            var _this8 = this;
 
             return _react2.default.createElement(
                 'div',
@@ -34721,7 +34753,7 @@ var PageList = function (_Component) {
                         _react2.default.createElement(
                             'button',
                             { type: 'button', className: 'btn btn-primary', onClick: function onClick() {
-                                    return _this6.openModal('create', _this6.newPage);
+                                    return _this8.openModal('create', _this8.newPage);
                                 } },
                             _react2.default.createElement('i', { className: 'fa fa-plus fa-lg' }),
                             ' Create New Page'
@@ -34729,9 +34761,9 @@ var PageList = function (_Component) {
                     )
                 ),
                 this.state.pages.map(function (page) {
-                    return _react2.default.createElement(_pageListCard2.default, { key: page.page_id, openModal: _this6.openModal, data: page });
+                    return _react2.default.createElement(_pageListCard2.default, { key: page.page_id, openModal: _this8.openModal, data: page });
                 }),
-                _react2.default.createElement(_modal2.default, { type: this.type, data: this.state.pageInfo, closeModal: this.closeModal, showDeleteConfirm: this.showDeleteConfirm, hideDeleteConfirm: this.hideDeleteConfirm, handleChange: this.handleChange, addUserGroup: this.addUserGroup, removeUserGroup: this.removeUserGroup, submitForm: this.submitForm, addItem: this.addItem, updateItem: this.updateItem, deleteItem: this.deleteItem, pageAdmins: this.pageAdmins, availableUserGroups: this.state.userGroups, assignedUserGroups: this.state.assignedUserGroups })
+                _react2.default.createElement(_modal2.default, { type: this.type, data: this.state.pageInfo, closeModal: this.closeModal, showDeleteConfirm: this.showDeleteConfirm, hideDeleteConfirm: this.hideDeleteConfirm, handleChange: this.handleChange, addUserGroup: this.addUserGroup, removeUserGroup: this.removeUserGroup, submitForm: this.submitForm, addItem: this.addItem, updateItem: this.updateItem, deleteItem: this.deleteItem, pageAdmins: this.pageAdmins, allUserGroups: this.state.userGroups, availableUserGroups: this.state.availableUserGroups, assignedUserGroups: this.state.assignedUserGroups })
             );
         }
     }]);
@@ -34799,10 +34831,12 @@ var Modal = function Modal(props) {
         currentUserGroups = [];
     if (props.availableUserGroups.length > 0) {
         availableUserGroups = props.availableUserGroups.map(function (group) {
+            console.log('group ids:', group.group_id);
             return _react2.default.createElement(
                 'li',
-                { key: group.group_id, onClick: function onClick() {
-                        return props.addUserGroup(group.group_id);
+                { key: group.group_id + 'av', onClick: function onClick() {
+                        console.log('adding group?', group.group_id);
+                        props.addUserGroup(group.group_id);
                     } },
                 group.group_title
             )
@@ -34815,7 +34849,7 @@ var Modal = function Modal(props) {
         currentUserGroups = props.assignedUserGroups.map(function (group) {
             return _react2.default.createElement(
                 'li',
-                { key: group.group_id, onClick: function onClick() {
+                { key: group.group_id + 'as', onClick: function onClick() {
                         return props.removeUserGroup(group.group_id);
                     } },
                 group.group_title
@@ -34920,7 +34954,7 @@ var Modal = function Modal(props) {
                                 )
                             )
                         ),
-                        props.data.require_auth === 'y' && props.availableUserGroups && _react2.default.createElement(
+                        props.data.require_auth === 'y' && props.allUserGroups && _react2.default.createElement(
                             'div',
                             { className: 'row' },
                             _react2.default.createElement(

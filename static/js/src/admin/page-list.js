@@ -38,6 +38,7 @@ export default class PageList extends Component {
             pageInfo: {},
             userGroups: props.userGroups,
             assignedUserGroups: [],
+            availableUserGroups: [],
             formType: 'update'
         };
     }
@@ -56,10 +57,8 @@ export default class PageList extends Component {
             // })
             for(let i = 0, l = groups.length; i < l; i += 1) {
                 if(this.state.userGroups[i].page_id === props.page_id) {
-                    console.log('group assigned:', groups[i]);
                     assignedUserGroupsUpdate.push(groups[i]);
                 } else {
-                    console.log('group available:', groups[i]);
                     availableUserGroupsUpdate.push(groups[i]);
                 }
             }
@@ -109,25 +108,46 @@ export default class PageList extends Component {
         console.log('adding this group:', id);
 
         let currentUserGroups = [...this.state.assignedUserGroups];
-        let availableUserGroups = [...this.state.userGroups];
-        const groupToAdd = availableUserGroups.find(group => group.group_id = id);
+        let remainingUserGroups = [...this.state.availableUserGroups];
+        console.log('after click:', currentUserGroups, remainingUserGroups);
+        const groupToAdd = remainingUserGroups.find(group => group.group_id = id);
 
-        //!!! remove added group from availableUserGroups on state, update state
-        //!!! open modal not resetting user groups list- whole user group functionality currently fucked
+        //!!! can add 1st, then second successfully, but if click 2nd, it fucks up
 
         console.log('found group:', groupToAdd);
+        console.log('remaning groups after find:', remainingUserGroups);
+
+        
 
         currentUserGroups.push(groupToAdd);
-        //availableUserGroups = availableUserGroups.filter(group => group.group_id !== id);
+        console.log('after addition, current groups:', currentUserGroups);
+        const remainingUserGroupsStep2 = remainingUserGroups.filter(group => {
+            console.log(group.group_id, id, group.group_id !== id);
+            return group.group_id !== id;
+        });
+        console.log('after addition, available groups:', remainingUserGroupsStep2);
 
         this.setState({
-            userGroups: availableUserGroups,
+            availableUserGroups: remainingUserGroupsStep2,
             assignedUserGroups: currentUserGroups
-        });
+        }, () => console.log('set state callback:', this.state));
     }
 
     removeUserGroup(id) {
+        console.log('remivng this groupd:', id);
+        let currentUserGroups = [...this.state.assignedUserGroups];
+        let remainingUserGroups = [...this.state.availableUserGroups];
+        const groupToAdd = currentUserGroups.find(group => group.group_id = id);
+        console.log('found group:', groupToAdd);
+        remainingUserGroups.push(groupToAdd);
+        console.log('after removal, available groups:', remainingUserGroups);
+        currentUserGroups = currentUserGroups.filter(group => group.group_id !== id);
+        console.log('after removal, current groups:', currentUserGroups);
 
+        this.setState({
+            availableUserGroups: remainingUserGroups,
+            assignedUserGroups: currentUserGroups
+        }, () => console.log('set state callback:', this.state));
     }
 
     submitForm(evt) {
@@ -254,7 +274,7 @@ export default class PageList extends Component {
                 {this.state.pages.map(page => {
                     return <PageListCard key={page.page_id} openModal={this.openModal} data={page} />;
                 })}
-                <Modal type={this.type} data={this.state.pageInfo} closeModal={this.closeModal} showDeleteConfirm={this.showDeleteConfirm} hideDeleteConfirm={this.hideDeleteConfirm} handleChange={this.handleChange} addUserGroup={this.addUserGroup} removeUserGroup={this.removeUserGroup} submitForm={this.submitForm} addItem={this.addItem} updateItem={this.updateItem} deleteItem={this.deleteItem} pageAdmins={this.pageAdmins} availableUserGroups={this.state.userGroups} assignedUserGroups={this.state.assignedUserGroups}  />
+                <Modal type={this.type} data={this.state.pageInfo} closeModal={this.closeModal} showDeleteConfirm={this.showDeleteConfirm} hideDeleteConfirm={this.hideDeleteConfirm} handleChange={this.handleChange} addUserGroup={this.addUserGroup} removeUserGroup={this.removeUserGroup} submitForm={this.submitForm} addItem={this.addItem} updateItem={this.updateItem} deleteItem={this.deleteItem} pageAdmins={this.pageAdmins} allUserGroups={this.state.userGroups} availableUserGroups={this.state.availableUserGroups} assignedUserGroups={this.state.assignedUserGroups}  />
             </div>
         );
     }

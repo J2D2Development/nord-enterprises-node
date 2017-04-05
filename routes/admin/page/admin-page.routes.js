@@ -181,10 +181,6 @@ pageRouter.route('/pages-list/:page_id')
 
 //editing individual page contents (menu/page areas)
 pageRouter.route('/page-contents/:page_id')
-    .all((req, res, next) => {
-        //do we need to check session login here?  already doing it at base level
-        next();
-    })
     .get((req, res) => {
         const hoa_id = req.session['hoa_main']['hoa_id'];
         const page_id = +req.params['page_id'];
@@ -194,7 +190,7 @@ pageRouter.route('/page-contents/:page_id')
         const hoa_lookfeel = req.session['hoa_lookfeel'];
 
         Promise.all([
-            basicUtils.getDBInfo(`SELECT * FROM hoa_pub_page WHERE hoa_id = ${hoa_main['hoa_id']} AND page_id = ${connection.escape(page_id)};`),
+            basicUtils.getDBInfo(`SELECT * FROM hoa_pv_page WHERE hoa_id = ${hoa_main['hoa_id']} AND page_id = ${connection.escape(page_id)};`),
             basicUtils.getDBInfo(`SELECT * FROM hoa_feature WHERE hoa_id = ${hoa_main['hoa_id']} AND feature_id != 8;`),
             basicUtils.getDBInfo(`SELECT * FROM hoa_feature_item WHERE hoa_id = ${hoa_main['hoa_id']};`),
             pageUtils.getPageList(hoa_id)

@@ -14,8 +14,12 @@ const Modal = (props) => {
     let availableUserGroups = [], currentUserGroups = [];
     if(props.availableUserGroups.length > 0) {
         availableUserGroups = props.availableUserGroups.map(group => {
+            console.log('group ids:', group.group_id);
             return(
-                <li key={group.group_id} onClick={() => props.addUserGroup(group.group_id)}>{group.group_title}</li>
+                <li key={group.group_id + 'av'} onClick={() => {
+                    console.log('adding group?', group.group_id);
+                    props.addUserGroup(group.group_id);
+                }}>{group.group_title}</li>
                 // <option key={group.group_id} value={group.group_id}>{group.group_title}</option>
             );
         });
@@ -25,7 +29,7 @@ const Modal = (props) => {
         currentUserGroups = props.assignedUserGroups
             .map(group => {
                 return(
-                    <li key={group.group_id} onClick={() => props.removeUserGroup(group.group_id)}>{group.group_title}</li>
+                    <li key={group.group_id + 'as'} onClick={() => props.removeUserGroup(group.group_id)}>{group.group_title}</li>
                 );
             });
     }
@@ -70,7 +74,7 @@ const Modal = (props) => {
                                         <label htmlFor="auth_no">No</label>
                                 </div>
                             </div>
-                            {props.data.require_auth === 'y' && props.availableUserGroups &&
+                            {props.data.require_auth === 'y' && props.allUserGroups &&
                                 <div className="row">
                                     <div className="form-group col-sm-4 col-xs-12">
                                         <label className="modal-content-label">Limit Access to User Group</label>

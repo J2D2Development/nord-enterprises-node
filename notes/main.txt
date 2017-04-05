@@ -24,15 +24,13 @@ follow: https://hackernoon.com/naive-infinite-scroll-in-reactive-programming-usi
 -note their use of pairwise rx operator- is this for better perf than just checking 'onscroll'
 
 
-    FOR 3/29/17
+    FOR 4/5/17
         PAGES LISTING
-            -backend: on pages-list endpoint, need to also return:
-                c) check existing code to see how page-user group linkage is handled, implement that as well.
+            -user groups adding/rmoving is completely fucked.  react won't just grab a single element if it's not the first on on click.  taking a break from this.
         SWITCHING TO REACT FORMS
             -pages.ejs, pages.js are close.  Need to add rest of fields to pages modal and populate.  need to add save/update form submissin (check menu items for good sql).  then need to update menu items/page areas on page.js and page.ejs to use the new system.
             -error regarding switching from uncontrolled to controlled- find fix
             -add validation (might need different handleChange functions for each type- required, email, etc)
-            -add classnames package? https://github.com/JedWatson/classnames
         SESSIONS
             -max age is currently 1hr.  seems to be working- user is at req.user.  nneed to find out how to only put specific info into that object (currentlypulling all rows from db- including password hash)
         -2) if no menu items on admin, menu div never loads- fix this so that just the 'add menu item' option appears
