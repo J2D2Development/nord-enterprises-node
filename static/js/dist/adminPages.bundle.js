@@ -34445,8 +34445,6 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-//import { render } from 'react-dom';
-
 
 var PageList = function (_Component) {
     _inherits(PageList, _Component);
@@ -34544,6 +34542,7 @@ var PageList = function (_Component) {
     }, {
         key: 'handleChange',
         value: function handleChange(evt) {
+            var name = evt.target.name;
             var pageInfoUpdate = {};
 
             for (var item in this.state.pageInfo) {
@@ -34551,11 +34550,12 @@ var PageList = function (_Component) {
                     pageInfoUpdate[item] = this.state.pageInfo[item];
                 }
             }
-            pageInfoUpdate[evt.target.name] = evt.target.value;
+            pageInfoUpdate[name] = evt.target.value;
 
             this.setState({
                 pageInfo: pageInfoUpdate
             });
+            console.log(this.state);
         }
     }, {
         key: 'addUserGroup',
@@ -34820,7 +34820,8 @@ var Modal = function Modal(props) {
             'option',
             { key: user.username,
                 value: user.username,
-                selected: props.data.admin_user === user.username ? 'selected' : '' },
+                selected: props.data.admin_user === user.username ? 'selected' : ''
+            },
             user.first_name,
             ' ',
             user.last_name
@@ -34831,11 +34832,11 @@ var Modal = function Modal(props) {
         currentUserGroups = [];
     if (props.availableUserGroups.length > 0) {
         availableUserGroups = props.availableUserGroups.map(function (group) {
-            console.log('group ids:', group.group_id);
+            //console.log('group ids:', group.group_id);
             return _react2.default.createElement(
                 'li',
                 { key: group.group_id + 'av', onClick: function onClick() {
-                        console.log('adding group?', group.group_id);
+                        //console.log('adding group?', group.group_id);
                         props.addUserGroup(group.group_id);
                     } },
                 group.group_title
@@ -47823,9 +47824,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 window.addEventListener('DOMContentLoaded', function () {
     _utilities.utilities.slideout();
     _utilities.utilities.setMenuOffset();
-    console.log('api endpoint:', window.location.pathname + '/pages-list');
     _jquery2.default.get(window.location.pathname + '/pages-list').done(function (data) {
-        console.log('from server:', data);
         var el = document.getElementById('page-list');
         if (data.errorMsg) {
             return 'Error getting page list: ' + data.errorMsg;
@@ -47833,10 +47832,9 @@ window.addEventListener('DOMContentLoaded', function () {
         (0, _reactDom.render)(_react2.default.createElement(_pageList2.default, { pages: data.pageList, pageAdmins: data.pageAdmins, userGroups: data.userGroups }), el);
     }).fail(function (error) {
         console.log('xhr request failed:', error);
-    }).always(function () {});
-
-    //after everything is loaded, hide loader screen
-    _utilities.utilities.hideLoader();
+    }).always(function () {
+        _utilities.utilities.hideLoader();
+    });
 });
 
 /***/ })

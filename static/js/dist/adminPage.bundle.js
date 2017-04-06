@@ -10451,18 +10451,19 @@ window.addEventListener('DOMContentLoaded', function () {
     var modalConfirm = document.querySelector('#modal-confirm');
 
     var getMenuItems = function getMenuItems() {
-        _jquery2.default.get(window.location.pathname + '/menuitems').done(function (data) {
-            if (data.errorMsg) {
-                return 'Error getting menu items: ' + data.err;
+        console.log('menu items url: ' + window.location.pathname + '/menuitems');
+        _jquery2.default.get(window.location.pathname + '/menuitems').done(function (response) {
+            var existingItems = [];
+            if (response.success) {
+                existingItems = response.data.map(function (item) {
+                    return (0, _menuItems.VerticalMenuItem)(item);
+                });
             }
-            var existingItems = data.map(function (item) {
-                return (0, _menuItems.VerticalMenuItem)(item);
-            });
-            existingItems.push((0, _menuItems.AddNewVerticalMenuItem)(data[0]['menu_style']));
+            existingItems.push((0, _menuItems.AddNewVerticalMenuItem)(response.data[0]['menu_style']));
 
             menu.innerHTML = existingItems.join('');
         }).fail(function (error) {
-            console.log('xhr request failed:', error);
+            console.log('xhr request failed on menu items:', error);
         }).always(function () {});
     };
     getMenuItems();
@@ -10479,7 +10480,7 @@ window.addEventListener('DOMContentLoaded', function () {
 
             pageAreas.innerHTML = existingAreas.join('');
         }).fail(function (error) {
-            console.log('xhr request failed:', error);
+            console.log('xhr request failed on page areas:', error);
         }).always(function () {});
     };
     getPageAreas();

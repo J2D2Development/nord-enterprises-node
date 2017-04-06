@@ -71,7 +71,7 @@ app.use((req, res, next) => {
     // });
 
     //all went well
-    console.log('session on first load:', req.session);
+    //console.log('session on first load:', req.session);
     let sitename = '';
 
     if(req.originalUrl === '/') {
@@ -82,7 +82,7 @@ app.use((req, res, next) => {
         }
 
         if(sitename !== 'static') {
-            console.log('get basic info from no sitename in path:', sitename);
+            //console.log('get basic info from no sitename in path:', sitename);
             get_basic_info(sitename);
         } else {
             next();
@@ -269,7 +269,7 @@ app.get('/:sitename/page', (req, res) => {
                         });
                     })
                     .catch(error => {
-                        console.log('Error getting button bg image:', error);
+                        //console.log('Error getting button bg image:', error);
                     });
             } else {
                 //not using graphical menu items, don't need to fetch bg image
@@ -286,7 +286,7 @@ app.get('/:sitename/page', (req, res) => {
         }
     })
     .catch(error => {
-        console.log(error);
+        //console.log(error);
     });
 });
 

@@ -31,7 +31,6 @@ pageRouter.route('/')
             }
         })
         .catch(error => {
-            console.log('Error getting page list:', error);
             return res.status(500).send('Server error');
         });
     });
@@ -243,7 +242,7 @@ pageRouter.route('/page-contents/:page_id')
                             });
                         })
                         .catch(error => {
-                            console.log('Error getting button bg image:', error);
+                            
                         });
                 } else {
                     //not using graphical menu items, don't need to fetch bg image
@@ -266,17 +265,26 @@ pageRouter.route('/page-contents/:page_id/menuitems')
         const page_id = +req.params['page_id'];
         const menu_style = req.session['hoa_lookfeel']['menu_button_type'];
 
+        console.log('MENUITEM GET ROUTE:', hoa_id, page_id, menu_style);
+
         basicUtils.getDBInfo(`SELECT * FROM hoa_pv_menuitem WHERE hoa_id = ${hoa_id} AND page_id = ${connection.escape(page_id)};`)
-            .then(result => {
+            .then(result => { 
+                let success = true;
                 if(result.length) {
                     for(let i = 0; i < result.length; i += 1) {
                         result[i].menu_style = menu_style;
                     }
-                    res.json(result);
+                } else {
+                    success = false;
+                    result[0] = { menu_style: menu_style };
                 }
+                res.json({
+                    success: success,
+                    data: result
+                });
             })
             .catch(err => {
-                console.log(err);
+                console.log('MENU ITEMS ERR:', err);
                 const error = { errorMsg: 'Error getting menu items', err };
                 res.json(error);
             });
@@ -458,14 +466,11 @@ pageRouter.route('/page-contents/:page_id/pageareas')
                 res.json(result);
             })
             .catch(err => {
-                console.log(err);
                 const error = { errorMsg: 'Error getting page areas', err };
                 res.json(error);
             });
     })
     .post((req, res) => {
-        console.log(req.body);
-        console.log(req.user);
         const hoa_id = req.session['hoa_main']['hoa_id'];
         const page_id = +req.params['page_id'];
         const update = req.body;

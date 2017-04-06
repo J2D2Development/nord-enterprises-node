@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-//import { render } from 'react-dom';
 import { notifyr } from './notifyr';
 import $ from 'jquery';
 
@@ -90,6 +89,7 @@ export default class PageList extends Component {
     }
 
     handleChange(evt) {
+        const name = evt.target.name;
         let pageInfoUpdate = {};
 
         for(let item in this.state.pageInfo) {
@@ -97,11 +97,12 @@ export default class PageList extends Component {
                 pageInfoUpdate[item] = this.state.pageInfo[item]
             }
         }
-        pageInfoUpdate[evt.target.name] = evt.target.value;
+        pageInfoUpdate[name] = evt.target.value;
 
         this.setState({
             pageInfo: pageInfoUpdate
         });
+        console.log(this.state);
     }
 
     addUserGroup(id) {

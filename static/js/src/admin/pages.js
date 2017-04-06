@@ -7,10 +7,8 @@ import $ from 'jquery';
 window.addEventListener('DOMContentLoaded', function() {
     utilities.slideout();
     utilities.setMenuOffset();
-    console.log('api endpoint:', window.location.pathname + '/pages-list');
     $.get(window.location.pathname + '/pages-list')
         .done(data => {
-            console.log('from server:', data);
             const el = document.getElementById('page-list');
             if(data.errorMsg) { return `Error getting page list: ${data.errorMsg}`; }
             render(<PageList pages={data.pageList} pageAdmins={data.pageAdmins} userGroups={data.userGroups} />, el);
@@ -18,8 +16,7 @@ window.addEventListener('DOMContentLoaded', function() {
         .fail(error => {
             console.log('xhr request failed:', error);
         })
-        .always(() => {});
-
-    //after everything is loaded, hide loader screen
-    utilities.hideLoader();
+        .always(() => {
+            utilities.hideLoader();
+        });    
 });

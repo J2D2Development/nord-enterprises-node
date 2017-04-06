@@ -36,20 +36,21 @@ window.addEventListener('DOMContentLoaded', function() {
     const modalConfirm = document.querySelector('#modal-confirm');
 
     const getMenuItems = () => {
+        console.log(`menu items url: ${window.location.pathname}/menuitems`);
         $.get(`${window.location.pathname}/menuitems`)
-            .done(data => {
-                if(data.errorMsg) {
-                    return `Error getting menu items: ${data.err}`;
+            .done(response => {
+                let existingItems = [];
+                if(response.success) {
+                    existingItems = response.data.map(item => {
+                        return VerticalMenuItem(item);
+                    });
                 }
-                const existingItems = data.map(item => {
-                    return VerticalMenuItem(item);
-                })
-                existingItems.push(AddNewVerticalMenuItem(data[0]['menu_style']));
+                existingItems.push(AddNewVerticalMenuItem(response.data[0]['menu_style']));
                 
                 menu.innerHTML = existingItems.join('');
             })
             .fail(error => {
-                console.log('xhr request failed:', error);
+                console.log('xhr request failed on menu items:', error);
             })
             .always(() => {});
     };
@@ -69,7 +70,7 @@ window.addEventListener('DOMContentLoaded', function() {
                 pageAreas.innerHTML = existingAreas.join('');
             })
             .fail(error => {
-                console.log('xhr request failed:', error);
+                console.log('xhr request failed on page areas:', error);
             })
             .always(() => {});
     };

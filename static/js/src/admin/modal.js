@@ -5,7 +5,8 @@ const Modal = (props) => {
         return(
             <option key={user.username} 
                 value={user.username}
-                selected={props.data.admin_user === user.username ? 'selected' : ''}>
+                selected={props.data.admin_user === user.username ? 'selected' : ''}
+            >
                 {user.first_name} {user.last_name}
             </option>
         );
@@ -14,10 +15,10 @@ const Modal = (props) => {
     let availableUserGroups = [], currentUserGroups = [];
     if(props.availableUserGroups.length > 0) {
         availableUserGroups = props.availableUserGroups.map(group => {
-            console.log('group ids:', group.group_id);
+            //console.log('group ids:', group.group_id);
             return(
                 <li key={group.group_id + 'av'} onClick={() => {
-                    console.log('adding group?', group.group_id);
+                    //console.log('adding group?', group.group_id);
                     props.addUserGroup(group.group_id);
                 }}>{group.group_title}</li>
                 // <option key={group.group_id} value={group.group_id}>{group.group_title}</option>
@@ -53,7 +54,7 @@ const Modal = (props) => {
                                 </div>
                                 <div className="form-group col-sm-4 col-xs-12">
                                     <label className="modal-content-label">Page Admin</label>
-                                    <select name="admin_user" className="form-control" 
+                                    <select name="admin_user" className="form-control"
                                         onChange={props.handleChange}>
                                         <option value="">No Admin Selected</option>
                                         {pageAdminOptions}
