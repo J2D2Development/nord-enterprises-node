@@ -34436,6 +34436,8 @@ var _modal = __webpack_require__(196);
 
 var _modal2 = _interopRequireDefault(_modal);
 
+var _formValidators = __webpack_require__(301);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
@@ -34445,6 +34447,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+console.log(_formValidators.formValidators);
 
 var PageList = function (_Component) {
     _inherits(PageList, _Component);
@@ -34459,6 +34463,7 @@ var PageList = function (_Component) {
         _this.pageAdmins = props.pageAdmins;
         _this.userGroups = props.userGroups;
         _this.openModal = _this.openModal.bind(_this);
+        _this.closeModal = _this.closeModal.bind(_this);
         _this.handleChange = _this.handleChange.bind(_this);
         _this.addUserGroup = _this.addUserGroup.bind(_this);
         _this.removeUserGroup = _this.removeUserGroup.bind(_this);
@@ -34467,6 +34472,7 @@ var PageList = function (_Component) {
         _this.filterPages = _this.filterPages.bind(_this);
         _this.serverSuccess = _this.serverSuccess.bind(_this);
         _this.serverError = _this.serverError.bind(_this);
+        _this.errorCount = 0;
         _this.newPage = {
             title: '',
             require_auth: 'n',
@@ -34483,7 +34489,8 @@ var PageList = function (_Component) {
             userGroups: props.userGroups,
             assignedUserGroups: [],
             availableUserGroups: [],
-            formType: 'update'
+            formType: 'update',
+            submitted: false
         };
         return _this;
     }
@@ -34527,6 +34534,16 @@ var PageList = function (_Component) {
         value: function closeModal() {
             document.querySelector('#nord-modal').classList.remove('modal-show');
             document.querySelector('#bg-screen').classList.remove('bg-show');
+
+            //remove error class on any elements
+            var erroredElements = document.querySelectorAll('.form-error');
+            if (erroredElements.length > 0) {
+                erroredElements.forEach(function (element) {
+                    element.classList.remove('form-error');
+                });
+            }
+
+            this.setState({ submitted: false });
             this.hideDeleteConfirm();
         }
     }, {
@@ -34543,6 +34560,13 @@ var PageList = function (_Component) {
         key: 'handleChange',
         value: function handleChange(evt) {
             var name = evt.target.name;
+            var value = evt.target.value;
+            var validators = evt.target.dataset.validators;
+
+            if (this.state.submitted) {
+                _formValidators.formValidators.validateInfo(name, value, validators, this);
+            }
+
             var pageInfoUpdate = {};
 
             for (var item in this.state.pageInfo) {
@@ -34555,7 +34579,6 @@ var PageList = function (_Component) {
             this.setState({
                 pageInfo: pageInfoUpdate
             });
-            console.log(this.state);
         }
     }, {
         key: 'addUserGroup',
@@ -34620,31 +34643,45 @@ var PageList = function (_Component) {
     }, {
         key: 'submitForm',
         value: function submitForm(evt) {
+            var _this4 = this;
+
             evt.preventDefault();
-            if (this.state.formType === 'edit') {
-                this.updateItem(this.state.pageInfo);
-            } else {
-                this.addItem(this.state.pageInfo);
-            }
+            this.errorCount = 0; //need to reset errors on submit?
+            var formElements = document.querySelector('#modal-edit-form').elements;
+            this.setState({ submitted: true }, function () {
+                for (var item in formElements) {
+                    //TODO - looping through each element 2 times?
+                    if (formElements[item].dataset && formElements[item].dataset.validators) {
+                        _formValidators.formValidators.validateInfo(formElements[item].name, formElements[item].value, formElements[item].dataset.validators, _this4);
+                    }
+                }
+                if (_this4.errorCount === 0) {
+                    if (_this4.state.formType === 'edit') {
+                        _this4.updateItem(_this4.state.pageInfo);
+                    } else {
+                        _this4.addItem(_this4.state.pageInfo);
+                    }
+                }
+            });
         }
     }, {
         key: 'refreshPageList',
         value: function refreshPageList() {
-            var _this4 = this;
+            var _this5 = this;
 
             _jquery2.default.get(window.location.pathname + '/pages-list').then(function (response) {
-                _this4.pages = response.pageList;
-                _this4.setState({
-                    pages: _this4.pages
+                _this5.pages = response.pageList;
+                _this5.setState({
+                    pages: _this5.pages
                 });
             }).catch(function (error) {
-                _this4.serverError(error);
+                _this5.serverError(error);
             });
         }
     }, {
         key: 'updateItem',
         value: function updateItem(item) {
-            var _this5 = this;
+            var _this6 = this;
 
             var url = window.location.pathname + '/pages-list/' + item['page_id'];
             _jquery2.default.ajax({
@@ -34654,33 +34691,33 @@ var PageList = function (_Component) {
                 data: item
             }).done(function (response) {
                 if (response.success) {
-                    _this5.serverSuccess(response.success, response.msg);
-                } else {
-                    _this5.serverError(response.msg);
-                }
-            }).fail(function (error) {
-                _this5.serverError(error.msg);
-            });
-        }
-    }, {
-        key: 'addItem',
-        value: function addItem(item) {
-            var _this6 = this;
-
-            _jquery2.default.post(window.location.pathname + '/pages-list', item).done(function (response) {
-                if (response.success) {
                     _this6.serverSuccess(response.success, response.msg);
                 } else {
                     _this6.serverError(response.msg);
                 }
             }).fail(function (error) {
                 _this6.serverError(error.msg);
+            });
+        }
+    }, {
+        key: 'addItem',
+        value: function addItem(item) {
+            var _this7 = this;
+
+            _jquery2.default.post(window.location.pathname + '/pages-list', item).done(function (response) {
+                if (response.success) {
+                    _this7.serverSuccess(response.success, response.msg);
+                } else {
+                    _this7.serverError(response.msg);
+                }
+            }).fail(function (error) {
+                _this7.serverError(error.msg);
             }).always(function () {});
         }
     }, {
         key: 'deleteItem',
         value: function deleteItem(id) {
-            var _this7 = this;
+            var _this8 = this;
 
             var url = window.location.pathname + '/pages-list/' + id;
             console.log('deleting url:', url);
@@ -34691,19 +34728,20 @@ var PageList = function (_Component) {
             }).done(function (response) {
                 console.log('del response');
                 if (response.success) {
-                    _this7.serverSuccess(response.success, response.msg);
+                    _this8.serverSuccess(response.success, response.msg);
                 } else {
-                    _this7.serverError(response.msg);
+                    _this8.serverError(response.msg);
                 }
             }).fail(function (error) {
-                _this7.serverError(error.msg);
+                _this8.serverError(error.msg);
             }).always(function () {
-                return _this7.hideDeleteConfirm();
+                return _this8.hideDeleteConfirm();
             });
         }
     }, {
         key: 'serverSuccess',
         value: function serverSuccess(status, msg) {
+            this.setState({ submitted: false });
             var type = status ? 'notifyr-success' : 'notifyr-error';
             this.refreshPageList();
             this.closeModal();
@@ -34734,7 +34772,7 @@ var PageList = function (_Component) {
     }, {
         key: 'render',
         value: function render() {
-            var _this8 = this;
+            var _this9 = this;
 
             return _react2.default.createElement(
                 'div',
@@ -34753,7 +34791,7 @@ var PageList = function (_Component) {
                         _react2.default.createElement(
                             'button',
                             { type: 'button', className: 'btn btn-primary', onClick: function onClick() {
-                                    return _this8.openModal('create', _this8.newPage);
+                                    return _this9.openModal('create', _this9.newPage);
                                 } },
                             _react2.default.createElement('i', { className: 'fa fa-plus fa-lg' }),
                             ' Create New Page'
@@ -34761,7 +34799,7 @@ var PageList = function (_Component) {
                     )
                 ),
                 this.state.pages.map(function (page) {
-                    return _react2.default.createElement(_pageListCard2.default, { key: page.page_id, openModal: _this8.openModal, data: page });
+                    return _react2.default.createElement(_pageListCard2.default, { key: page.page_id, openModal: _this9.openModal, data: page });
                 }),
                 _react2.default.createElement(_modal2.default, { type: this.type, data: this.state.pageInfo, closeModal: this.closeModal, showDeleteConfirm: this.showDeleteConfirm, hideDeleteConfirm: this.hideDeleteConfirm, handleChange: this.handleChange, addUserGroup: this.addUserGroup, removeUserGroup: this.removeUserGroup, submitForm: this.submitForm, addItem: this.addItem, updateItem: this.updateItem, deleteItem: this.deleteItem, pageAdmins: this.pageAdmins, allUserGroups: this.state.userGroups, availableUserGroups: this.state.availableUserGroups, assignedUserGroups: this.state.assignedUserGroups })
             );
@@ -34860,7 +34898,7 @@ var Modal = function Modal(props) {
 
     return _react2.default.createElement(
         'div',
-        { className: 'nord-modal nord-modal-fade', tabIndex: '-1', role: 'dialog', id: 'nord-modal' },
+        { className: 'nord-modal nord-modal-fade', role: 'dialog', id: 'nord-modal' },
         _react2.default.createElement(
             'form',
             { id: 'modal-edit-form', onSubmit: props.submitForm },
@@ -34904,7 +34942,9 @@ var Modal = function Modal(props) {
                                     { className: 'modal-content-label' },
                                     'Title'
                                 ),
-                                _react2.default.createElement('input', { type: 'text', name: 'title', className: 'form-control', id: 'title', placeholder: 'Title', value: props.data.title, onChange: props.handleChange })
+                                _react2.default.createElement('input', { type: 'text', name: 'title', className: 'form-control', id: 'title', placeholder: 'Title', value: props.data.title,
+                                    'data-validators': '[{"errorName": "required", "msg": "Title is required"}, {"errorName": "min6", "msg": "Title must be at least 6 chars long"}]',
+                                    onChange: props.handleChange })
                             ),
                             _react2.default.createElement(
                                 'div',
@@ -35018,6 +35058,7 @@ var Modal = function Modal(props) {
                                     'Page Description'
                                 ),
                                 _react2.default.createElement('textarea', { className: 'form-control', name: 'result_desc',
+                                    'data-validators': '[{"errorName": "required", "msg": "Description is required"}]',
                                     style: { width: 100 + '%' },
                                     value: props.data.result_desc || '',
                                     onChange: props.handleChange })
@@ -47836,6 +47877,44 @@ window.addEventListener('DOMContentLoaded', function () {
         _utilities.utilities.hideLoader();
     });
 });
+
+/***/ }),
+/* 301 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+var formValidators = exports.formValidators = {
+    validateInfo: function validateInfo(elementName, data, validators, context) {
+        var _this = this;
+
+        var element = document.querySelector('[name=' + elementName + ']');
+        var validatorArray = JSON.parse(validators);
+
+        validatorArray.forEach(function (validator) {
+            var validatorName = validator.errorName;
+            if (!_this[validatorName](data)) {
+                element.classList.add('form-error');
+                context.errorCount += 1;
+            } else {
+                element.classList.remove('form-error');
+                if (context.errorCount > 0) {
+                    context.errorCount -= 1;
+                }
+            }
+        });
+    },
+    required: function required(data) {
+        return data;
+    },
+    min6: function min6(data) {
+        return data.length >= 6;
+    }
+};
 
 /***/ })
 /******/ ]);

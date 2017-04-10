@@ -24,7 +24,9 @@ follow: https://hackernoon.com/naive-infinite-scroll-in-reactive-programming-usi
 -note their use of pairwise rx operator- is this for better perf than just checking 'onscroll'
 
 
-    FOR 4/5/17
+    FOR 4/10/17
+        REACT FORM VALIDATION:
+            -working, but only with one validator.  need to check length of data-attr validators for each input- it can be > 1.  If it is, increment the 'errorcount' by that much?  need to figure out the errorCount issue- being counted twice for some reason.
         PAGES LISTING
             -user groups adding/rmoving is completely fucked.  react won't just grab a single element if it's not the first on on click.  taking a break from this.
         SWITCHING TO REACT FORMS

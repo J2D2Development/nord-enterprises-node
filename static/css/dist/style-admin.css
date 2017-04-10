@@ -465,6 +465,10 @@ h1 small {
 .hidden {
   display: none !important;
 }
+.form-error {
+  border: 1px solid;
+  border-color: red !important;
+}
 
 
 

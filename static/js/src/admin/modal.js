@@ -36,7 +36,7 @@ const Modal = (props) => {
     }
 
     return (
-        <div className="nord-modal nord-modal-fade" tabIndex="-1" role="dialog" id="nord-modal">
+        <div className="nord-modal nord-modal-fade" role="dialog" id="nord-modal">
             <form id="modal-edit-form" onSubmit={props.submitForm}>
                 <div className="modal-dialog" role="document">
                     <div className="modal-content">
@@ -50,7 +50,9 @@ const Modal = (props) => {
                             <div className="row">
                                 <div className="form-group col-sm-4 col-xs-12">
                                     <label className="modal-content-label">Title</label>
-                                    <input type="text" name="title" className="form-control" id="title" placeholder="Title" value={props.data.title} onChange={props.handleChange} />
+                                    <input type="text" name="title" className="form-control" id="title" placeholder="Title" value={props.data.title} 
+                                    data-validators='[{"errorName": "required", "msg": "Title is required"}, {"errorName": "min6", "msg": "Title must be at least 6 chars long"}]' 
+                                    onChange={props.handleChange} />
                                 </div>
                                 <div className="form-group col-sm-4 col-xs-12">
                                     <label className="modal-content-label">Page Admin</label>
@@ -108,6 +110,7 @@ const Modal = (props) => {
                                 <div className="form-group col-xs-12">
                                     <label className="modal-content-label">Page Description</label>
                                     <textarea className="form-control" name="result_desc" 
+                                        data-validators='[{"errorName": "required", "msg": "Description is required"}]'
                                         style={{width: 100 + '%'}}
                                         value={props.data.result_desc || ''} 
                                         onChange={props.handleChange}>

@@ -5,6 +5,8 @@ import $ from 'jquery';
 import PageListCard from './page-list-card';
 import Search from './search';
 import Modal from './modal';
+import { formValidators } from '../forms/form-validators';
+console.log(formValidators);
 
 export default class PageList extends Component {
     constructor(props) {
@@ -14,6 +16,7 @@ export default class PageList extends Component {
         this.pageAdmins = props.pageAdmins
         this.userGroups = props.userGroups;
         this.openModal = this.openModal.bind(this);
+        this.closeModal = this.closeModal.bind(this);
         this.handleChange = this.handleChange.bind(this);
         this.addUserGroup = this.addUserGroup.bind(this);
         this.removeUserGroup = this.removeUserGroup.bind(this);
@@ -22,6 +25,7 @@ export default class PageList extends Component {
         this.filterPages = this.filterPages.bind(this);
         this.serverSuccess = this.serverSuccess.bind(this);
         this.serverError = this.serverError.bind(this);
+        this.errorCount = 0;
         this.newPage = {
             title: '',
             require_auth: 'n',
@@ -38,7 +42,8 @@ export default class PageList extends Component {
             userGroups: props.userGroups,
             assignedUserGroups: [],
             availableUserGroups: [],
-            formType: 'update'
+            formType: 'update',
+            submitted: false
         };
     }
 
@@ -77,6 +82,16 @@ export default class PageList extends Component {
     closeModal() {
         document.querySelector('#nord-modal').classList.remove('modal-show');
         document.querySelector('#bg-screen').classList.remove('bg-show');
+
+        //remove error class on any elements
+        const erroredElements = document.querySelectorAll('.form-error');
+        if(erroredElements.length > 0) {
+            erroredElements.forEach(element => {
+                element.classList.remove('form-error');
+            });
+        }
+
+        this.setState({ submitted: false });
         this.hideDeleteConfirm();
     }
 
@@ -90,6 +105,13 @@ export default class PageList extends Component {
 
     handleChange(evt) {
         const name = evt.target.name;
+        const value = evt.target.value;
+        const validators = evt.target.dataset.validators;
+
+        if(this.state.submitted) {
+            formValidators.validateInfo(name, value, validators, this);
+        }
+
         let pageInfoUpdate = {};
 
         for(let item in this.state.pageInfo) {
@@ -102,7 +124,6 @@ export default class PageList extends Component {
         this.setState({
             pageInfo: pageInfoUpdate
         });
-        console.log(this.state);
     }
 
     addUserGroup(id) {
@@ -153,11 +174,23 @@ export default class PageList extends Component {
 
     submitForm(evt) {
         evt.preventDefault();
-        if(this.state.formType === 'edit') {
-            this.updateItem(this.state.pageInfo);
-        } else {
-            this.addItem(this.state.pageInfo);
-        }
+        this.errorCount = 0; //need to reset errors on submit?
+        const formElements = document.querySelector('#modal-edit-form').elements;
+        this.setState({ submitted: true }, () => {
+            for(let item in formElements) {
+                //TODO - looping through each element 2 times?
+                if(formElements[item].dataset && formElements[item].dataset.validators) {
+                    formValidators.validateInfo(formElements[item].name, formElements[item].value, formElements[item].dataset.validators, this);
+                }
+            }
+            if(this.errorCount === 0) {
+                if(this.state.formType === 'edit') {
+                    this.updateItem(this.state.pageInfo);
+                } else {
+                    this.addItem(this.state.pageInfo);
+                }
+            }
+        });        
     }
 
     refreshPageList() {
@@ -233,6 +266,7 @@ export default class PageList extends Component {
     }
 
     serverSuccess(status, msg) {
+        this.setState({ submitted: false });
         const type = status ? 'notifyr-success' : 'notifyr-error';
         this.refreshPageList();
         this.closeModal();
