@@ -6,7 +6,6 @@ import PageListCard from './page-list-card';
 import Search from './search';
 import Modal from './modal';
 import { formValidators } from '../forms/form-validators';
-console.log(formValidators);
 
 export default class PageList extends Component {
     constructor(props) {
@@ -26,6 +25,7 @@ export default class PageList extends Component {
         this.serverSuccess = this.serverSuccess.bind(this);
         this.serverError = this.serverError.bind(this);
         this.errorCount = 0;
+        this.errorList = [];
         this.newPage = {
             title: '',
             require_auth: 'n',
@@ -108,9 +108,9 @@ export default class PageList extends Component {
         const value = evt.target.value;
         const validators = evt.target.dataset.validators;
 
-        if(this.state.submitted) {
+        // if(this.state.submitted) {
             formValidators.validateInfo(name, value, validators, this);
-        }
+        //}
 
         let pageInfoUpdate = {};
 
@@ -174,16 +174,18 @@ export default class PageList extends Component {
 
     submitForm(evt) {
         evt.preventDefault();
-        this.errorCount = 0; //need to reset errors on submit?
         const formElements = document.querySelector('#modal-edit-form').elements;
         this.setState({ submitted: true }, () => {
             for(let item in formElements) {
-                //TODO - looping through each element 2 times?
-                if(formElements[item].dataset && formElements[item].dataset.validators) {
+                //React seems to loop the elements twice- item == +item is a hacky way of filtering out those elements and just checking the ones with an actual 'name'
+                if(item == +item && 
+                    (formElements[item].dataset && 
+                        formElements[item].dataset.validators)
+                ) {
                     formValidators.validateInfo(formElements[item].name, formElements[item].value, formElements[item].dataset.validators, this);
                 }
             }
-            if(this.errorCount === 0) {
+            if(this.errorList.length <= 0) {
                 if(this.state.formType === 'edit') {
                     this.updateItem(this.state.pageInfo);
                 } else {
