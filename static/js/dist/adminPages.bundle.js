@@ -16527,7 +16527,7 @@ var utilities = exports.utilities = {
     },
     setMenuOffset: function setMenuOffset() {
         var topMenu = document.querySelector('#top-menu');
-        var adminMain = document.querySelector('.admin-main');
+        var adminMain = document.querySelector('.admin-main') || document.querySelector('.admin-main-dash');
         adminMain.style.paddingTop = topMenu.clientHeight + 16 + 'px';
 
         (0, _jquery2.default)(window).resize(function () {

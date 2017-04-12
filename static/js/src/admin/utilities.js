@@ -7,7 +7,7 @@ export const utilities = {
     },
     setMenuOffset: () => {
         const topMenu = document.querySelector('#top-menu');
-        const adminMain = document.querySelector('.admin-main');
+        const adminMain = document.querySelector('.admin-main') || document.querySelector('.admin-main-dash');
         adminMain.style.paddingTop = `${topMenu.clientHeight + 16}px`;
 
         $(window).resize(function() {

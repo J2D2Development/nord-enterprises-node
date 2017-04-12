@@ -35,6 +35,7 @@ follow: https://hackernoon.com/naive-infinite-scroll-in-reactive-programming-usi
             -add validation (might need different handleChange functions for each type- required, email, etc)
         SESSIONS
             -on all admin routes- add util function to check req.user - if undefined on request, redirect to login and notifyr session expired
+            -works on dash: maybe check user, if undefined, redirect to '/admin' and it will take care of displaying form or dash?
             -max age is currently 1hr.  seems to be working- user is at req.user.  nneed to find out how to only put specific info into that object (currentlypulling all rows from db- including password hash)
         -2) if no menu items on admin, menu div never loads- fix this so that just the 'add menu item' option appears
         -1) migrate admin styles to scss (shouldn't need any user-defined styles)

@@ -18,11 +18,32 @@
         </div>
         <div class="container-fluid admin-flex-wrapper">
             <% include ./admin-nav %>
-            <div class="row admin-main">
-                <div class="container">
-                    <div>Metrics</div>
-                    <div>Nord News</div>
-                    <div>Resources</div>
+            <div class="row admin-main-dash">
+                <div class="col-sm-4 col-xs-12">
+                    <div class="card flex-card">
+                        <div>Welcome Back, <%= user.first_name + ' ' + user.last_name %></div>
+                        <div class="flex-card-main">
+                            <i class="fa fa-user-o fa-4x"></i>
+                            <span>My Profile</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-4 col-xs-12">
+                    <div class="card flex-card">Latest Site Updates</div>
+                </div>
+                <div class="col-sm-4 col-xs-12">
+                    <div class="card flex-card">Latest Nord Updates</div>
+                </div>
+            </div>
+            <div class="row admin-main-dash">
+                <div class="col-sm-4 col-xs-12">
+                    <div class="card flex-card">Hit Count Chart</div>
+                </div>
+                <div class="col-sm-4 col-xs-12">
+                    <div class="card flex-card">Chart 2</div>
+                </div>
+                <div class="col-sm-4 col-xs-12">
+                    <div class="card flex-card">Chart 3</div>
                 </div>
             </div>
             <div class="row admin-footer">Admin footer links</div>
