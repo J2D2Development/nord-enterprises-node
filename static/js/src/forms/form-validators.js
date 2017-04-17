@@ -7,7 +7,6 @@ export const formValidators = {
             const validatorName = validator.errorName;
             const errorId = `${elementName}:${validatorName}`;
             const alreadyTracked = context.errorList.includes(errorId);
-            console.log(errorId, 'tracked?', alreadyTracked);
 
             if(!this[validatorName](data)) {
                 element.classList.add('form-error');
@@ -17,7 +16,6 @@ export const formValidators = {
                 if(alreadyTracked) { context.errorList.splice(errorId, 1); }
             }
         });
-        console.log(context.errorList);
     },
 
     required(data) {

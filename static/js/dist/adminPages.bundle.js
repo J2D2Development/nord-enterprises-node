@@ -34561,10 +34561,12 @@ var PageList = function (_Component) {
             var name = evt.target.name;
             var value = evt.target.value;
             var validators = evt.target.dataset.validators;
+            console.log('in handle change: validators:', validators);
 
             // if(this.state.submitted) {
-            _formValidators.formValidators.validateInfo(name, value, validators, this);
-            //}
+            if (validators) {
+                _formValidators.formValidators.validateInfo(name, value, validators, this);
+            }
 
             var pageInfoUpdate = {};
 
@@ -34848,6 +34850,14 @@ var _react = __webpack_require__(23);
 
 var _react2 = _interopRequireDefault(_react);
 
+var _inputText = __webpack_require__(302);
+
+var _inputText2 = _interopRequireDefault(_inputText);
+
+var _textarea = __webpack_require__(303);
+
+var _textarea2 = _interopRequireDefault(_textarea);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var Modal = function Modal(props) {
@@ -34940,9 +34950,9 @@ var Modal = function Modal(props) {
                                     { className: 'modal-content-label' },
                                     'Title'
                                 ),
-                                _react2.default.createElement('input', { type: 'text', name: 'title', className: 'form-control', id: 'title', placeholder: 'Title', value: props.data.title,
-                                    'data-validators': '[{"errorName": "required", "msg": "Title is required"}, {"errorName": "min6", "msg": "Title must be at least 6 chars long"}]',
-                                    onChange: props.handleChange })
+                                _react2.default.createElement(_inputText2.default, { placeholder: 'Title', value: props.data.title, name: 'title',
+                                    validators: '[{"errorName": "required", "msg": "Title is required"}, {"errorName": "min6", "msg": "Title must be at least 6 chars long"}]',
+                                    handleChange: props.handleChange })
                             ),
                             _react2.default.createElement(
                                 'div',
@@ -35055,11 +35065,11 @@ var Modal = function Modal(props) {
                                     { className: 'modal-content-label' },
                                     'Page Description'
                                 ),
-                                _react2.default.createElement('textarea', { className: 'form-control', name: 'result_desc',
-                                    'data-validators': '[{"errorName": "required", "msg": "Description is required"}]',
+                                _react2.default.createElement(_textarea2.default, { className: 'form-control', name: 'result_desc',
+                                    dataValidators: '[{"errorName": "required", "msg": "Description is required"}]',
                                     style: { width: 100 + '%' },
                                     value: props.data.result_desc || '',
-                                    onChange: props.handleChange })
+                                    handleChange: props.handleChange })
                             )
                         )
                     ),
@@ -35328,7 +35338,6 @@ var formValidators = exports.formValidators = {
             var validatorName = validator.errorName;
             var errorId = elementName + ':' + validatorName;
             var alreadyTracked = context.errorList.includes(errorId);
-            console.log(errorId, 'tracked?', alreadyTracked);
 
             if (!_this[validatorName](data)) {
                 element.classList.add('form-error');
@@ -35342,7 +35351,6 @@ var formValidators = exports.formValidators = {
                 }
             }
         });
-        console.log(context.errorList);
     },
     required: function required(data) {
         return data;
@@ -47920,6 +47928,60 @@ window.addEventListener('DOMContentLoaded', function () {
         _utilities.utilities.hideLoader();
     });
 });
+
+/***/ }),
+/* 302 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _react = __webpack_require__(23);
+
+var _react2 = _interopRequireDefault(_react);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var TextInput = function TextInput(props) {
+    return _react2.default.createElement("input", { type: "text", className: "form-control",
+        name: props.name, placeholder: props.placeholder,
+        value: props.value, onChange: props.handleChange,
+        "data-validators": props.validators
+    });
+};
+
+exports.default = TextInput;
+
+/***/ }),
+/* 303 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _react = __webpack_require__(23);
+
+var _react2 = _interopRequireDefault(_react);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var TextArea = function TextArea(props) {
+    return _react2.default.createElement('textarea', { className: 'form-control', name: props.name,
+        'data-validators': props.dataValidators,
+        style: { width: 100 + '%' },
+        value: props.value,
+        onChange: props.handleChange });
+};
+
+exports.default = TextArea;
 
 /***/ })
 /******/ ]);

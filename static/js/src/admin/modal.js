@@ -1,4 +1,6 @@
 import React from 'react';
+import TextInput from '../forms/input-text';
+import TextArea from '../forms/textarea';
 
 const Modal = (props) => {
     const pageAdminOptions = props.pageAdmins.map(user => {
@@ -50,9 +52,9 @@ const Modal = (props) => {
                             <div className="row">
                                 <div className="form-group col-sm-4 col-xs-12">
                                     <label className="modal-content-label">Title</label>
-                                    <input type="text" name="title" className="form-control" id="title" placeholder="Title" value={props.data.title} 
-                                    data-validators='[{"errorName": "required", "msg": "Title is required"}, {"errorName": "min6", "msg": "Title must be at least 6 chars long"}]' 
-                                    onChange={props.handleChange} />
+                                    <TextInput placeholder="Title" value={props.data.title} name="title" 
+                                    validators='[{"errorName": "required", "msg": "Title is required"}, {"errorName": "min6", "msg": "Title must be at least 6 chars long"}]' 
+                                    handleChange={props.handleChange} />
                                 </div>
                                 <div className="form-group col-sm-4 col-xs-12">
                                     <label className="modal-content-label">Page Admin</label>
@@ -109,12 +111,12 @@ const Modal = (props) => {
                             <div className="row">
                                 <div className="form-group col-xs-12">
                                     <label className="modal-content-label">Page Description</label>
-                                    <textarea className="form-control" name="result_desc" 
-                                        data-validators='[{"errorName": "required", "msg": "Description is required"}]'
+                                    <TextArea className="form-control" name="result_desc" 
+                                        dataValidators='[{"errorName": "required", "msg": "Description is required"}]'
                                         style={{width: 100 + '%'}}
                                         value={props.data.result_desc || ''} 
-                                        onChange={props.handleChange}>
-                                    </textarea>
+                                        handleChange={props.handleChange}>
+                                    </TextArea>
                                 </div>
                             </div>
                         </div>

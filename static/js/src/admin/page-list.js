@@ -107,10 +107,12 @@ export default class PageList extends Component {
         const name = evt.target.name;
         const value = evt.target.value;
         const validators = evt.target.dataset.validators;
+        console.log('in handle change: validators:', validators);
 
         // if(this.state.submitted) {
+        if(validators) {
             formValidators.validateInfo(name, value, validators, this);
-        //}
+        }
 
         let pageInfoUpdate = {};
 
