@@ -24,9 +24,16 @@ follow: https://hackernoon.com/naive-infinite-scroll-in-reactive-programming-usi
 -note their use of pairwise rx operator- is this for better perf than just checking 'onscroll'
 
 
-    FOR 4/10/17
-        -on modal open: also show backdrop?  try with conditional, but if it doesn't work, just have a modal-bg and slideout-bg for now
-        -static header height offset on load (on resize?)
+    FOR 4/18/17
+        -dashboard formatting- all messed up now (because of wrapper div in react render?)
+        -menu absolute link paths (need to pass sitename from backend?)
+        -server return sitename on all api calls?  need absolute links for menu and slideout.
+        -server route for dashboard (return json with logged in user info for now, eventually chart info and use stats)
+
+    POSSIBLE ISSUES
+        -using same template as frontend, will this work with conversion to react?  Ideally, we can have a shared html structure, but not sure.
+
+    OVERALL TODO
         REACT FORM VALIDATION:
             -error count as array seems to be working.  look into converting to react style (on state instead of class variable)- but for now, move on to backend validation, try to use same functions
         PAGES LISTING
@@ -39,7 +46,6 @@ follow: https://hackernoon.com/naive-infinite-scroll-in-reactive-programming-usi
             -on all admin routes- add util function to check req.user - if undefined on request, redirect to login and notifyr session expired
             -works on dash: maybe check user, if undefined, redirect to '/admin' and it will take care of displaying form or dash?
             -max age is currently 1hr.  seems to be working- user is at req.user.  nneed to find out how to only put specific info into that object (currentlypulling all rows from db- including password hash)
-        -2) if no menu items on admin, menu div never loads- fix this so that just the 'add menu item' option appears
         -1) migrate admin styles to scss (shouldn't need any user-defined styles)
             a) move to static folder, set up scss transpiler in webpack and get going.
         -1.5) update pages/individual page header to use global.  update everything else to use sidebar, and have content of sidebar custom to each screen (include ejs file)

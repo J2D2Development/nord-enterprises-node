@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { notifyr } from './notifyr';
 import $ from 'jquery';
 
+import { utilities } from './utilities';
+
 import PageListCard from './page-list-card';
 import Search from './search';
 import Modal from './modal';
@@ -52,6 +54,10 @@ export default class PageList extends Component {
             modalDisplay: false,
             slideoutDisplay: false
         };
+    }
+
+    componentDidMount() {
+        utilities.setMenuOffset();
     }
 
     openSlideout() {
@@ -334,7 +340,9 @@ export default class PageList extends Component {
                 <div className="row admin-footer">
                     Admin Footer links here
                 </div>
-                <Backdrop display={this.state.slideoutDisplay} closeSlideout={this.closeSlideout} />
+                <Backdrop display={this.state.slideoutDisplay || this.state.modalDisplay} 
+                    closeSlideout={this.closeSlideout} 
+                />
             </div>
         );
     }

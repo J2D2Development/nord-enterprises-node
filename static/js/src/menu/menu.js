@@ -1,7 +1,6 @@
 import React from 'react';
 
 const MainMenu = (props) => {
-    console.log('menu props:', props);
     return (
         <div className="row menu-row" id="top-menu">
             <div className="container-fluid">

@@ -6,49 +6,9 @@
     </head>
 
     <body>
-        <% if(message) { %> <div class="notifyr"><%= message %></div>  <% } %>
-        <div id="main-menu" class="slideout-right">
-            <div class="slideout-top">
-                <i id="close-menu" class="fa chevron-circle-left rotatable" aria-hidden="true"></i>
-                <span>Options</span>
-            </div>
-            <div class="slideout-main" id="slideout-main">
-                options here
-            </div>
-        </div>
         <div class="container-fluid admin-flex-wrapper">
-            <% include ./admin-nav %>
-            <div class="row admin-main-dash">
-                <div class="col-sm-4 col-xs-12">
-                    <div class="card flex-card">
-                        <div>Welcome Back, <%= user.first_name + ' ' + user.last_name %></div>
-                        <div class="flex-card-main">
-                            <i class="fa fa-user-o fa-4x"></i>
-                            <span>My Profile</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-sm-4 col-xs-12">
-                    <div class="card flex-card">Latest Site Updates</div>
-                </div>
-                <div class="col-sm-4 col-xs-12">
-                    <div class="card flex-card">Latest Nord Updates</div>
-                </div>
-            </div>
-            <div class="row admin-main-dash">
-                <div class="col-sm-4 col-xs-12">
-                    <div class="card flex-card">Hit Count Chart</div>
-                </div>
-                <div class="col-sm-4 col-xs-12">
-                    <div class="card flex-card">Chart 2</div>
-                </div>
-                <div class="col-sm-4 col-xs-12">
-                    <div class="card flex-card">Chart 3</div>
-                </div>
-            </div>
-            <div class="row admin-footer">Admin footer links</div>
+            <div id="admin"></div>
         </div>
-
         <% include ./admin-includes %>
     </body>
     <script src="/static/js/dist/adminDashboard.bundle.js"></script>

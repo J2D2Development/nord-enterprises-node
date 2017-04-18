@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 302);
+/******/ 	return __webpack_require__(__webpack_require__.s = 305);
 /******/ })
 /************************************************************************/
 /******/ ({
@@ -10305,13 +10305,7 @@ return jQuery;
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-exports.utilities = undefined;
-
-var _jquery = __webpack_require__(10);
-
-var _jquery2 = _interopRequireDefault(_jquery);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+//import $ from 'jquery';
 
 var utilities = exports.utilities = {
     hideLoader: function hideLoader() {
@@ -10323,30 +10317,33 @@ var utilities = exports.utilities = {
         var adminMain = document.querySelector('.admin-main') || document.querySelector('.admin-main-dash');
         adminMain.style.paddingTop = topMenu.clientHeight + 16 + 'px';
 
-        (0, _jquery2.default)(window).resize(function () {
+        // $(window).resize(function() {
+        //     adminMain.style.paddingTop = `${topMenu.clientHeight + 16}px`;
+        // });
+        window.addEventListener('resize', function () {
             adminMain.style.paddingTop = topMenu.clientHeight + 16 + 'px';
         });
-    },
-    slideout: function slideout() {
-        var openMenuButton = document.querySelector('#open-menu');
-        var closeMenuButton = document.querySelector('#close-menu');
-        var menu = document.querySelector('#main-menu');
-        var bg = document.querySelector('#bg-screen');
-
-        openMenuButton.addEventListener('click', function () {
-            menu.classList.add('slideout-right--show');
-            bg.classList.add('bg-show');
-            closeMenuButton.classList.add('menu-open');
-        });
-
-        [closeMenuButton, bg].forEach(function (element) {
-            element.addEventListener('click', function () {
-                menu.classList.remove('slideout-right--show');
-                bg.classList.remove('bg-show');
-                closeMenuButton.classList.remove('menu-open');
-            });
-        });
     }
+    // slideout: () => {
+    //     const openMenuButton = document.querySelector('#open-menu');
+    //     const closeMenuButton = document.querySelector('#close-menu');
+    //     const menu = document.querySelector('#main-menu');
+    //     const bg = document.querySelector('#bg-screen');
+
+    //     openMenuButton.addEventListener('click', function() {
+    //         menu.classList.add('slideout-right--show');
+    //         bg.classList.add('bg-show');
+    //         closeMenuButton.classList.add('menu-open');
+    //     });
+
+    //     [closeMenuButton, bg].forEach(function(element) {
+    //         element.addEventListener('click', function() {
+    //             menu.classList.remove('slideout-right--show');
+    //             bg.classList.remove('bg-show');
+    //             closeMenuButton.classList.remove('menu-open');
+    //         });
+    //     });
+    // }
 };
 
 /***/ }),
@@ -10401,7 +10398,7 @@ exports.AddNewPageArea = AddNewPageArea;
 
 /***/ }),
 
-/***/ 302:
+/***/ 305:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";

@@ -1,11 +1,12 @@
+import React from 'react';
+import { render } from 'react-dom';
 import $ from 'jquery';
 import { utilities } from './utilities';
+import Dashboard from './dashboard/dashboard-list';
 
 $(document).ready(function() {
-    //init slideout menu
-    utilities.slideout();
-    //init static menu offset (move content down height of top menu)
-    utilities.setMenuOffset();
+    const el = document.getElementById('admin');
+    render(<Dashboard />, el);
 
     //everything initialized, hide loader
     utilities.hideLoader();

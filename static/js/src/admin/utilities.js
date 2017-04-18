@@ -1,4 +1,4 @@
-import $ from 'jquery';
+//import $ from 'jquery';
 
 export const utilities = {
     hideLoader: () => {
@@ -10,28 +10,31 @@ export const utilities = {
         const adminMain = document.querySelector('.admin-main') || document.querySelector('.admin-main-dash');
         adminMain.style.paddingTop = `${topMenu.clientHeight + 16}px`;
 
-        $(window).resize(function() {
+        // $(window).resize(function() {
+        //     adminMain.style.paddingTop = `${topMenu.clientHeight + 16}px`;
+        // });
+        window.addEventListener('resize', () => {
             adminMain.style.paddingTop = `${topMenu.clientHeight + 16}px`;
         });
-    },
-    slideout: () => {
-        const openMenuButton = document.querySelector('#open-menu');
-        const closeMenuButton = document.querySelector('#close-menu');
-        const menu = document.querySelector('#main-menu');
-        const bg = document.querySelector('#bg-screen');
-
-        openMenuButton.addEventListener('click', function() {
-            menu.classList.add('slideout-right--show');
-            bg.classList.add('bg-show');
-            closeMenuButton.classList.add('menu-open');
-        });
-
-        [closeMenuButton, bg].forEach(function(element) {
-            element.addEventListener('click', function() {
-                menu.classList.remove('slideout-right--show');
-                bg.classList.remove('bg-show');
-                closeMenuButton.classList.remove('menu-open');
-            });
-        });
     }
+    // slideout: () => {
+    //     const openMenuButton = document.querySelector('#open-menu');
+    //     const closeMenuButton = document.querySelector('#close-menu');
+    //     const menu = document.querySelector('#main-menu');
+    //     const bg = document.querySelector('#bg-screen');
+
+    //     openMenuButton.addEventListener('click', function() {
+    //         menu.classList.add('slideout-right--show');
+    //         bg.classList.add('bg-show');
+    //         closeMenuButton.classList.add('menu-open');
+    //     });
+
+    //     [closeMenuButton, bg].forEach(function(element) {
+    //         element.addEventListener('click', function() {
+    //             menu.classList.remove('slideout-right--show');
+    //             bg.classList.remove('bg-show');
+    //             closeMenuButton.classList.remove('menu-open');
+    //         });
+    //     });
+    // }
 };
