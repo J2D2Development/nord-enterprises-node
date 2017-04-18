@@ -5,8 +5,8 @@ import PageList from './page-list';
 import $ from 'jquery';
 
 window.addEventListener('DOMContentLoaded', function() {
-    utilities.slideout();
-    utilities.setMenuOffset();
+    //utilities.slideout();
+    //utilities.setMenuOffset();
     $.get(window.location.pathname + '/pages-list')
         .done(data => {
             const el = document.getElementById('page-list');

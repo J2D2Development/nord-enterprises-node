@@ -5,6 +5,9 @@ import $ from 'jquery';
 import PageListCard from './page-list-card';
 import Search from './search';
 import Modal from './modal';
+import MainMenu from '../menu/menu';
+import Slideout from '../menu/slideout';
+import Backdrop from '../utilities/backdrop';
 import { formValidators } from '../forms/form-validators';
 
 export default class PageList extends Component {
@@ -15,7 +18,9 @@ export default class PageList extends Component {
         this.pageAdmins = props.pageAdmins
         this.userGroups = props.userGroups;
         this.openModal = this.openModal.bind(this);
+        this.openSlideout = this.openSlideout.bind(this);
         this.closeModal = this.closeModal.bind(this);
+        this.closeSlideout = this.closeSlideout.bind(this);
         this.handleChange = this.handleChange.bind(this);
         this.addUserGroup = this.addUserGroup.bind(this);
         this.removeUserGroup = this.removeUserGroup.bind(this);
@@ -43,8 +48,18 @@ export default class PageList extends Component {
             assignedUserGroups: [],
             availableUserGroups: [],
             formType: 'update',
-            submitted: false
+            submitted: false,
+            modalDisplay: false,
+            slideoutDisplay: false
         };
+    }
+
+    openSlideout() {
+        this.setState({ slideoutDisplay: true });
+    }
+
+    closeSlideout() {
+        this.setState({ slideoutDisplay: false });
     }
 
     openModal(type, props) {
@@ -72,17 +87,13 @@ export default class PageList extends Component {
             pageInfo: props,
             formType: type,
             availableUserGroups: availableUserGroupsUpdate,
-            assignedUserGroups: assignedUserGroupsUpdate
+            assignedUserGroups: assignedUserGroupsUpdate,
+            modalDisplay: true
         });
 
-        document.querySelector('#bg-screen').classList.add('bg-show');
-        document.querySelector('#nord-modal').classList.add('modal-show');
     }
 
     closeModal() {
-        document.querySelector('#nord-modal').classList.remove('modal-show');
-        document.querySelector('#bg-screen').classList.remove('bg-show');
-
         //remove error class on any elements
         const erroredElements = document.querySelectorAll('.form-error');
         if(erroredElements.length > 0) {
@@ -91,7 +102,7 @@ export default class PageList extends Component {
             });
         }
 
-        this.setState({ submitted: false });
+        this.setState({ submitted: false, modalDisplay: false });
         this.hideDeleteConfirm();
     }
 
@@ -300,20 +311,30 @@ export default class PageList extends Component {
     render() {
         return(
             <div>
-                <div className="row">
-                    <div className="col-xs-6" style={{marginBottom: 16 + 'px'}}>
-                        <Search filterPages={this.filterPages} placeholder="Search for a page" />
-                    </div>
-                    <div className="col-xs-6" style={{marginBottom: 16 + 'px'}}>
-                        <button type="button" className="btn btn-primary" onClick={() => this.openModal('create', this.newPage)}>
-                            <i className="fa fa-plus fa-lg"></i> Create New Page
-                        </button>
+                <Slideout closeSlideout={this.closeSlideout} display={this.state.slideoutDisplay} />
+                <MainMenu openSlideout={this.openSlideout} />
+                <div className="row admin-main">
+                    <div className="pagelist-wrapper">
+                        <div className="row">
+                            <div className="col-xs-6" style={{marginBottom: 16 + 'px'}}>
+                                <Search filterPages={this.filterPages} placeholder="Search for a page" />
+                            </div>
+                            <div className="col-xs-6" style={{marginBottom: 16 + 'px'}}>
+                                <button type="button" className="btn btn-primary" onClick={() => this.openModal('create', this.newPage)}>
+                                    <i className="fa fa-plus fa-lg"></i> Create New Page
+                                </button>
+                            </div>
+                        </div>
+                        {this.state.pages.map(page => {
+                            return <PageListCard key={page.page_id} openModal={this.openModal} data={page} />;
+                        })}
+                        <Modal type={this.type} display={this.state.modalDisplay} data={this.state.pageInfo} closeModal={this.closeModal} showDeleteConfirm={this.showDeleteConfirm} hideDeleteConfirm={this.hideDeleteConfirm} handleChange={this.handleChange} addUserGroup={this.addUserGroup} removeUserGroup={this.removeUserGroup} submitForm={this.submitForm} addItem={this.addItem} updateItem={this.updateItem} deleteItem={this.deleteItem} pageAdmins={this.pageAdmins} allUserGroups={this.state.userGroups} availableUserGroups={this.state.availableUserGroups} assignedUserGroups={this.state.assignedUserGroups}  />
                     </div>
                 </div>
-                {this.state.pages.map(page => {
-                    return <PageListCard key={page.page_id} openModal={this.openModal} data={page} />;
-                })}
-                <Modal type={this.type} data={this.state.pageInfo} closeModal={this.closeModal} showDeleteConfirm={this.showDeleteConfirm} hideDeleteConfirm={this.hideDeleteConfirm} handleChange={this.handleChange} addUserGroup={this.addUserGroup} removeUserGroup={this.removeUserGroup} submitForm={this.submitForm} addItem={this.addItem} updateItem={this.updateItem} deleteItem={this.deleteItem} pageAdmins={this.pageAdmins} allUserGroups={this.state.userGroups} availableUserGroups={this.state.availableUserGroups} assignedUserGroups={this.state.assignedUserGroups}  />
+                <div className="row admin-footer">
+                    Admin Footer links here
+                </div>
+                <Backdrop display={this.state.slideoutDisplay} closeSlideout={this.closeSlideout} />
             </div>
         );
     }

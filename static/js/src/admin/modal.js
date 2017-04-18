@@ -38,7 +38,7 @@ const Modal = (props) => {
     }
 
     return (
-        <div className="nord-modal nord-modal-fade" role="dialog" id="nord-modal">
+        <div className={"nord-modal nord-modal-fade " + (props.display ? 'modal-show' : '')} role="dialog">
             <form id="modal-edit-form" onSubmit={props.submitForm}>
                 <div className="modal-dialog" role="document">
                     <div className="modal-content">

@@ -25,6 +25,8 @@ follow: https://hackernoon.com/naive-infinite-scroll-in-reactive-programming-usi
 
 
     FOR 4/10/17
+        -on modal open: also show backdrop?  try with conditional, but if it doesn't work, just have a modal-bg and slideout-bg for now
+        -static header height offset on load (on resize?)
         REACT FORM VALIDATION:
             -error count as array seems to be working.  look into converting to react style (on state instead of class variable)- but for now, move on to backend validation, try to use same functions
         PAGES LISTING

@@ -6,29 +6,9 @@
     </head>
 
     <body>
-        <div id="main-menu" class="slideout-right">
-            <div class="slideout-top">
-                <i id="close-menu" class="fa fa-2x fa-chevron-circle-left rotatable" aria-hidden="true"></i>
-                <span>Options</span>
-            </div>
-            <div class="slideout-main" id="slideout-main">
-                <a href="/<%=sitename%>/admin/pages">Pages</a>
-                <a href="/<%=sitename%>/logout">Log Out</a>
-            </div>
-        </div>
         <div class="container-fluid admin-flex-wrapper">
-            <% include ./admin-nav %>
-            <div class="row admin-main">
-                <div class="pagelist-wrapper">
-                    <div class="row">
-                        <div id="page-list">Loading pages info</div>
-                    </div>
-            </div>
-            <div class="row admin-footer">
-                Admin Footer links here
-            </div>
+            <div id="page-list"></div>
         </div>
-
         <% include ./admin-includes %>
     </body>
     <script src="/static/js/dist/adminPages.bundle.js"></script>
