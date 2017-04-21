@@ -12,6 +12,9 @@ http://stackoverflow.com/questions/5818312/mysql-with-node-js
 Security
 -we have helmet installed, but might also want to try https://github.com/krakenjs/lusca (session security?)
 
+testing
+-https://medium.com/selleo/testing-react-components-best-practices-2f77ac302d12
+
 OPTIONS
 
 
