@@ -1,5 +1,6 @@
 Using mysql with node (using mysql npm package): https://www.npmjs.com/package/mysql
 Do we also need connector? https://github.com/mysqljs/mysql
+What about memcached? http://memcached.org/
 
 Trouble connecting to remote host- probably need auth user: http://stackoverflow.com/a/18821224
 
@@ -14,6 +15,13 @@ Security
 
 testing
 -https://medium.com/selleo/testing-react-components-best-practices-2f77ac302d12
+
+mailing list
+*nice option would be to run the list in the bg, allowing user to continue to click around site and showing notifyr when ml process done.
+-use native node 'cluster' module to have different virtual server handle ml process?
+-or use native node 'child_process' method? (try this first?)
+-or use node-ipc: on npm (more high powered)
+    https://pusher.com/sessions/meetup/viennajs/interprocess-communication-in-nodejs
 
 OPTIONS
 
